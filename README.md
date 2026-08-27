@@ -1,6 +1,6 @@
 # Monitor de Queimadas
 
-TP1 da disciplina IA Aplicada (Infnet): proposta, planejamento e organização de uma solução sustentável alinhada ao ESG e à Agenda 2030.
+TP1 da disciplina Projeto de Bloco: proposta, planejamento e organização de uma solução sustentável alinhada ao ESG e à Agenda 2030.
 
 O projeto monitora focos de queimadas no Brasil com dados abertos do INPE (Programa Queimadas), coletados via API. Fica no pilar Ambiental do ESG e atende aos ODS 13 (Ação Contra a Mudança Global do Clima) e 15 (Vida Terrestre). A proposta completa está no [Project Charter](docs/project/charter.md) e as fontes de dados no [Data Summary Report](docs/project/data_summary.md).
 
