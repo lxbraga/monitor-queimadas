@@ -1,6 +1,6 @@
-"""Baixa o CSV diário de focos de queimadas do INPE para data/raw/.
+"""Baixa CSVs diários de focos de queimadas do INPE para data/raw/.
 
-Uso: python code/data_acquisition/fetch_inpe.py
+Uso: python code/data_acquisition/fetch_inpe.py [dias]
 """
 
 from __future__ import annotations
@@ -25,44 +25,59 @@ def daily_csv_url(day: date) -> str:
     return f"{BASE_URL}/focos_diario_br_{day.strftime('%Y%m%d')}.csv"
 
 
+def fetch_day(day: date, raw_dir: Path = RAW_DIR) -> Path | None:
+    """Baixa o CSV de um dia. Retorna o caminho salvo ou None se indisponível."""
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        response = requests.get(daily_csv_url(day), timeout=TIMEOUT_SECONDS)
+    except requests.RequestException:
+        return None
+    if response.status_code != 200 or not response.content:
+        return None
+    destination = raw_dir / f"focos_diario_br_{day.strftime('%Y%m%d')}.csv"
+    destination.write_bytes(response.content)
+    return destination
+
+
 def fetch_latest_daily(raw_dir: Path = RAW_DIR) -> Path:
     """Baixa o CSV diário mais recente disponível e retorna o caminho salvo."""
-    raw_dir.mkdir(parents=True, exist_ok=True)
-    errors: list[str] = []
-
     for offset in range(MAX_LOOKBACK_DAYS + 1):
-        day = date.today() - timedelta(days=offset)
-        url = daily_csv_url(day)
-        try:
-            response = requests.get(url, timeout=TIMEOUT_SECONDS)
-        except requests.RequestException as exc:
-            errors.append(f"{url}: {exc}")
-            continue
-
-        if response.status_code == 200 and response.content:
-            destination = raw_dir / f"focos_diario_br_{day.strftime('%Y%m%d')}.csv"
-            destination.write_bytes(response.content)
-            return destination
-
-        errors.append(f"{url}: HTTP {response.status_code}")
-
+        path = fetch_day(date.today() - timedelta(days=offset), raw_dir)
+        if path:
+            return path
     raise RuntimeError(
-        f"Nenhum CSV disponível nos últimos {MAX_LOOKBACK_DAYS} dias:\n"
-        + "\n".join(errors)
+        f"Nenhum CSV disponível nos últimos {MAX_LOOKBACK_DAYS} dias."
     )
 
 
+def fetch_last_days(days: int, raw_dir: Path = RAW_DIR) -> list[Path]:
+    """Baixa os CSVs dos últimos dias e retorna os caminhos obtidos."""
+    paths = []
+    for offset in range(days + MAX_LOOKBACK_DAYS):
+        path = fetch_day(date.today() - timedelta(days=offset), raw_dir)
+        if path:
+            paths.append(path)
+        if len(paths) >= days:
+            break
+    if not paths:
+        raise RuntimeError(
+            f"Nenhum CSV disponível nos últimos {days + MAX_LOOKBACK_DAYS} dias."
+        )
+    return paths
+
+
 def main() -> int:
-    print("Baixando focos de queimadas (INPE, CSV diário do Brasil)...")
+    days = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+    print(f"Baixando focos de queimadas do INPE ({days} dia(s))...")
     try:
-        path = fetch_latest_daily()
+        paths = fetch_last_days(days)
     except RuntimeError as exc:
         print(f"ERRO: {exc}", file=sys.stderr)
         return 1
 
-    line_count = sum(1 for _ in path.open(encoding="utf-8")) - 1
-    print(f"Arquivo salvo em: {path}")
-    print(f"Focos registrados: {line_count}")
+    for path in paths:
+        line_count = sum(1 for _ in path.open(encoding="utf-8")) - 1
+        print(f"{path.name}: {line_count} focos")
     return 0
 
 
