@@ -19,7 +19,7 @@ CORPUS_TXT = DATA_DIR / "processed" / "corpus_noticias.txt"
 COLUNAS_FOCOS = {"lat", "lon", "data_hora_gmt", "municipio", "estado", "bioma", "frp"}
 
 STOPWORDS_PT = set(
-    """a o e é de do da dos das em no na nos nas um uma uns umas para por com sem
+    """a o os as e é de do da dos das em no na nos nas um uma uns umas para por com sem
     sob sobre entre até após ante desde contra que se não mais menos muito muita
     muitos muitas pouco pouca ser está estão foi foram era eram ao aos à às pelo
     pela pelos pelas como quando onde quem qual quais cujo cuja isso isto aquilo
