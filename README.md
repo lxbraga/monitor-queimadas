@@ -66,13 +66,3 @@ streamlit run app.py
 ```
 
 Os scripts de coleta são opcionais porque o repositório já traz dados em `data/` como fallback. Na interface, o botão "Atualizar dados do INPE" baixa os dias mais recentes sem sair do app.
-
-## Deploy
-
-O app está pronto para o [Streamlit Community Cloud](https://share.streamlit.io):
-
-1. Entre com a conta GitHub e clique em "Create app".
-2. Escolha este repositório, branch `main` e arquivo `app.py`.
-3. O serviço instala o `requirements.txt` e publica a URL.
-
-Sem passos extras: não há segredos nem configuração adicional.
