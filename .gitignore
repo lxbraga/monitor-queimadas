@@ -13,3 +13,6 @@ __pycache__/
 
 # Sistema operacional
 .DS_Store
+
+# Dados gerados pela API em execução
+data/raw/focos_api.csv
