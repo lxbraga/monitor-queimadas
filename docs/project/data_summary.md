@@ -1,17 +1,19 @@
 # Data Summary Report: Monitor de Queimadas
 
-Artefato da fase de Data Acquisition & Understanding do TDSP, sob responsabilidade do Data Scientist. Esboçado no TP1 e completado no TP2 com a fonte de notícias.
+Artefato da fase de Data Acquisition & Understanding do TDSP, sob responsabilidade do Data Scientist. Esboçado no TP1, completado no TP2 com a fonte de notícias e revisado no TP3 com o scraping dinâmico do G1 e os dados recebidos pela API.
 
 ## Fontes de dados
 
 | Fonte | Tipo de dado | Formato e acesso | Atualização | Objetivo de uso | Status |
 |-------|--------------|------------------|-------------|-----------------|--------|
 | INPE, focos diários (Brasil) | Focos de calor por satélite, com localização, município, estado, bioma, risco de fogo e FRP | CSV via HTTP, sem autenticação: `https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/diario/Brasil/focos_diario_br_AAAAMMDD.csv` | Diária | Fonte principal do painel: filtros, métricas, gráficos e mapa | Em uso |
-| Agência Brasil, tag queimadas | Notícias (título, categoria, data, link) e texto completo dos artigos | HTML raspado com Beautiful Soup: `https://agenciabrasil.ebc.com.br/tags/queimadas` | Contínua | Tabela de notícias, nuvem de palavras e estatísticas por categoria e ano | Em uso |
+| Agência Brasil, tag queimadas | Notícias (título, categoria, data, link) e texto completo dos artigos | HTML raspado com Beautiful Soup: `https://agenciabrasil.ebc.com.br/tags/queimadas` | Contínua | Tabela de notícias, nuvem de palavras e estatísticas | Em uso |
+| G1, busca por queimadas | Notícias (título, categoria, data, link) e texto completo dos artigos | Página dinâmica raspada com Selenium (os resultados carregam por JavaScript): `https://g1.globo.com/busca/?q=queimadas` | Contínua | Segunda fonte de notícias para tabela, nuvem e estatísticas | Em uso |
 | INPE, focos mensais (Brasil) | Agregado mensal dos mesmos focos | CSV via HTTP: `.../focos/csv/mensal/Brasil/focos_mensal_br_AAAAMM.csv` | Mensal | Séries históricas e sazonalidade no dashboard final | Planejado |
 | INPE, focos 10 min | Focos quase em tempo real (lat, lon, satélite, data) | CSV via HTTP: `.../focos/csv/10min/` | 10 minutos | Visão ao vivo no dashboard final | Planejado |
 | INPE TerraBrasilis (PRODES/DETER) | Desmatamento e alertas por região | API e serviços web públicos | Variável | Cruzar queimadas com desmatamento | Candidata |
 | CSVs enviados pelo usuário | Focos complementares no formato do CSV diário do INPE | Upload na própria aplicação | Sob demanda | Complementar a base oficial nos filtros, gráficos e mapa | Em uso |
+| Focos registrados pela API | Focos complementares enviados por `POST /focos` | Gravados em `data/raw/focos_api.csv` (não versionado, gerado em execução) | Sob demanda | Somados às respostas de `GET /focos` | Em uso |
 
 ## Dicionário de dados do CSV diário
 
@@ -33,7 +35,7 @@ Arquivo de referência: `data/raw/focos_diario_br_AAAAMMDD.csv`. Na estação se
 
 ## Dicionário de dados das notícias
 
-Arquivo: `data/raw/noticias_queimadas.csv`, gerado por `code/data_acquisition/scrape_news.py`.
+Arquivos: `data/raw/noticias_queimadas.csv` (Agência Brasil, gerado por `scrape_news.py`) e `data/raw/noticias_g1.csv` (G1, gerado por `scrape_news_g1.py`). Mesmas colunas nos dois.
 
 | Coluna | Tipo | Descrição |
 |--------|------|-----------|
@@ -42,7 +44,7 @@ Arquivo: `data/raw/noticias_queimadas.csv`, gerado por `code/data_acquisition/sc
 | `data` | texto (dd/mm/aaaa) | Data de publicação |
 | `link` | texto | URL da notícia |
 
-O texto completo dos artigos fica em `data/processed/corpus_noticias.txt`, um artigo por bloco, usado na nuvem de palavras.
+O texto completo dos artigos fica em `data/processed/corpus_noticias.txt` e `data/processed/corpus_g1.txt`, um artigo por bloco. Hoje alimenta a nuvem de palavras; na próxima etapa é o insumo das tarefas com LLMs (resumos, sentimento e Q&A).
 
 ## Qualidade e limitações
 
@@ -51,7 +53,9 @@ O texto completo dos artigos fica em `data/processed/corpus_noticias.txt`, um ar
 - O arquivo do dia corrente pode sair com atraso; a coleta recua até 5 dias em busca do mais recente disponível.
 - O volume de focos varia muito ao longo do ano, com pico na estação seca (julho a outubro).
 - Para contagens oficiais o INPE usa um satélite de referência; o arquivo diário agrega todos.
-- O scraping depende da estrutura HTML da Agência Brasil e cobre as páginas mais recentes da tag; é executado com pausa entre requisições e User-Agent identificado.
+- O scraping depende da estrutura HTML das fontes e cobre as páginas mais recentes; é executado com pausa entre requisições.
+- A busca do G1 por "queimadas" também devolve notícias das cidades de Queimadas (BA e PB); o scraper descarta as URLs de eleições, o caso mais comum, mas alguma notícia municipal fora do tema ainda pode passar.
+- As datas do G1 nem sempre vêm no formato dd/mm/aaaa (a busca mostra datas relativas, como "há 3 dias"); nesses casos o campo fica vazio.
 - CSVs enviados por upload são validados apenas pelas colunas; o conteúdo é responsabilidade de quem envia e não persiste ao reiniciar o app.
 
 ## Dados versionados
