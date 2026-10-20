@@ -1,0 +1,84 @@
+import pandas as pd
+import requests
+import streamlit as st
+
+st.title("🔌 API do projeto")
+st.markdown(
+    "A aplicação expõe os dados por uma API FastAPI. Suba o servidor em outro "
+    "terminal e use esta página para consultar e enviar dados."
+)
+st.code(".venv/bin/uvicorn code.api.main:app --port 8010", language="bash")
+
+url_base = st.text_input("Endereço da API", "http://localhost:8010", key="api_url")
+
+
+def api_online() -> bool:
+    try:
+        return requests.get(f"{url_base}/focos", params={"limite": 1}, timeout=3).ok
+    except requests.RequestException:
+        return False
+
+
+if not api_online():
+    st.warning(
+        "API fora do ar. Suba o servidor com o comando acima e recarregue; "
+        "a documentação interativa fica em /docs."
+    )
+    st.stop()
+
+st.success(f"API no ar. Documentação interativa em {url_base}/docs")
+
+st.subheader("Consultar focos (GET /focos)")
+col1, col2, col3 = st.columns(3)
+estado = col1.text_input("Estado (opcional)", key="api_estado")
+bioma = col2.text_input("Bioma (opcional)", key="api_bioma")
+limite = col3.number_input("Limite", 1, 1000, 20, key="api_limite")
+if st.button("Consultar focos"):
+    params = {"limite": int(limite)}
+    if estado:
+        params["estado"] = estado
+    if bioma:
+        params["bioma"] = bioma
+    resposta = requests.get(f"{url_base}/focos", params=params, timeout=30)
+    if resposta.ok:
+        corpo = resposta.json()
+        st.caption(f"{corpo['total_filtrado']} focos atendem ao filtro.")
+        st.dataframe(pd.DataFrame(corpo["focos"]), width="stretch")
+    else:
+        st.error(f"HTTP {resposta.status_code}: {resposta.text}")
+
+st.subheader("Consultar notícias (GET /noticias)")
+fonte = st.selectbox("Fonte", ["todas", "Agência Brasil", "G1"], key="api_fonte")
+if st.button("Consultar notícias"):
+    params = {} if fonte == "todas" else {"fonte": fonte}
+    resposta = requests.get(f"{url_base}/noticias", params=params, timeout=30)
+    if resposta.ok:
+        st.dataframe(pd.DataFrame(resposta.json()["noticias"]), width="stretch")
+    else:
+        st.error(f"HTTP {resposta.status_code}: {resposta.text}")
+
+st.subheader("Enviar um foco (POST /focos)")
+with st.form("form_foco"):
+    col1, col2, col3 = st.columns(3)
+    lat = col1.number_input("Latitude", -34.0, 6.0, -10.0, format="%.4f")
+    lon = col2.number_input("Longitude", -74.0, -34.0, -55.0, format="%.4f")
+    frp = col3.number_input("FRP (MW)", 0.0, 5000.0, 10.0)
+    col4, col5, col6 = st.columns(3)
+    estado_novo = col4.text_input("Estado", "PARÁ")
+    municipio = col5.text_input("Município", "")
+    bioma_novo = col6.text_input("Bioma", "Amazônia")
+    enviado = st.form_submit_button("Enviar via POST")
+if enviado:
+    corpo = {
+        "lat": lat,
+        "lon": lon,
+        "frp": frp,
+        "estado": estado_novo,
+        "municipio": municipio,
+        "bioma": bioma_novo,
+    }
+    resposta = requests.post(f"{url_base}/focos", json=corpo, timeout=30)
+    if resposta.status_code == 201:
+        st.success(f"Foco registrado: {resposta.json()}")
+    else:
+        st.error(f"HTTP {resposta.status_code}: {resposta.text}")
