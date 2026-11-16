@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import csv
 import time
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as TempoEsgotado
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
@@ -22,6 +24,11 @@ from . import llm
 BASE_DIR = Path(__file__).resolve().parents[2]
 RAW_DIR = BASE_DIR / "data" / "raw"
 API_CSV = RAW_DIR / "focos_api.csv"
+
+# Limite para o processamento depois que o modelo já está carregado. O
+# carregamento fica de fora porque o primeiro download pode levar minutos.
+TEMPO_LIMITE_SEGUNDOS = 60
+_executor = ThreadPoolExecutor(max_workers=2)
 
 app = FastAPI(
     title="API do Monitor de Queimadas",
@@ -122,7 +129,28 @@ class RespostaProcessarTexto(BaseModel):
     tipo_analise: Literal["sentimento", "resumo"]
     modelo: str = Field(description="Modelo HuggingFace executado localmente")
     tempo_segundos: float = Field(description="Duração do processamento")
+    tokens_entrada: int = Field(description="Tamanho do texto em tokens")
+    truncado: bool = Field(
+        description=(
+            f"True quando o texto passou de {llm.MAX_TOKENS} tokens e só o "
+            "começo foi analisado"
+        )
+    )
     resultado: ResultadoSentimento | ResultadoResumo
+
+
+class Erro(BaseModel):
+    """Corpo das respostas de erro."""
+
+    detail: str = Field(description="Explicação do problema")
+
+
+RESPOSTAS_ERRO = {
+    400: {"model": Erro, "description": "Texto vazio"},
+    500: {"model": Erro, "description": "Falha ao processar o texto"},
+    503: {"model": Erro, "description": "Modelo não pôde ser carregado"},
+    504: {"model": Erro, "description": "Processamento passou do tempo limite"},
+}
 
 
 @app.get("/focos", response_model=RespostaFocos)
@@ -179,42 +207,64 @@ def adicionar_foco(foco: Foco):
     return {"mensagem": "foco registrado", "foco": registro}
 
 
-@app.post("/processar_texto", response_model=RespostaProcessarTexto)
+@app.post(
+    "/processar_texto",
+    response_model=RespostaProcessarTexto,
+    responses=RESPOSTAS_ERRO,
+)
 def processar_texto(pedido: PedidoProcessarTexto):
     """Processa um texto com o modelo de linguagem local.
 
     Com tipo_analise "sentimento", classifica o texto como positivo, neutro ou
     negativo; com "resumo", gera um resumo em português. A primeira chamada de
     cada análise baixa o modelo do HuggingFace e demora mais; as seguintes usam
-    o modelo já carregado em memória, sem acesso à rede.
+    o modelo já carregado em memória, sem acesso à rede. Textos acima de 512
+    tokens são cortados, e a resposta avisa pelo campo truncado.
     """
     if not pedido.texto.strip():
         raise HTTPException(
             status_code=400, detail="O texto enviado contém apenas espaços."
         )
 
-    inicio = time.perf_counter()
+    if pedido.tipo_analise == "sentimento":
+        processar, modelo = llm.analisar_sentimento, llm.MODELO_SENTIMENTO
+    else:
+        processar, modelo = llm.resumir, llm.MODELO_RESUMO
+
     try:
-        if pedido.tipo_analise == "sentimento":
-            resultado = llm.analisar_sentimento(pedido.texto)
-            modelo = llm.MODELO_SENTIMENTO
-        else:
-            resultado = llm.resumir(pedido.texto)
-            modelo = llm.MODELO_RESUMO
+        llm.carregar(pedido.tipo_analise)
     except Exception as exc:
         raise HTTPException(
             status_code=503,
             detail=(
-                "Modelo de linguagem indisponível. Verifique se as dependências "
-                "(transformers, torch, sentencepiece) estão instaladas e se há "
-                "conexão para o primeiro download do modelo. Erro original: "
-                f"{exc}"
+                f"Não foi possível carregar o modelo {modelo}. Verifique se as "
+                "dependências (transformers, torch, sentencepiece) estão "
+                "instaladas e se há conexão para o primeiro download. "
+                f"Erro original: {exc}"
             ),
+        ) from exc
+
+    inicio = time.perf_counter()
+    tarefa = _executor.submit(processar, pedido.texto)
+    try:
+        saida = tarefa.result(timeout=TEMPO_LIMITE_SEGUNDOS)
+    except TempoEsgotado as exc:
+        raise HTTPException(
+            status_code=504,
+            detail=(
+                f"O processamento passou de {TEMPO_LIMITE_SEGUNDOS} s e foi "
+                "abandonado. Tente um texto menor."
+            ),
+        ) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"O modelo foi carregado, mas falhou ao processar o texto: {exc}",
         ) from exc
 
     return {
         "tipo_analise": pedido.tipo_analise,
         "modelo": modelo,
         "tempo_segundos": round(time.perf_counter() - inicio, 2),
-        "resultado": resultado,
+        **saida,
     }
