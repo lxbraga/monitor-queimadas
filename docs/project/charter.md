@@ -98,7 +98,7 @@ O projeto fica no pilar Ambiental do ESG e atende a dois ODS da Agenda 2030:
 | Business Understanding | Business Understanding | Project Charter (este documento) |
 | Data Understanding | Data Acquisition & Understanding | Data Summary Report, `fetch_inpe.py`, `scrape_news.py`, `scrape_news_g1.py`, dados em `data/raw/` |
 | Data Preparation | Data Acquisition & Understanding | Corpus das notícias em `data/processed/`, agregações no app |
-| Modeling | Modeling | Modelos de linguagem locais para sentimento e resumo (`code/api/llm.py`) |
+| Modeling | Modeling | Modelos de linguagem locais para sentimento e resumo (`code/api/llm.py`), com a avaliação do sentimento em `code/modeling/avaliar_sentimento.py` |
 | Evaluation | Modeling / Acceptance | Testes automatizados em `tests/`; validação dos indicadores contra as metas na entrega final |
 | Deployment | Deployment | Dashboard em `app.py` e API em `code/api/main.py`, executados localmente |
 
@@ -114,12 +114,29 @@ Critérios usados: desempenho na tarefa em português, custo computacional para 
 
 | Tarefa | Modelo | Por que ele |
 |--------|--------|-------------|
-| Sentimento | `lxyuan/distilbert-base-multilingual-cased-sentiments-student` | DistilBERT multilíngue destilado para sentimento, com bom desempenho em português; ~540 MB, classifica em menos de 0,1 s em CPU; download aberto no HuggingFace |
+| Sentimento | `MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`, em classificação zero-shot | Modelo de inferência textual treinado em mais de 100 idiomas, incluindo português. Em vez de um classificador de sentimento pronto, ele julga qual hipótese o texto confirma: "Esta notícia é positiva", "negativa" ou "neutra". Foi a abordagem que melhor entendeu notícias sobre queimadas na avaliação abaixo; ~530 MB, cerca de 90 ms por texto em CPU |
 | Resumo | `recogna-nlp/ptt5-base-summ` | PTT5 (T5 pré-treinado em português pelo grupo Recogna/Unesp) ajustado para sumarização de notícias, exatamente o domínio do corpus; ~890 MB, resume em 1 a 5 s em CPU |
 
-Alternativas consideradas: modelos generativos maiores (como os da família Llama) dariam respostas mais flexíveis, mas pedem vários GB de memória e latência alta sem GPU; BERT puro exigiria ajuste fino próprio. Os dois escolhidos são especializados, leves e prontos para uso.
+### Avaliação do sentimento
 
-Limitações conhecidas: o classificador de sentimento é multilíngue, não especializado em português, e textos ambíguos ficam com confiança baixa; o resumidor funciona melhor com textos de notícia completos e pode gerar prefixos estranhos em textos muito curtos ou genéricos. Os dois leem no máximo 512 tokens (cerca de 2.000 caracteres); o excedente é descartado e a resposta da API avisa pelo campo `truncado`.
+O primeiro modelo escolhido, um classificador de sentimento multilíngue (DistilBERT), errava notícias boas sobre queimadas: palavras como "incêndio", "fumaça" e "focos" puxavam o resultado para negativo, e quase todo texto do projeto tem essas palavras. Para escolher com dados, montamos um conjunto rotulado em `data/processed/avaliacao_sentimento.csv`, com 54 textos (20 negativos, 20 positivos e 14 neutros): 33 títulos reais das notícias raspadas e 21 frases escritas no mesmo estilo, positivas e neutras, com vocabulário de fogo. Os rótulos foram atribuídos manualmente e só entraram casos sem ambiguidade.
+
+| Abordagem | Acerto | F1 macro | Positivos | Neutros | Negativos | ms por texto |
+|-----------|--------|----------|-----------|---------|-----------|--------------|
+| **Zero-shot mDeBERTa, hipótese "Esta notícia é {}." (em uso)** | **70%** | **0,58** | **85%** | 7% | **100%** | 91 |
+| Classificador XLM-R (`cardiffnlp/twitter-xlm-roberta-base-sentiment`) | 52% | 0,48 | 15% | 86% | 65% | 42 |
+| Zero-shot mDeBERTa, hipótese "Esta é uma notícia {}." | 52% | 0,48 | 50% | 14% | 80% | 53 |
+| LLM Qwen2.5 0,5B com instrução | 52% | 0,39 | 100% | 0% | 40% | 181 |
+| LLM Qwen2.5 1,5B com instrução | 48% | 0,35 | 30% | 0% | 100% | 376 |
+| Classificador DistilBERT (`lxyuan/...-sentiments-student`, escolha anterior) | 37% | 0,28 | 30% | 0% | 70% | 25 |
+| Classificador BERTweet-pt (`pysentimiento/bertweet-pt-sentiment`) | 35% | 0,28 | 0% | 100% | 25% | 25 |
+| Classificador DistilBERT multilíngue (`tabularisai/multilingual-sentiment-analysis`) | 30% | 0,20 | 0% | 100% | 10% | 24 |
+
+Os classificadores prontos foram treinados com tweets e avaliações de produtos, onde vocabulário de fogo quase sempre indica algo ruim; os LLMs pequenos não seguiram bem a instrução. As hipóteses e o prompt foram fixados antes de rodar a avaliação, e todas as variantes testadas estão na tabela, para não escolher a que por acaso se ajustou melhor a estes 54 textos. A comparação dos classificadores e da abordagem em uso pode ser refeita com `python -m code.modeling.avaliar_sentimento`.
+
+Alternativas consideradas também: modelos generativos maiores (família Llama, por exemplo) pedem vários GB de memória e latência alta sem GPU; ajuste fino próprio exigiria um conjunto rotulado muito maior que o disponível.
+
+Limitações conhecidas: a análise de sentimento quase nunca responde "neutro" (acertou 7% dos neutros na avaliação), então textos informativos tendem a sair como positivos ou negativos; o conjunto de avaliação é pequeno e serve como indicação, não como medida definitiva; o resumidor funciona melhor com textos de notícia completos e pode gerar prefixos estranhos em textos muito curtos ou genéricos. Os dois leem no máximo 512 tokens (cerca de 2.000 caracteres); o excedente é descartado e a resposta da API avisa pelo campo `truncado`.
 
 ## Como a integração local foi feita
 

@@ -40,6 +40,8 @@ monitor-queimadas/
 │   ├── api/
 │   │   ├── main.py             # API FastAPI: rotas, response models e erros
 │   │   └── llm.py              # carga e execução dos modelos de linguagem locais
+│   ├── modeling/
+│   │   └── avaliar_sentimento.py  # compara abordagens de sentimento num conjunto rotulado
 │   └── data_acquisition/
 │       ├── fetch_inpe.py       # coleta dos focos via dados abertos do INPE
 │       ├── scrape_news.py      # Beautiful Soup na Agência Brasil
@@ -49,7 +51,7 @@ monitor-queimadas/
 │   └── test_upload.py          # testes da validação de CSVs enviados
 └── data/
     ├── raw/                    # CSVs do INPE e das notícias (versionados como fallback)
-    └── processed/              # corpus de texto das notícias
+    └── processed/              # corpus das notícias e conjunto de avaliação do sentimento
 ```
 
 ## CRISP-DM e TDSP
@@ -59,7 +61,7 @@ monitor-queimadas/
 | Business Understanding | Business Understanding | `docs/project/charter.md` |
 | Data Understanding | Data Acquisition & Understanding | `docs/project/data_summary.md`, `code/data_acquisition/`, `data/raw/` |
 | Data Preparation | Data Acquisition & Understanding | `data/processed/` (corpus das notícias) |
-| Modeling | Modeling | modelos de linguagem locais em `code/api/llm.py` |
+| Modeling | Modeling | modelos de linguagem locais em `code/api/llm.py`, avaliados em `code/modeling/` |
 | Evaluation | Modeling / Acceptance | testes em `tests/` e validação dos KPIs |
 | Deployment | Deployment | `app.py` (Streamlit) e `code/api/main.py` (FastAPI) |
 
@@ -148,6 +150,6 @@ Os erros voltam com código e mensagem explicativa:
 | 503 | O modelo não pôde ser carregado (dependência faltando ou sem rede no primeiro download), ou os modelos estão ocupados com outros textos há mais de 30 s |
 | 504 | O processamento passou de 60 s |
 
-A escolha dos modelos (DistilBERT multilíngue para sentimento e PTT5 para resumo) está justificada no [Project Charter](docs/project/charter.md).
+A escolha dos modelos (mDeBERTa multilíngue em classificação zero-shot para sentimento e PTT5 para resumo) está justificada no [Project Charter](docs/project/charter.md), com a avaliação de oito abordagens de sentimento num conjunto rotulado de notícias. Para refazer a comparação: `python -m code.modeling.avaliar_sentimento`.
 
 A página "API" do app usa essas rotas: mostra o status do servidor, consulta focos e notícias, envia um foco pelo formulário e processa textos com o modelo local.
