@@ -97,6 +97,7 @@ A documentação interativa (Swagger) fica em `http://localhost:8010/docs`. Rota
 | `GET /focos?estado=&bioma=&limite=` | Lista focos de calor, com filtros opcionais por estado e bioma e limite de registros |
 | `GET /noticias?fonte=` | Lista as notícias raspadas, com filtro opcional por fonte (Agência Brasil ou G1) |
 | `POST /focos` | Registra um foco complementar (JSON com lat, lon, estado e opcionalmente município, bioma e FRP); os focos enviados aparecem nas consultas seguintes |
+| `POST /processar_texto` | Processa um texto com modelo de linguagem local: `tipo_analise` "sentimento" classifica como positivo, neutro ou negativo; "resumo" gera um resumo em português. A primeira chamada de cada análise baixa o modelo do HuggingFace (fica em cache local) |
 
 Exemplos:
 
@@ -109,4 +110,11 @@ curl -X POST http://localhost:8010/focos -H "Content-Type: application/json" \
   -d '{"lat": -3.2, "lon": -52.1, "estado": "PARÁ", "bioma": "Amazônia", "frp": 42.5}'
 ```
 
-A página "API" do app usa essas rotas: mostra o status do servidor, consulta focos e notícias e envia um foco pelo formulário.
+```bash
+curl -X POST http://localhost:8010/processar_texto -H "Content-Type: application/json" \
+  -d '{"texto": "A fumaça das queimadas cobriu a cidade e os atendimentos dispararam.", "tipo_analise": "sentimento"}'
+```
+
+As respostas seguem response models (Pydantic) e os erros voltam com códigos e mensagens claras: 422 para entrada inválida, 400 para texto vazio e 503 quando o modelo não pode ser carregado. A escolha dos modelos (DistilBERT multilíngue para sentimento e PTT5 para resumo) está justificada no [Project Charter](docs/project/charter.md).
+
+A página "API" do app usa essas rotas: mostra o status do servidor, consulta focos e notícias, envia um foco pelo formulário e processa textos com o modelo local.

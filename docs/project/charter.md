@@ -35,7 +35,15 @@ TP3 (concluído):
 - API em FastAPI (`code/api/main.py`) com consulta de focos e notícias (GET) e registro de focos complementares (POST), documentada no Swagger em `/docs` e integrada ao app pela página API.
 - Metas reavaliadas: além do painel, o projeto passa a oferecer acesso programático aos dados, o que abre caminho para integrações externas e para os LLMs da próxima etapa.
 
-Fica para a próxima etapa: recursos de IA com LLMs sobre os dados já coletados (detalhados na seção de preparação abaixo).
+TP4 (concluído):
+
+- Modelos de linguagem locais integrados à API: análise de sentimento e resumo automático, rodando na própria máquina via HuggingFace Transformers, sem serviços externos.
+- Rota `POST /processar_texto` com response models (Pydantic) e respostas estruturadas; as rotas existentes também ganharam response models.
+- Tratamento robusto de erros: 422 para entrada inválida, 400 para texto vazio e 503 com mensagem explicativa quando o modelo não pode ser carregado.
+- Justificativa da escolha dos modelos documentada abaixo.
+- Seção "Processar texto" na página API do app, consumindo a nova rota.
+
+Fica para a entrega final: ampliar os usos de LLM sobre o corpus (Q&A e geração de relatórios) e refinar a aplicação para apresentação.
 
 ## Objetivos
 
@@ -95,7 +103,22 @@ No diagrama TDSP do enunciado, o Project Charter é artefato do estágio de Busi
 
 ## Arquitetura
 
-Coleta em scripts separados: `requests` para os CSVs do INPE, Beautiful Soup para as notícias da Agência Brasil e Selenium para a busca dinâmica do G1, gravando em `data/raw/` e `data/processed/`. Tratamento com `pandas`. Duas portas de acesso aos dados: a aplicação Streamlit multipágina (com cache e estado de sessão) e a API FastAPI com rotas GET e POST. Na próxima etapa, LLM via engenharia de prompts consumindo o corpus e os CSVs.
+Coleta em scripts separados: `requests` para os CSVs do INPE, Beautiful Soup para as notícias da Agência Brasil e Selenium para a busca dinâmica do G1, gravando em `data/raw/` e `data/processed/`. Tratamento com `pandas`. Duas portas de acesso aos dados: a aplicação Streamlit multipágina (com cache e estado de sessão) e a API FastAPI com rotas GET e POST. A API também executa os modelos de linguagem locais (HuggingFace Transformers com PyTorch) para sentimento e resumo, carregados sob demanda em `code/api/llm.py`.
+
+## Escolha dos modelos LLM
+
+Critérios usados: desempenho na tarefa em português, custo computacional para rodar localmente (CPU de um notebook, sem GPU dedicada) e acessibilidade (download aberto pelo HuggingFace, carregável com a biblioteca Transformers). Dois modelos atendem às duas análises do projeto:
+
+| Tarefa | Modelo | Por que ele |
+|--------|--------|-------------|
+| Sentimento | `lxyuan/distilbert-base-multilingual-cased-sentiments-student` | DistilBERT multilíngue destilado para sentimento, com bom desempenho em português; ~540 MB, classifica em menos de 0,1 s em CPU; download aberto no HuggingFace |
+| Resumo | `recogna-nlp/ptt5-base-summ` | PTT5 (T5 pré-treinado em português pelo grupo Recogna/Unesp) ajustado para sumarização de notícias, exatamente o domínio do corpus; ~1,2 GB, resume em 1 a 3 s em CPU |
+
+Alternativas consideradas: modelos generativos maiores (como os da família Llama) dariam respostas mais flexíveis, mas pedem vários GB de memória e latência alta sem GPU; BERT puro exigiria ajuste fino próprio. Os dois escolhidos são especializados, leves e prontos para uso.
+
+Limitações conhecidas: o classificador de sentimento é multilíngue, não especializado em português, e textos ambíguos ficam com confiança baixa; o resumidor funciona melhor com textos de notícia completos e pode gerar prefixos estranhos em textos muito curtos ou genéricos.
+
+Os modelos são baixados na primeira chamada e ficam no cache local do HuggingFace; depois disso a API funciona sem rede. O carregamento é preguiçoso (na primeira requisição de cada análise) para a API subir rápido.
 
 ## Preparação para LLMs
 
@@ -103,10 +126,10 @@ Os dados coletados já estão em formatos prontos para as tarefas com LLMs da pr
 
 | Caso de uso | Dado de entrada | Situação |
 |-------------|-----------------|----------|
-| Resumo automático de notícias | Texto completo dos artigos em `data/processed/corpus_noticias.txt` e `corpus_g1.txt` | Corpus pronto, um artigo por bloco |
-| Classificação de sentimento | Títulos e textos das notícias das duas fontes | CSVs estruturados com título, data, categoria e fonte |
-| Perguntas e respostas (Q&A) | Corpus de notícias e estatísticas dos focos | Conteúdo acessível por arquivo ou pela API |
-| Geração de relatórios | Agregados de focos por estado, bioma e dia | `GET /focos` entrega os dados em JSON para compor prompts |
+| Resumo automático de notícias | Texto completo dos artigos em `data/processed/corpus_noticias.txt` e `corpus_g1.txt` | Entregue no TP4 via `POST /processar_texto` |
+| Classificação de sentimento | Títulos e textos das notícias das duas fontes | Entregue no TP4 via `POST /processar_texto` |
+| Perguntas e respostas (Q&A) | Corpus de notícias e estatísticas dos focos | Entrega final |
+| Geração de relatórios | Agregados de focos por estado, bioma e dia | Entrega final |
 
 A API facilita a integração: o serviço de LLM poderá consultar focos e notícias pelas mesmas rotas usadas pela interface.
 
