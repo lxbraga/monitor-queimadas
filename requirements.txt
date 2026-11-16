@@ -7,3 +7,7 @@ matplotlib==3.10.9
 fastapi==0.150.0
 uvicorn==0.54.0
 selenium==4.51.0
+transformers==5.20.2
+torch==2.14.1
+sentencepiece==0.2.3
+protobuf==7.36.2
