@@ -36,6 +36,7 @@ monitor-queimadas/
 │       └── data_summary.md     # Data Summary Report (Data Acquisition & Understanding)
 ├── code/
 │   ├── app_utils.py            # funções compartilhadas pelas páginas
+│   ├── base_dados.py           # leitura de data/, usada pelo app e pela API
 │   ├── api/
 │   │   ├── main.py             # API FastAPI: rotas, response models e erros
 │   │   └── llm.py              # carga e execução dos modelos de linguagem locais
@@ -44,7 +45,8 @@ monitor-queimadas/
 │       ├── scrape_news.py      # Beautiful Soup na Agência Brasil
 │       └── scrape_news_g1.py   # Selenium na busca dinâmica do G1
 ├── tests/
-│   └── test_api.py             # testes das rotas e dos códigos de erro
+│   ├── test_api.py             # testes das rotas e dos códigos de erro
+│   └── test_upload.py          # testes da validação de CSVs enviados
 └── data/
     ├── raw/                    # CSVs do INPE e das notícias (versionados como fallback)
     └── processed/              # corpus de texto das notícias
@@ -111,7 +113,8 @@ A documentação interativa (Swagger) fica em `http://localhost:8010/docs`. Rota
 
 | Rota | Função |
 |------|--------|
-| `GET /focos?estado=&bioma=&limite=` | Lista focos de calor, com filtros opcionais por estado e bioma e limite de registros |
+| `GET /saude` | Confirma que a API está no ar, sem ler dados nem modelos |
+| `GET /focos?estado=&bioma=&limite=` | Lista focos de calor, com filtros opcionais por estado e bioma e limite de registros. Arquivos novos em `data/raw/` entram sem reiniciar a API |
 | `GET /noticias?fonte=` | Lista as notícias raspadas, com filtro opcional por fonte (Agência Brasil ou G1) |
 | `POST /focos` | Registra um foco complementar (JSON com lat, lon, estado e opcionalmente município, bioma e FRP); os focos enviados aparecem nas consultas seguintes |
 | `POST /processar_texto` | Processa um texto com modelo de linguagem local: `tipo_analise` "sentimento" classifica como positivo, neutro ou negativo; "resumo" gera um resumo em português. A primeira chamada de cada análise baixa o modelo do HuggingFace (fica em cache local) |
@@ -142,7 +145,7 @@ Os erros voltam com código e mensagem explicativa:
 | 400 | Texto só com espaços |
 | 422 | Entrada inválida (texto com menos de 20 caracteres, tipo de análise desconhecido, coordenadas fora do intervalo) |
 | 500 | O modelo carregou, mas falhou ao processar o texto |
-| 503 | O modelo não pôde ser carregado (dependência faltando ou sem rede no primeiro download) |
+| 503 | O modelo não pôde ser carregado (dependência faltando ou sem rede no primeiro download), ou os modelos estão ocupados com outros textos há mais de 30 s |
 | 504 | O processamento passou de 60 s |
 
 A escolha dos modelos (DistilBERT multilíngue para sentimento e PTT5 para resumo) está justificada no [Project Charter](docs/project/charter.md).

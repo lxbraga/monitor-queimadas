@@ -125,7 +125,7 @@ Limitações conhecidas: o classificador de sentimento é multilíngue, não esp
 
 Os modelos são baixados do HuggingFace na primeira chamada de cada análise e ficam no cache local (`~/.cache/huggingface`, cerca de 1,4 GB no total); depois disso a API funciona sem rede. O carregamento é preguiçoso para a API subir rápido, e cada modelo fica em memória depois de carregado. O sentimento usa o `pipeline` do Transformers; o resumo usa o modelo seq2seq direto com `generate()`, porque o Transformers v5 removeu o pipeline de sumarização.
 
-A rota separa as falhas em três casos: se o modelo não carrega, a API responde 503; se carrega mas falha no texto, 500; se o processamento passa de 60 s, 504. O limite de tempo vale só para o processamento, não para o primeiro download.
+A rota separa as falhas: se o modelo não carrega, a API responde 503; se carrega mas falha no texto, 500; se o processamento passa de 60 s, 504. O limite de tempo vale só para o processamento, contado a partir do momento em que ele começa; o primeiro download e a espera na fila ficam de fora. Se todos os processadores estiverem ocupados por mais de 30 s, o pedido desiste com 503 em vez de um 504 enganoso. Cada modelo tem sua própria trava de carregamento, então o download de um não atrasa o uso do outro.
 
 ## Uso dos dados com LLMs
 
