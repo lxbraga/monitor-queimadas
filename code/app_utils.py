@@ -106,12 +106,14 @@ def filtros_sidebar(focos: pd.DataFrame) -> pd.DataFrame:
     biomas = st.sidebar.multiselect(
         "Biomas", sorted(focos["bioma"].dropna().unique()), key="filtro_biomas"
     )
-    frp_min = st.sidebar.slider(
-        "FRP mínimo (MW)", 0.0, float(focos["frp"].max() or 1), 0.0, key="filtro_frp"
-    )
+    frp_max = focos["frp"].max()
+    frp_max = float(frp_max) if pd.notna(frp_max) and frp_max > 0 else 1.0
+    # A base pode encolher (uploads removidos) e deixar o valor salvo acima do máximo.
+    st.session_state.filtro_frp = min(st.session_state.get("filtro_frp", 0.0), frp_max)
+    frp_min = st.sidebar.slider("FRP mínimo (MW)", 0.0, frp_max, key="filtro_frp")
 
     st.sidebar.divider()
-    qtd_dias = st.sidebar.number_input("Dias a baixar", 1, 14, 3, key="qtd_dias")
+    qtd_dias = st.sidebar.number_input("Dias a baixar", 1, 14, key="qtd_dias")
     if st.sidebar.button("Atualizar dados do INPE"):
         with st.spinner("Baixando arquivos do INPE..."):
             try:

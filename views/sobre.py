@@ -22,9 +22,9 @@ Global do Clima) e 15 (Vida Terrestre) da Agenda 2030.
 
 Público-alvo: gestores ambientais, ONGs, jornalistas, pesquisadores e cidadãos.
 
-Na próxima etapa o projeto ganha recursos de IA com LLMs: resumos das notícias,
-classificação de sentimento, perguntas e respostas sobre o corpus e geração de
-relatórios a partir dos dados.
+O projeto também usa modelos de linguagem que rodam na própria máquina para
+classificar o sentimento e resumir notícias (página API). Para a entrega final
+ficam perguntas e respostas sobre o corpus e a geração de relatórios.
 
 ### Links úteis
 

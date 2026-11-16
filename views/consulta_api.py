@@ -9,7 +9,29 @@ st.markdown(
 )
 st.code(".venv/bin/uvicorn code.api.main:app --port 8010", language="bash")
 
-url_base = st.text_input("Endereço da API", "http://localhost:8010", key="api_url")
+url_base = st.text_input("Endereço da API", key="api_url")
+
+
+def chamar(metodo: str, rota: str, timeout: float = 30, **kwargs):
+    """Chama a API e mostra o erro na tela em vez de quebrar a página."""
+    try:
+        resposta = requests.request(
+            metodo, f"{url_base}{rota}", timeout=timeout, **kwargs
+        )
+    except requests.Timeout:
+        st.error(f"A API não respondeu em {timeout:.0f} s.")
+        return None
+    except requests.RequestException as exc:
+        st.error(f"Não foi possível falar com a API: {exc}")
+        return None
+    if not resposta.ok:
+        try:
+            detalhe = resposta.json().get("detail", resposta.text)
+        except ValueError:
+            detalhe = resposta.text
+        st.error(f"HTTP {resposta.status_code}: {detalhe}")
+        return None
+    return resposta.json()
 
 
 def api_online() -> bool:
@@ -32,30 +54,25 @@ st.subheader("Consultar focos (GET /focos)")
 col1, col2, col3 = st.columns(3)
 estado = col1.text_input("Estado (opcional)", key="api_estado")
 bioma = col2.text_input("Bioma (opcional)", key="api_bioma")
-limite = col3.number_input("Limite", 1, 1000, 20, key="api_limite")
+limite = col3.number_input("Limite", 1, 1000, key="api_limite")
 if st.button("Consultar focos"):
     params = {"limite": int(limite)}
     if estado:
         params["estado"] = estado
     if bioma:
         params["bioma"] = bioma
-    resposta = requests.get(f"{url_base}/focos", params=params, timeout=30)
-    if resposta.ok:
-        corpo = resposta.json()
+    corpo = chamar("GET", "/focos", params=params)
+    if corpo:
         st.caption(f"{corpo['total_filtrado']} focos atendem ao filtro.")
         st.dataframe(pd.DataFrame(corpo["focos"]), width="stretch")
-    else:
-        st.error(f"HTTP {resposta.status_code}: {resposta.text}")
 
 st.subheader("Consultar notícias (GET /noticias)")
 fonte = st.selectbox("Fonte", ["todas", "Agência Brasil", "G1"], key="api_fonte")
 if st.button("Consultar notícias"):
     params = {} if fonte == "todas" else {"fonte": fonte}
-    resposta = requests.get(f"{url_base}/noticias", params=params, timeout=30)
-    if resposta.ok:
-        st.dataframe(pd.DataFrame(resposta.json()["noticias"]), width="stretch")
-    else:
-        st.error(f"HTTP {resposta.status_code}: {resposta.text}")
+    corpo = chamar("GET", "/noticias", params=params)
+    if corpo:
+        st.dataframe(pd.DataFrame(corpo["noticias"]), width="stretch")
 
 st.subheader("Processar texto com o modelo local (POST /processar_texto)")
 st.markdown(
@@ -72,24 +89,25 @@ texto = st.text_area(
     placeholder="Cole aqui um trecho de notícia sobre queimadas...",
 )
 if st.button("Processar texto"):
-    corpo = {"texto": texto, "tipo_analise": tipo_analise}
     with st.spinner("Processando com o modelo local..."):
-        try:
-            resposta = requests.post(
-                f"{url_base}/processar_texto", json=corpo, timeout=600
+        # Folga grande porque a primeira chamada inclui o download do modelo.
+        corpo = chamar(
+            "POST",
+            "/processar_texto",
+            timeout=600,
+            json={"texto": texto, "tipo_analise": tipo_analise},
+        )
+    if corpo:
+        st.json(corpo["resultado"])
+        st.caption(
+            f"Modelo {corpo['modelo']}, {corpo['tempo_segundos']} s de "
+            f"processamento, {corpo['tokens_entrada']} tokens."
+        )
+        if corpo["truncado"]:
+            st.warning(
+                "O texto passou do limite do modelo (512 tokens) e só o começo "
+                "foi analisado."
             )
-        except requests.RequestException as exc:
-            st.error(f"Falha na chamada: {exc}")
-        else:
-            if resposta.ok:
-                corpo = resposta.json()
-                st.json(corpo["resultado"])
-                st.caption(
-                    f"Modelo {corpo['modelo']}, "
-                    f"{corpo['tempo_segundos']} s de processamento."
-                )
-            else:
-                st.error(f"HTTP {resposta.status_code}: {resposta.text}")
 
 st.subheader("Enviar um foco (POST /focos)")
 with st.form("form_foco"):
@@ -103,16 +121,17 @@ with st.form("form_foco"):
     bioma_novo = col6.text_input("Bioma", "Amazônia")
     enviado = st.form_submit_button("Enviar via POST")
 if enviado:
-    corpo = {
-        "lat": lat,
-        "lon": lon,
-        "frp": frp,
-        "estado": estado_novo,
-        "municipio": municipio,
-        "bioma": bioma_novo,
-    }
-    resposta = requests.post(f"{url_base}/focos", json=corpo, timeout=30)
-    if resposta.status_code == 201:
-        st.success(f"Foco registrado: {resposta.json()}")
-    else:
-        st.error(f"HTTP {resposta.status_code}: {resposta.text}")
+    corpo = chamar(
+        "POST",
+        "/focos",
+        json={
+            "lat": lat,
+            "lon": lon,
+            "frp": frp,
+            "estado": estado_novo,
+            "municipio": municipio,
+            "bioma": bioma_novo,
+        },
+    )
+    if corpo:
+        st.success(f"Foco registrado com o id {corpo['foco']['id']}.")
