@@ -57,6 +57,40 @@ if st.button("Consultar notícias"):
     else:
         st.error(f"HTTP {resposta.status_code}: {resposta.text}")
 
+st.subheader("Processar texto com o modelo local (POST /processar_texto)")
+st.markdown(
+    "A API roda modelos de linguagem do HuggingFace na própria máquina. "
+    "A primeira chamada de cada análise baixa o modelo e demora mais."
+)
+tipo_analise = st.radio(
+    "Análise", ["sentimento", "resumo"], horizontal=True, key="llm_tipo"
+)
+texto = st.text_area(
+    "Texto em português (mínimo 20 caracteres)",
+    height=150,
+    key="llm_texto",
+    placeholder="Cole aqui um trecho de notícia sobre queimadas...",
+)
+if st.button("Processar texto"):
+    corpo = {"texto": texto, "tipo_analise": tipo_analise}
+    with st.spinner("Processando com o modelo local..."):
+        try:
+            resposta = requests.post(
+                f"{url_base}/processar_texto", json=corpo, timeout=600
+            )
+        except requests.RequestException as exc:
+            st.error(f"Falha na chamada: {exc}")
+        else:
+            if resposta.ok:
+                corpo = resposta.json()
+                st.json(corpo["resultado"])
+                st.caption(
+                    f"Modelo {corpo['modelo']}, "
+                    f"{corpo['tempo_segundos']} s de processamento."
+                )
+            else:
+                st.error(f"HTTP {resposta.status_code}: {resposta.text}")
+
 st.subheader("Enviar um foco (POST /focos)")
 with st.form("form_foco"):
     col1, col2, col3 = st.columns(3)
