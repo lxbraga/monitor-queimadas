@@ -1,6 +1,6 @@
 # Data Summary Report: Monitor de Queimadas
 
-Artefato da fase de Data Acquisition & Understanding do TDSP, sob responsabilidade do Data Scientist. Esboçado no TP1, completado no TP2 com a fonte de notícias e revisado no TP3 com o scraping dinâmico do G1 e os dados recebidos pela API.
+Artefato da fase de Data Acquisition & Understanding do TDSP, sob responsabilidade do Data Scientist. Esboçado no TP1, completado no TP2 com a fonte de notícias, revisado no TP3 com o scraping dinâmico do G1 e os dados recebidos pela API, e no TP4 com o uso do corpus pelos modelos de linguagem.
 
 ## Fontes de dados
 
@@ -44,7 +44,7 @@ Arquivos: `data/raw/noticias_queimadas.csv` (Agência Brasil, gerado por `scrape
 | `data` | texto (dd/mm/aaaa) | Data de publicação |
 | `link` | texto | URL da notícia |
 
-O texto completo dos artigos fica em `data/processed/corpus_noticias.txt` e `data/processed/corpus_g1.txt`, um artigo por bloco. Hoje alimenta a nuvem de palavras; na próxima etapa é o insumo das tarefas com LLMs (resumos, sentimento e Q&A).
+O texto completo dos artigos fica em `data/processed/corpus_noticias.txt` e `data/processed/corpus_g1.txt`, um artigo por bloco. Alimenta a nuvem de palavras e é o insumo natural das análises com LLM: desde o TP4, qualquer trecho pode ser resumido ou classificado por sentimento em `POST /processar_texto`. Os modelos leem até 512 tokens (cerca de 2.000 caracteres), então artigos longos devem ser enviados em partes.
 
 ## Qualidade e limitações
 

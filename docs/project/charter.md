@@ -39,7 +39,9 @@ TP4 (concluído):
 
 - Modelos de linguagem locais integrados à API: análise de sentimento e resumo automático, rodando na própria máquina via HuggingFace Transformers, sem serviços externos.
 - Rota `POST /processar_texto` com response models (Pydantic) e respostas estruturadas; as rotas existentes também ganharam response models.
-- Tratamento robusto de erros: 422 para entrada inválida, 400 para texto vazio e 503 com mensagem explicativa quando o modelo não pode ser carregado.
+- Tratamento robusto de erros, com mensagem explicativa em cada caso: 400 para texto vazio, 422 para entrada inválida, 500 para falha no processamento, 503 quando o modelo não pode ser carregado e 504 quando o processamento passa de 60 s.
+- A resposta avisa (campo `truncado`) quando o texto passa do limite de 512 tokens dos modelos.
+- Testes automatizados das rotas e dos códigos de erro em `tests/`.
 - Justificativa da escolha dos modelos documentada abaixo.
 - Seção "Processar texto" na página API do app, consumindo a nova rota.
 
@@ -62,6 +64,7 @@ Fica para a entrega final: ampliar os usos de LLM sobre o corpus (Q&A e geraçã
 | Utilidade analítica | Focos por estado e bioma, FRP médio e mapa no dashboard, com filtros | Entregue no TP2 |
 | Contexto jornalístico | Notícias raspadas exibidas com nuvem de palavras e estatísticas | Entregue no TP2, ampliado no TP3 com o G1 |
 | Acesso programático | Rotas GET e POST servindo focos e notícias em JSON | Entregue no TP3 |
+| Análise de texto local | Sentimento e resumo de notícias sem serviços externos, com erros tratados | Entregue no TP4 |
 | Adoção (etapas futuras) | Feedback de usuários do público-alvo | Avaliação positiva na entrega final |
 
 ## ODS atendidos
@@ -95,9 +98,9 @@ O projeto fica no pilar Ambiental do ESG e atende a dois ODS da Agenda 2030:
 | Business Understanding | Business Understanding | Project Charter (este documento) |
 | Data Understanding | Data Acquisition & Understanding | Data Summary Report, `fetch_inpe.py`, `scrape_news.py`, `scrape_news_g1.py`, dados em `data/raw/` |
 | Data Preparation | Data Acquisition & Understanding | Corpus das notícias em `data/processed/`, agregações no app |
-| Modeling | Modeling | Análises e integração com LLMs (próximas etapas) |
-| Evaluation | Modeling / Acceptance | Validação dos indicadores contra as metas (próximas etapas) |
-| Deployment | Deployment | Dashboard em `app.py`, pronto para o Streamlit Community Cloud |
+| Modeling | Modeling | Modelos de linguagem locais para sentimento e resumo (`code/api/llm.py`) |
+| Evaluation | Modeling / Acceptance | Testes automatizados em `tests/`; validação dos indicadores contra as metas na entrega final |
+| Deployment | Deployment | Dashboard em `app.py` e API em `code/api/main.py`, executados localmente |
 
 No diagrama TDSP do enunciado, o Project Charter é artefato do estágio de Business Understanding e o Data Summary Report do estágio de Data Ingest & Understanding. Por isso os dois ficam em `docs/project/`.
 
@@ -112,17 +115,21 @@ Critérios usados: desempenho na tarefa em português, custo computacional para 
 | Tarefa | Modelo | Por que ele |
 |--------|--------|-------------|
 | Sentimento | `lxyuan/distilbert-base-multilingual-cased-sentiments-student` | DistilBERT multilíngue destilado para sentimento, com bom desempenho em português; ~540 MB, classifica em menos de 0,1 s em CPU; download aberto no HuggingFace |
-| Resumo | `recogna-nlp/ptt5-base-summ` | PTT5 (T5 pré-treinado em português pelo grupo Recogna/Unesp) ajustado para sumarização de notícias, exatamente o domínio do corpus; ~1,2 GB, resume em 1 a 3 s em CPU |
+| Resumo | `recogna-nlp/ptt5-base-summ` | PTT5 (T5 pré-treinado em português pelo grupo Recogna/Unesp) ajustado para sumarização de notícias, exatamente o domínio do corpus; ~890 MB, resume em 1 a 5 s em CPU |
 
 Alternativas consideradas: modelos generativos maiores (como os da família Llama) dariam respostas mais flexíveis, mas pedem vários GB de memória e latência alta sem GPU; BERT puro exigiria ajuste fino próprio. Os dois escolhidos são especializados, leves e prontos para uso.
 
-Limitações conhecidas: o classificador de sentimento é multilíngue, não especializado em português, e textos ambíguos ficam com confiança baixa; o resumidor funciona melhor com textos de notícia completos e pode gerar prefixos estranhos em textos muito curtos ou genéricos.
+Limitações conhecidas: o classificador de sentimento é multilíngue, não especializado em português, e textos ambíguos ficam com confiança baixa; o resumidor funciona melhor com textos de notícia completos e pode gerar prefixos estranhos em textos muito curtos ou genéricos. Os dois leem no máximo 512 tokens (cerca de 2.000 caracteres); o excedente é descartado e a resposta da API avisa pelo campo `truncado`.
 
-Os modelos são baixados na primeira chamada e ficam no cache local do HuggingFace; depois disso a API funciona sem rede. O carregamento é preguiçoso (na primeira requisição de cada análise) para a API subir rápido.
+## Como a integração local foi feita
 
-## Preparação para LLMs
+Os modelos são baixados do HuggingFace na primeira chamada de cada análise e ficam no cache local (`~/.cache/huggingface`, cerca de 1,4 GB no total); depois disso a API funciona sem rede. O carregamento é preguiçoso para a API subir rápido, e cada modelo fica em memória depois de carregado. O sentimento usa o `pipeline` do Transformers; o resumo usa o modelo seq2seq direto com `generate()`, porque o Transformers v5 removeu o pipeline de sumarização.
 
-Os dados coletados já estão em formatos prontos para as tarefas com LLMs da próxima etapa:
+A rota separa as falhas em três casos: se o modelo não carrega, a API responde 503; se carrega mas falha no texto, 500; se o processamento passa de 60 s, 504. O limite de tempo vale só para o processamento, não para o primeiro download.
+
+## Uso dos dados com LLMs
+
+Situação de cada caso de uso de LLM sobre os dados coletados:
 
 | Caso de uso | Dado de entrada | Situação |
 |-------------|-----------------|----------|
@@ -131,7 +138,7 @@ Os dados coletados já estão em formatos prontos para as tarefas com LLMs da pr
 | Perguntas e respostas (Q&A) | Corpus de notícias e estatísticas dos focos | Entrega final |
 | Geração de relatórios | Agregados de focos por estado, bioma e dia | Entrega final |
 
-A API facilita a integração: o serviço de LLM poderá consultar focos e notícias pelas mesmas rotas usadas pela interface.
+Para os casos que faltam, a API já oferece o caminho: um serviço de LLM pode consultar focos e notícias pelas mesmas rotas usadas pela interface.
 
 ## Riscos
 
