@@ -25,12 +25,16 @@ MAX_TOKENS = 512
 ROTULOS = {"positive": "positivo", "neutral": "neutro", "negative": "negativo"}
 
 _modelos: dict[str, object] = {}
-_trava = threading.Lock()
+# Uma trava por modelo: o download de um não pode travar o uso do outro.
+_travas = {"sentimento": threading.Lock(), "resumo": threading.Lock()}
 
 
 def carregar(tarefa: str):
     """Carrega o modelo da tarefa na primeira chamada e o reusa nas seguintes."""
-    with _trava:
+    modelo = _modelos.get(tarefa)
+    if modelo is not None:
+        return modelo
+    with _travas[tarefa]:
         if tarefa not in _modelos:
             if tarefa == "sentimento":
                 from transformers import pipeline

@@ -7,28 +7,29 @@ Documentação interativa: http://localhost:8010/docs
 from __future__ import annotations
 
 import csv
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as TempoEsgotado
 from datetime import datetime, timezone
-from functools import lru_cache
-from pathlib import Path
 from typing import Literal
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 
+from .. import base_dados
 from . import llm
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-RAW_DIR = BASE_DIR / "data" / "raw"
-API_CSV = RAW_DIR / "focos_api.csv"
-
-# Limite para o processamento depois que o modelo já está carregado. O
-# carregamento fica de fora porque o primeiro download pode levar minutos.
+# Limite para o processamento, contado a partir do início da execução. O
+# carregamento do modelo fica de fora porque o primeiro download leva minutos.
 TEMPO_LIMITE_SEGUNDOS = 60
+# Quanto um pedido espera por um processador livre antes de desistir.
+TEMPO_FILA_SEGUNDOS = 30
 _executor = ThreadPoolExecutor(max_workers=2)
+
+_trava_csv = threading.Lock()
+_cache: dict[str, tuple] = {}
 
 app = FastAPI(
     title="API do Monitor de Queimadas",
@@ -41,28 +42,24 @@ app = FastAPI(
 )
 
 
-@lru_cache
+def _ler_com_cache(nome: str, arquivos: list, ler):
+    """Relê os arquivos só quando algum deles mudou desde a última leitura."""
+    chave = base_dados.assinatura(arquivos)
+    guardado = _cache.get(nome)
+    if guardado is None or guardado[0] != chave:
+        guardado = (chave, ler())
+        _cache[nome] = guardado
+    return guardado[1]
+
+
 def carregar_focos() -> pd.DataFrame:
-    arquivos = sorted(RAW_DIR.glob("focos_diario_br_*.csv"))
-    frames = [pd.read_csv(a) for a in arquivos]
-    if API_CSV.exists():
-        frames.append(pd.read_csv(API_CSV))
-    return pd.concat(frames, ignore_index=True)
+    arquivos = base_dados.arquivos_focos(incluir_api=True)
+    return _ler_com_cache("focos", arquivos, lambda: base_dados.ler_focos(arquivos))
 
 
-@lru_cache
 def carregar_noticias() -> pd.DataFrame:
-    fontes = {
-        "Agência Brasil": RAW_DIR / "noticias_queimadas.csv",
-        "G1": RAW_DIR / "noticias_g1.csv",
-    }
-    frames = []
-    for fonte, caminho in fontes.items():
-        if caminho.exists():
-            df = pd.read_csv(caminho)
-            df["fonte"] = fonte
-            frames.append(df)
-    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
+    arquivos = list(base_dados.NOTICIAS_CSV.values())
+    return _ler_com_cache("noticias", arquivos, base_dados.ler_noticias)
 
 
 def como_registros(df: pd.DataFrame) -> list[dict]:
@@ -78,6 +75,12 @@ class Foco(BaseModel):
     municipio: str = Field(default="", description="Município do foco")
     bioma: str = Field(default="", description="Bioma do foco")
     frp: float | None = Field(default=None, ge=0, description="Intensidade em MW")
+
+
+class RespostaSaude(BaseModel):
+    """Resposta de GET /saude."""
+
+    status: Literal["ok"]
 
 
 class RespostaFocos(BaseModel):
@@ -148,9 +151,18 @@ class Erro(BaseModel):
 RESPOSTAS_ERRO = {
     400: {"model": Erro, "description": "Texto vazio"},
     500: {"model": Erro, "description": "Falha ao processar o texto"},
-    503: {"model": Erro, "description": "Modelo não pôde ser carregado"},
+    503: {
+        "model": Erro,
+        "description": "Modelo não pôde ser carregado ou está ocupado",
+    },
     504: {"model": Erro, "description": "Processamento passou do tempo limite"},
 }
+
+
+@app.get("/saude", response_model=RespostaSaude)
+def saude():
+    """Responde na hora se a API está no ar, sem ler arquivos nem modelos."""
+    return {"status": "ok"}
 
 
 @app.get("/focos", response_model=RespostaFocos)
@@ -185,11 +197,12 @@ def listar_noticias(
 @app.post("/focos", status_code=201, response_model=RespostaFocoCriado)
 def adicionar_foco(foco: Foco):
     """Registra um foco complementar, somado às respostas de GET /focos."""
+    agora = datetime.now(timezone.utc)
     registro = {
-        "id": f"api-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S%f')}",
+        "id": f"api-{agora.strftime('%Y%m%d%H%M%S%f')}",
         "lat": foco.lat,
         "lon": foco.lon,
-        "data_hora_gmt": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+        "data_hora_gmt": agora.strftime("%Y-%m-%d %H:%M:%S"),
         "satelite": "USUARIO",
         "municipio": foco.municipio.upper(),
         "estado": foco.estado.upper(),
@@ -197,13 +210,15 @@ def adicionar_foco(foco: Foco):
         "bioma": foco.bioma,
         "frp": foco.frp,
     }
-    novo_arquivo = not API_CSV.exists()
-    with API_CSV.open("a", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(registro))
-        if novo_arquivo:
-            writer.writeheader()
-        writer.writerow(registro)
-    carregar_focos.cache_clear()
+    # Sem a trava, dois primeiros envios simultâneos gravariam o cabeçalho duas vezes.
+    with _trava_csv:
+        destino = base_dados.FOCOS_API_CSV
+        novo_arquivo = not destino.exists()
+        with destino.open("a", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=list(registro))
+            if novo_arquivo:
+                writer.writeheader()
+            writer.writerow(registro)
     return {"mensagem": "foco registrado", "foco": registro}
 
 
@@ -244,8 +259,26 @@ def processar_texto(pedido: PedidoProcessarTexto):
             ),
         ) from exc
 
+    comecou = threading.Event()
+
+    def executar():
+        comecou.set()
+        return processar(pedido.texto)
+
+    tarefa = _executor.submit(executar)
+    # A espera na fila não conta como lentidão do texto: se não houver
+    # processador livre, o pedido desiste com 503 em vez de um 504 enganoso.
+    if not comecou.wait(timeout=TEMPO_FILA_SEGUNDOS):
+        tarefa.cancel()
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Os modelos estão ocupados com outros textos. "
+                "Tente de novo em alguns instantes."
+            ),
+        )
+
     inicio = time.perf_counter()
-    tarefa = _executor.submit(processar, pedido.texto)
     try:
         saida = tarefa.result(timeout=TEMPO_LIMITE_SEGUNDOS)
     except TempoEsgotado as exc:
