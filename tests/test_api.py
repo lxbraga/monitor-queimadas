@@ -6,11 +6,14 @@ TESTAR_MODELOS=1 .venv/bin/python -m pytest
 """
 
 import os
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 from fastapi.testclient import TestClient
 
+from code import base_dados
 from code.api import llm, main
 
 cliente = TestClient(main.app)
@@ -42,10 +45,9 @@ def modelos_falsos(monkeypatch):
 
 @pytest.fixture
 def csv_temporario(monkeypatch, tmp_path):
-    monkeypatch.setattr(main, "API_CSV", tmp_path / "focos_api.csv")
-    main.carregar_focos.cache_clear()
-    yield main.API_CSV
-    main.carregar_focos.cache_clear()
+    caminho = tmp_path / "focos_api.csv"
+    monkeypatch.setattr(base_dados, "FOCOS_API_CSV", caminho)
+    return caminho
 
 
 def processar(texto=TEXTO, tipo="sentimento"):
@@ -115,6 +117,38 @@ def test_processamento_lento_retorna_504(modelos_falsos, monkeypatch):
     assert processar().status_code == 504
 
 
+def test_fila_ocupada_retorna_503_em_vez_de_504(modelos_falsos, monkeypatch):
+    executor = ThreadPoolExecutor(max_workers=1)
+    liberar = threading.Event()
+    executor.submit(liberar.wait)
+    monkeypatch.setattr(main, "_executor", executor)
+    monkeypatch.setattr(main, "TEMPO_FILA_SEGUNDOS", 0.1)
+    try:
+        resposta = processar()
+    finally:
+        liberar.set()
+        executor.shutdown()
+    assert resposta.status_code == 503
+    assert "ocupados" in resposta.json()["detail"]
+
+
+def test_modelo_carregado_nao_espera_o_download_do_outro(monkeypatch):
+    monkeypatch.setitem(llm._modelos, "sentimento", "modelo pronto")
+    # Simula o resumo baixando: a trava dele fica ocupada durante o teste.
+    with llm._travas["resumo"]:
+        resultado = []
+        t = threading.Thread(target=lambda: resultado.append(llm.carregar("sentimento")))
+        t.start()
+        t.join(timeout=2)
+    assert resultado == ["modelo pronto"]
+
+
+def test_saude_responde_sem_ler_dados():
+    resposta = cliente.get("/saude")
+    assert resposta.status_code == 200
+    assert resposta.json() == {"status": "ok"}
+
+
 def test_get_focos_filtra_por_estado():
     resposta = cliente.get("/focos", params={"estado": "pará", "limite": 3})
     assert resposta.status_code == 200
@@ -137,6 +171,29 @@ def test_post_foco_grava_e_aparece_na_consulta(csv_temporario):
     assert csv_temporario.exists()
     consulta = cliente.get("/focos", params={"estado": "TESTE"}).json()
     assert consulta["total_filtrado"] == 1
+
+
+def test_focos_gravados_por_fora_aparecem_sem_reiniciar(csv_temporario):
+    assert cliente.get("/focos", params={"estado": "TESTE"}).json()["total_filtrado"] == 0
+    csv_temporario.write_text(
+        "id,lat,lon,estado,bioma\nx,-3.2,-52.1,TESTE,Amazônia\n", encoding="utf-8"
+    )
+    assert cliente.get("/focos", params={"estado": "TESTE"}).json()["total_filtrado"] == 1
+
+
+def test_posts_simultaneos_gravam_um_cabecalho_so(csv_temporario):
+    novo = {"lat": -3.2, "lon": -52.1, "estado": "teste"}
+    threads = [
+        threading.Thread(target=cliente.post, args=("/focos",), kwargs={"json": novo})
+        for _ in range(10)
+    ]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    linhas = csv_temporario.read_text(encoding="utf-8").splitlines()
+    assert sum(linha.startswith("id,") for linha in linhas) == 1
+    assert len(linhas) == 11
 
 
 def test_post_foco_com_coordenada_invalida_retorna_422(csv_temporario):
