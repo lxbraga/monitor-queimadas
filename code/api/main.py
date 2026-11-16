@@ -7,13 +7,17 @@ Documentação interativa: http://localhost:8010/docs
 from __future__ import annotations
 
 import csv
+import time
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 import pandas as pd
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
+
+from . import llm
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 RAW_DIR = BASE_DIR / "data" / "raw"
@@ -23,9 +27,10 @@ app = FastAPI(
     title="API do Monitor de Queimadas",
     description=(
         "Acesso aos focos de calor do INPE e às notícias raspadas pelo projeto. "
-        "Também aceita o registro de focos complementares."
+        "Aceita o registro de focos complementares e processa textos com "
+        "modelos de linguagem locais (sentimento e resumo)."
     ),
-    version="1.0",
+    version="2.0",
 )
 
 
@@ -68,7 +73,59 @@ class Foco(BaseModel):
     frp: float | None = Field(default=None, ge=0, description="Intensidade em MW")
 
 
-@app.get("/focos")
+class RespostaFocos(BaseModel):
+    """Resposta de GET /focos."""
+
+    total_filtrado: int = Field(description="Focos que atendem ao filtro")
+    focos: list[dict] = Field(description="Registros retornados, até o limite")
+
+
+class RespostaNoticias(BaseModel):
+    """Resposta de GET /noticias."""
+
+    total: int
+    noticias: list[dict]
+
+
+class RespostaFocoCriado(BaseModel):
+    """Resposta de POST /focos."""
+
+    mensagem: str
+    foco: dict
+
+
+class PedidoProcessarTexto(BaseModel):
+    """Texto a processar pelo modelo de linguagem local."""
+
+    texto: str = Field(
+        min_length=20,
+        max_length=20000,
+        description="Texto em português com pelo menos 20 caracteres",
+    )
+    tipo_analise: Literal["sentimento", "resumo"] = Field(
+        description="Análise a executar"
+    )
+
+
+class ResultadoSentimento(BaseModel):
+    rotulo: Literal["positivo", "neutro", "negativo"]
+    confianca: float = Field(ge=0, le=1, description="Confiança do classificador")
+
+
+class ResultadoResumo(BaseModel):
+    resumo: str
+
+
+class RespostaProcessarTexto(BaseModel):
+    """Resposta de POST /processar_texto."""
+
+    tipo_analise: Literal["sentimento", "resumo"]
+    modelo: str = Field(description="Modelo HuggingFace executado localmente")
+    tempo_segundos: float = Field(description="Duração do processamento")
+    resultado: ResultadoSentimento | ResultadoResumo
+
+
+@app.get("/focos", response_model=RespostaFocos)
 def listar_focos(
     estado: str | None = Query(default=None, description="Filtra por estado"),
     bioma: str | None = Query(default=None, description="Filtra por bioma"),
@@ -86,7 +143,7 @@ def listar_focos(
     }
 
 
-@app.get("/noticias")
+@app.get("/noticias", response_model=RespostaNoticias)
 def listar_noticias(
     fonte: str | None = Query(default=None, description="Agência Brasil ou G1"),
 ):
@@ -97,7 +154,7 @@ def listar_noticias(
     return {"total": len(df), "noticias": como_registros(df)}
 
 
-@app.post("/focos", status_code=201)
+@app.post("/focos", status_code=201, response_model=RespostaFocoCriado)
 def adicionar_foco(foco: Foco):
     """Registra um foco complementar, somado às respostas de GET /focos."""
     registro = {
@@ -120,3 +177,44 @@ def adicionar_foco(foco: Foco):
         writer.writerow(registro)
     carregar_focos.cache_clear()
     return {"mensagem": "foco registrado", "foco": registro}
+
+
+@app.post("/processar_texto", response_model=RespostaProcessarTexto)
+def processar_texto(pedido: PedidoProcessarTexto):
+    """Processa um texto com o modelo de linguagem local.
+
+    Com tipo_analise "sentimento", classifica o texto como positivo, neutro ou
+    negativo; com "resumo", gera um resumo em português. A primeira chamada de
+    cada análise baixa o modelo do HuggingFace e demora mais; as seguintes usam
+    o modelo já carregado em memória, sem acesso à rede.
+    """
+    if not pedido.texto.strip():
+        raise HTTPException(
+            status_code=400, detail="O texto enviado contém apenas espaços."
+        )
+
+    inicio = time.perf_counter()
+    try:
+        if pedido.tipo_analise == "sentimento":
+            resultado = llm.analisar_sentimento(pedido.texto)
+            modelo = llm.MODELO_SENTIMENTO
+        else:
+            resultado = llm.resumir(pedido.texto)
+            modelo = llm.MODELO_RESUMO
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Modelo de linguagem indisponível. Verifique se as dependências "
+                "(transformers, torch, sentencepiece) estão instaladas e se há "
+                "conexão para o primeiro download do modelo. Erro original: "
+                f"{exc}"
+            ),
+        ) from exc
+
+    return {
+        "tipo_analise": pedido.tipo_analise,
+        "modelo": modelo,
+        "tempo_segundos": round(time.perf_counter() - inicio, 2),
+        "resultado": resultado,
+    }
