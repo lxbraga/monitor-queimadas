@@ -5,24 +5,28 @@ Transformers. O download acontece na primeira chamada e fica em cache
 (~/.cache/huggingface); depois disso nada sai para a rede.
 
 Modelos:
-- Sentimento: lxyuan/distilbert-base-multilingual-cased-sentiments-student
+- Sentimento: MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7,
+  usado em classificação zero-shot
 - Resumo: recogna-nlp/ptt5-base-summ
 
-A justificativa da escolha está em docs/project/charter.md.
+A justificativa e a avaliação estão em docs/project/charter.md; a comparação
+pode ser refeita com python -m code.modeling.avaliar_sentimento.
 """
 
 from __future__ import annotations
 
 import threading
 
-MODELO_SENTIMENTO = "lxyuan/distilbert-base-multilingual-cased-sentiments-student"
+MODELO_SENTIMENTO = "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7"
 MODELO_RESUMO = "recogna-nlp/ptt5-base-summ"
 
 # Os dois modelos leem no máximo 512 tokens; o que passar disso é descartado.
 MAX_TOKENS = 512
 
-# Rótulos do classificador em inglês mapeados para a resposta em português.
-ROTULOS = {"positive": "positivo", "neutral": "neutro", "negative": "negativo"}
+# Zero-shot: o modelo de inferência julga qual destas frases o texto confirma.
+# Hipótese e rótulos foram fixados antes da avaliação, não ajustados a ela.
+HIPOTESE_SENTIMENTO = "Esta notícia é {}."
+ROTULOS_SENTIMENTO = {"positiva": "positivo", "negativa": "negativo", "neutra": "neutro"}
 
 _modelos: dict[str, object] = {}
 # Uma trava por modelo: o download de um não pode travar o uso do outro.
@@ -40,7 +44,7 @@ def carregar(tarefa: str):
                 from transformers import pipeline
 
                 _modelos[tarefa] = pipeline(
-                    "sentiment-analysis", model=MODELO_SENTIMENTO
+                    "zero-shot-classification", model=MODELO_SENTIMENTO
                 )
             else:
                 # O Transformers v5 removeu o pipeline de summarization,
@@ -61,11 +65,15 @@ def _contar_tokens(tokenizer, texto: str) -> int:
 def analisar_sentimento(texto: str) -> dict:
     classificador = carregar("sentimento")
     tokens = _contar_tokens(classificador.tokenizer, texto)
-    resultado = classificador(texto, truncation=True)[0]
+    resultado = classificador(
+        texto,
+        candidate_labels=list(ROTULOS_SENTIMENTO),
+        hypothesis_template=HIPOTESE_SENTIMENTO,
+    )
     return {
         "resultado": {
-            "rotulo": ROTULOS.get(resultado["label"], resultado["label"]),
-            "confianca": round(float(resultado["score"]), 4),
+            "rotulo": ROTULOS_SENTIMENTO[resultado["labels"][0]],
+            "confianca": round(float(resultado["scores"][0]), 4),
         },
         "tokens_entrada": tokens,
         "truncado": tokens > MAX_TOKENS,

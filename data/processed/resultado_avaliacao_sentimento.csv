@@ -1,0 +1,6 @@
+abordagem,acuracia,f1_macro,acuracia_titulos_reais,acuracia_frases_escritas,acerto_positivos,acerto_neutros,acerto_negativos,ms_por_texto
+zero-shot MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7 (em uso na API),0.704,0.578,0.758,0.619,0.85,0.071,1.0,91.0
+classificador cardiffnlp/twitter-xlm-roberta-base-sentiment,0.519,0.479,0.576,0.429,0.15,0.857,0.65,42.3
+classificador pysentimiento/bertweet-pt-sentiment,0.352,0.281,0.394,0.286,0.0,1.0,0.25,25.0
+classificador lxyuan/distilbert-base-multilingual-cased-sentiments-student,0.37,0.275,0.515,0.143,0.3,0.0,0.7,24.9
+classificador tabularisai/multilingual-sentiment-analysis,0.296,0.201,0.303,0.286,0.0,1.0,0.1,23.9
