@@ -90,7 +90,12 @@ def validar_upload(df: pd.DataFrame) -> tuple[pd.DataFrame | None, str | None]:
             problemas.append(f"{ruins.sum()} valor(es) inválido(s) em {coluna}")
         df[coluna] = valores
 
-    datas = pd.to_datetime(df["data_hora_gmt"], errors="coerce")
+    # Cada valor é lido no próprio formato (o pandas inferiria um só a partir da
+    # primeira linha). dayfirst lê 05/09/2026 como 5 de setembro; a coluna é GMT,
+    # então valores com fuso são convertidos para UTC e o fuso é removido.
+    datas = pd.to_datetime(
+        df["data_hora_gmt"], errors="coerce", format="mixed", dayfirst=True, utc=True
+    ).dt.tz_convert(None)
     if datas.isna().any():
         problemas.append(f"{datas.isna().sum()} data(s) inválida(s) em data_hora_gmt")
     df["data_hora_gmt"] = datas

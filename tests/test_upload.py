@@ -55,6 +55,26 @@ def test_data_invalida_e_recusada():
     assert "data_hora_gmt" in erro
 
 
+def test_datas_em_formatos_misturados_sao_aceitas():
+    df = pd.concat(
+        [
+            csv_com(data_hora_gmt="2026-09-18"),
+            csv_com(data_hora_gmt="2026-09-18 14:30:00"),
+            csv_com(data_hora_gmt="05/09/2026 10:00"),
+            csv_com(data_hora_gmt="2026-09-18T03:00:00Z"),
+        ],
+        ignore_index=True,
+    )
+    df_valido, erro = validar_upload(df)
+    assert erro is None
+    assert [str(d) for d in df_valido["data_hora_gmt"]] == [
+        "2026-09-18 00:00:00",
+        "2026-09-18 14:30:00",
+        "2026-09-05 10:00:00",
+        "2026-09-18 03:00:00",
+    ]
+
+
 def test_coordenada_fora_do_intervalo_e_recusada():
     df, erro = validar_upload(csv_com(lat="95"))
     assert df is None
