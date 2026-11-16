@@ -18,8 +18,8 @@ if noticias.empty:
     )
     st.stop()
 
-fontes = st.multiselect(
-    "Fontes", sorted(noticias["fonte"].unique()), key="filtro_fontes"
+fontes = u.multiselect_persistente(
+    st, "Fontes", sorted(noticias["fonte"].unique()), "filtro_fontes"
 )
 if fontes:
     noticias = noticias[noticias["fonte"].isin(fontes)]

@@ -36,7 +36,7 @@ def chamar(metodo: str, rota: str, timeout: float = 30, **kwargs):
 
 def api_online() -> bool:
     try:
-        return requests.get(f"{url_base}/focos", params={"limite": 1}, timeout=3).ok
+        return requests.get(f"{url_base}/saude", timeout=3).ok
     except requests.RequestException:
         return False
 

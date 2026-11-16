@@ -8,16 +8,11 @@ import streamlit as st
 from wordcloud import WordCloud
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-DATA_DIR = BASE_DIR / "data"
 
 sys.path.insert(0, str(BASE_DIR / "code" / "data_acquisition"))
 
-from fetch_inpe import RAW_DIR, fetch_last_days  # noqa: E402
-
-NEWS_AB = DATA_DIR / "raw" / "noticias_queimadas.csv"
-NEWS_G1 = DATA_DIR / "raw" / "noticias_g1.csv"
-CORPUS_AB = DATA_DIR / "processed" / "corpus_noticias.txt"
-CORPUS_G1 = DATA_DIR / "processed" / "corpus_g1.txt"
+import base_dados  # noqa: E402
+from fetch_inpe import fetch_last_days  # noqa: E402
 
 COLUNAS_FOCOS = {"lat", "lon", "data_hora_gmt", "municipio", "estado", "bioma", "frp"}
 
@@ -34,39 +29,32 @@ STOPWORDS_PT = set(
 )
 
 
-@st.cache_data(ttl=3600)
-def load_focos() -> pd.DataFrame:
-    files = sorted(RAW_DIR.glob("focos_diario_br_*.csv"))
-    if not files:
-        fetch_last_days(1)
-        files = sorted(RAW_DIR.glob("focos_diario_br_*.csv"))
-    df = pd.concat([pd.read_csv(f) for f in files], ignore_index=True)
+def _com_dia(df: pd.DataFrame) -> pd.DataFrame:
     df["data_hora_gmt"] = pd.to_datetime(df["data_hora_gmt"])
     df["dia"] = df["data_hora_gmt"].dt.date
     return df
 
 
 @st.cache_data(ttl=3600)
+def load_focos() -> pd.DataFrame:
+    arquivos = base_dados.arquivos_focos()
+    if not arquivos:
+        fetch_last_days(1)
+        arquivos = base_dados.arquivos_focos()
+    return _com_dia(base_dados.ler_focos(arquivos))
+
+
+@st.cache_data(ttl=3600)
 def load_noticias() -> pd.DataFrame:
-    frames = []
-    for caminho, fonte in [(NEWS_AB, "Agência Brasil"), (NEWS_G1, "G1")]:
-        if caminho.exists():
-            df = pd.read_csv(caminho)
-            df["fonte"] = fonte
-            frames.append(df)
-    if not frames:
-        return pd.DataFrame()
-    df = pd.concat(frames, ignore_index=True)
-    df["ano"] = df["data"].astype(str).str.extract(r"(\d{4})")
+    df = base_dados.ler_noticias()
+    if not df.empty:
+        df["ano"] = df["data"].astype(str).str.extract(r"(\d{4})")
     return df
 
 
 @st.cache_data(ttl=3600)
 def load_corpus() -> str:
-    partes = [
-        p.read_text(encoding="utf-8") for p in (CORPUS_AB, CORPUS_G1) if p.exists()
-    ]
-    return "\n\n".join(partes)
+    return base_dados.ler_corpus()
 
 
 @st.cache_data
@@ -82,29 +70,78 @@ def gerar_nuvem(texto: str):
     return nuvem.to_array()
 
 
+def validar_upload(df: pd.DataFrame) -> tuple[pd.DataFrame | None, str | None]:
+    """Confere colunas e valores de um CSV enviado.
+
+    Retorna a base pronta para somar à oficial, ou None e a explicação do erro.
+    """
+    faltantes = COLUNAS_FOCOS - set(df.columns)
+    if faltantes:
+        return None, f"Colunas faltando: {', '.join(sorted(faltantes))}."
+    if df.empty:
+        return None, "O arquivo não tem nenhuma linha."
+
+    df = df.copy()
+    problemas = []
+    for coluna, minimo, maximo in [("lat", -90, 90), ("lon", -180, 180)]:
+        valores = pd.to_numeric(df[coluna], errors="coerce")
+        ruins = valores.isna() | (valores < minimo) | (valores > maximo)
+        if ruins.any():
+            problemas.append(f"{ruins.sum()} valor(es) inválido(s) em {coluna}")
+        df[coluna] = valores
+
+    datas = pd.to_datetime(df["data_hora_gmt"], errors="coerce")
+    if datas.isna().any():
+        problemas.append(f"{datas.isna().sum()} data(s) inválida(s) em data_hora_gmt")
+    df["data_hora_gmt"] = datas
+
+    # FRP pode vir vazio, como nos arquivos do INPE, mas não pode ser texto.
+    frp = pd.to_numeric(df["frp"], errors="coerce")
+    ruins = frp.isna() & df["frp"].notna()
+    if ruins.any():
+        problemas.append(f"{ruins.sum()} valor(es) não numérico(s) em frp")
+    df["frp"] = frp
+
+    if problemas:
+        return None, "Arquivo recusado: " + "; ".join(problemas) + "."
+
+    for coluna in ("municipio", "estado", "bioma"):
+        df[coluna] = df[coluna].astype("string")
+    df["dia"] = df["data_hora_gmt"].dt.date
+    return df, None
+
+
 def focos_completos() -> pd.DataFrame:
     """Base oficial mais os CSVs enviados por upload na sessão."""
     focos = load_focos()
     uploads = st.session_state.get("uploads", {})
     if uploads:
-        extras = pd.concat(uploads.values(), ignore_index=True)
-        extras["data_hora_gmt"] = pd.to_datetime(extras["data_hora_gmt"])
-        extras["dia"] = extras["data_hora_gmt"].dt.date
-        focos = pd.concat([focos, extras], ignore_index=True)
+        focos = pd.concat([focos, *uploads.values()], ignore_index=True)
     return focos
+
+
+def multiselect_persistente(container, rotulo: str, opcoes: list, chave: str):
+    """Multiselect que descarta valores salvos que sumiram das opções.
+
+    Os valores sobrevivem à troca de página pela sessão, mas as opções vêm
+    dos dados; depois de limpar uploads, um estado ou dia só do upload some.
+    """
+    salvos = st.session_state.get(chave, [])
+    st.session_state[chave] = [v for v in salvos if v in opcoes]
+    return container.multiselect(rotulo, opcoes, key=chave)
 
 
 def filtros_sidebar(focos: pd.DataFrame) -> pd.DataFrame:
     """Desenha os filtros na sidebar e retorna a base filtrada."""
     st.sidebar.header("Filtros")
-    dias = st.sidebar.multiselect(
-        "Dias", sorted(focos["dia"].unique()), key="filtro_dias"
+    dias = multiselect_persistente(
+        st.sidebar, "Dias", sorted(focos["dia"].unique()), "filtro_dias"
     )
-    estados = st.sidebar.multiselect(
-        "Estados", sorted(focos["estado"].dropna().unique()), key="filtro_estados"
+    estados = multiselect_persistente(
+        st.sidebar, "Estados", sorted(focos["estado"].dropna().unique()), "filtro_estados"
     )
-    biomas = st.sidebar.multiselect(
-        "Biomas", sorted(focos["bioma"].dropna().unique()), key="filtro_biomas"
+    biomas = multiselect_persistente(
+        st.sidebar, "Biomas", sorted(focos["bioma"].dropna().unique()), "filtro_biomas"
     )
     frp_max = focos["frp"].max()
     frp_max = float(frp_max) if pd.notna(frp_max) and frp_max > 0 else 1.0
