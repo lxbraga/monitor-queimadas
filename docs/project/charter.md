@@ -31,7 +31,7 @@ TP2 (concluído):
 TP3 (concluído):
 
 - Aplicação reorganizada em múltiplas páginas com menu de navegação (Painel, Notícias, Dados, API e Sobre).
-- Scraping de página dinâmica com Selenium na busca do G1, que carrega os resultados por JavaScript (`code/data_acquisition/scrape_news_g1.py`), somando uma segunda fonte de notícias ao corpus.
+- Scraping de página dinâmica com Selenium no G1, que carrega os resultados por JavaScript (`code/data_acquisition/scrape_news_g1.py`), somando uma segunda fonte de notícias ao corpus. No TP4 a coleta trocou a busca do G1 pelas seções de meio ambiente, porque o robots.txt do site proíbe a busca.
 - API em FastAPI (`code/api/main.py`) com consulta de focos e notícias (GET) e registro de focos complementares (POST), documentada no Swagger em `/docs` e integrada ao app pela página API.
 - Metas reavaliadas: além do painel, o projeto passa a oferecer acesso programático aos dados, o que abre caminho para integrações externas e para os LLMs da próxima etapa.
 
@@ -44,6 +44,7 @@ TP4 (concluído):
 - Testes automatizados das rotas e dos códigos de erro em `tests/`.
 - Justificativa da escolha dos modelos documentada abaixo.
 - Seção "Processar texto" na página API do app, consumindo a nova rota.
+- Coletas passam a seguir o robots.txt de cada site, com endereços proibidos bloqueados e o intervalo pedido respeitado.
 
 Fica para a entrega final: ampliar os usos de LLM sobre o corpus (Q&A e geração de relatórios) e refinar a aplicação para apresentação.
 
@@ -106,7 +107,7 @@ No diagrama TDSP do enunciado, o Project Charter é artefato do estágio de Busi
 
 ## Arquitetura
 
-Coleta em scripts separados: `requests` para os CSVs do INPE, Beautiful Soup para as notícias da Agência Brasil e Selenium para a busca dinâmica do G1, gravando em `data/raw/` e `data/processed/`. Tratamento com `pandas`. Duas portas de acesso aos dados: a aplicação Streamlit multipágina (com cache e estado de sessão) e a API FastAPI com rotas GET e POST. A API também executa os modelos de linguagem locais (HuggingFace Transformers com PyTorch) para sentimento e resumo, carregados sob demanda em `code/api/llm.py`.
+Coleta em scripts separados: `requests` para os CSVs do INPE, Beautiful Soup para as notícias da Agência Brasil e Selenium para as seções dinâmicas do G1, todos seguindo o robots.txt de cada site, gravando em `data/raw/` e `data/processed/`. Tratamento com `pandas`. Duas portas de acesso aos dados: a aplicação Streamlit multipágina (com cache e estado de sessão) e a API FastAPI com rotas GET e POST. A API também executa os modelos de linguagem locais (HuggingFace Transformers com PyTorch) para sentimento e resumo, carregados sob demanda em `code/api/llm.py`.
 
 ## Escolha dos modelos LLM
 
@@ -165,4 +166,4 @@ Para os casos que faltam, a API já oferece o caminho: um serviço de LLM pode c
 | Mudança no formato ou URL dos arquivos | Quebra da coleta | Coleta isolada em `fetch_inpe.py`; fontes alternativas mapeadas no Data Summary Report |
 | Sazonalidade (poucos focos na estação chuvosa) | Painel pouco expressivo em certos meses | Usar agregados mensais e históricos nas próximas etapas |
 | Mudança no HTML da Agência Brasil ou do G1 | Quebra do scraping | Scrapers isolados em scripts próprios; dados raspados versionados como fallback |
-| Busca do G1 mistura a cidade de Queimadas (BA/PB) | Corpus contaminado com assunto fora do tema | Scraper descarta URLs de eleições e links fora do padrão de notícia |
+| Filtro por palavras nas seções do G1 aceita títulos fora do tema (vulcões, terremotos) | Corpus com algumas notícias fora do tema | Filtro restrito a termos de fogo; casos residuais documentados no Data Summary Report |

@@ -8,7 +8,7 @@ Artefato da fase de Data Acquisition & Understanding do TDSP, sob responsabilida
 |-------|--------------|------------------|-------------|-----------------|--------|
 | INPE, focos diários (Brasil) | Focos de calor por satélite, com localização, município, estado, bioma, risco de fogo e FRP | CSV via HTTP, sem autenticação: `https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/diario/Brasil/focos_diario_br_AAAAMMDD.csv` | Diária | Fonte principal do painel: filtros, métricas, gráficos e mapa | Em uso |
 | Agência Brasil, tag queimadas | Notícias (título, categoria, data, link) e texto completo dos artigos | HTML raspado com Beautiful Soup: `https://agenciabrasil.ebc.com.br/tags/queimadas` | Contínua | Tabela de notícias, nuvem de palavras e estatísticas | Em uso |
-| G1, busca por queimadas | Notícias (título, categoria, data, link) e texto completo dos artigos | Página dinâmica raspada com Selenium (os resultados carregam por JavaScript): `https://g1.globo.com/busca/?q=queimadas` | Contínua | Segunda fonte de notícias para tabela, nuvem e estatísticas | Em uso |
+| G1, seções Meio Ambiente e Amazônia | Notícias sobre fogo (título, categoria, data, link) e texto completo dos artigos | Páginas dinâmicas raspadas com Selenium (mais notícias carregam por JavaScript ao clicar em "Mostrar mais"): `https://g1.globo.com/meio-ambiente/` e `.../meio-ambiente/amazonia/`. A coleta de outubro de 2026 veio da busca do G1, antes de o projeto passar a seguir o robots.txt | Contínua | Segunda fonte de notícias para tabela, nuvem e estatísticas | Em uso |
 | INPE, focos mensais (Brasil) | Agregado mensal dos mesmos focos | CSV via HTTP: `.../focos/csv/mensal/Brasil/focos_mensal_br_AAAAMM.csv` | Mensal | Séries históricas e sazonalidade no dashboard final | Planejado |
 | INPE, focos 10 min | Focos quase em tempo real (lat, lon, satélite, data) | CSV via HTTP: `.../focos/csv/10min/` | 10 minutos | Visão ao vivo no dashboard final | Planejado |
 | INPE TerraBrasilis (PRODES/DETER) | Desmatamento e alertas por região | API e serviços web públicos | Variável | Cruzar queimadas com desmatamento | Candidata |
@@ -53,9 +53,9 @@ O texto completo dos artigos fica em `data/processed/corpus_noticias.txt` e `dat
 - O arquivo do dia corrente pode sair com atraso; a coleta recua até 5 dias em busca do mais recente disponível.
 - O volume de focos varia muito ao longo do ano, com pico na estação seca (julho a outubro).
 - Para contagens oficiais o INPE usa um satélite de referência; o arquivo diário agrega todos.
-- O scraping depende da estrutura HTML das fontes e cobre as páginas mais recentes; é executado com pausa entre requisições.
-- A busca do G1 por "queimadas" também devolve notícias das cidades de Queimadas (BA e PB); o scraper descarta as URLs de eleições, o caso mais comum, mas alguma notícia municipal fora do tema ainda pode passar.
-- A busca do G1 mostra datas relativas ("há 3 dias"), então a data de publicação vem do próprio link da notícia, que segue o padrão `.../noticia/AAAA/MM/DD/...`. Um link fora desse padrão deixaria o campo vazio; na coleta atual, todas as notícias têm data.
+- O scraping depende da estrutura HTML das fontes e cobre as páginas mais recentes. Todas as coletas seguem o robots.txt de cada site (`code/data_acquisition/robots.py`): endereços proibidos não são acessados e o intervalo pedido é respeitado, como os 10 segundos entre requisições da Agência Brasil. Por isso o G1 é coletado pelas seções, e não pela busca, que o robots.txt dele proíbe.
+- As seções do G1 cobrem vários assuntos, então só ficam os títulos com palavras sobre fogo. O filtro por palavras deixa passar alguns casos fora do tema, como "Círculo de Fogo do Pacífico" ou a fumaça de um vulcão; num teste com 30 notícias, foram cerca de 4.
+- O G1 mostra datas relativas ("há 3 dias"), então a data de publicação vem do próprio link da notícia, que segue o padrão `.../noticia/AAAA/MM/DD/...`. Um link fora desse padrão deixaria o campo vazio; na coleta atual, todas as notícias têm data.
 - CSVs enviados por upload são validados apenas pelas colunas; o conteúdo é responsabilidade de quem envia e não persiste ao reiniciar o app.
 
 ## Dados versionados

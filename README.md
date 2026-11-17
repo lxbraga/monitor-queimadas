@@ -11,7 +11,7 @@ O projeto monitora focos de queimadas no Brasil com dados abertos do INPE (Progr
 - Notícias de duas fontes com nuvem de palavras e estatísticas por fonte e ano
 - Upload de CSV complementar (formato INPE) e download dos dados filtrados
 - Cache e estado de sessão para manter filtros e uploads entre interações
-- Coleta por scripts separados: API do INPE, Beautiful Soup (Agência Brasil) e Selenium (G1, cuja busca carrega os resultados por JavaScript)
+- Coleta por scripts separados: API do INPE, Beautiful Soup (Agência Brasil) e Selenium (seções do G1, que carregam mais notícias por JavaScript), sempre seguindo o robots.txt de cada site
 - API FastAPI com rotas GET e POST sobre os dados, integrada à página API do app
 - Análise de sentimento e resumo de textos com modelos do HuggingFace rodando na própria máquina, sem serviços externos
 
@@ -45,10 +45,12 @@ monitor-queimadas/
 │   └── data_acquisition/
 │       ├── fetch_inpe.py       # coleta dos focos via dados abertos do INPE
 │       ├── scrape_news.py      # Beautiful Soup na Agência Brasil
-│       └── scrape_news_g1.py   # Selenium na busca dinâmica do G1
+│       ├── scrape_news_g1.py   # Selenium nas seções dinâmicas do G1
+│       └── robots.py           # respeito ao robots.txt dos sites coletados
 ├── tests/
 │   ├── test_api.py             # testes das rotas e dos códigos de erro
 │   ├── test_coleta.py          # testes das funções do scraper do G1
+│   ├── test_robots.py          # testes do respeito ao robots.txt
 │   └── test_upload.py          # testes da validação de CSVs enviados
 └── data/
     ├── raw/                    # CSVs do INPE e das notícias (versionados como fallback)

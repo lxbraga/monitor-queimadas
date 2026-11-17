@@ -31,7 +31,7 @@ ficam perguntas e respostas sobre o corpus e a geração de relatórios.
 - [Programa Queimadas (INPE)](https://terrabrasilis.dpi.inpe.br/queimadas/portal/): fonte oficial dos dados
 - [Dados abertos de focos de calor (INPE)](https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/): arquivos consumidos pelo projeto
 - [Agência Brasil](https://agenciabrasil.ebc.com.br/tags/queimadas): fonte das notícias (Beautiful Soup)
-- [Busca do G1](https://g1.globo.com/busca/?q=queimadas): fonte das notícias (Selenium)
+- [G1 Meio Ambiente](https://g1.globo.com/meio-ambiente/): fonte das notícias (Selenium)
 - [Agenda 2030 e os 17 ODS (ONU Brasil)](https://brasil.un.org/pt-br/sdgs)
 - [Conecta Brasil](https://conectabrasil.org/home): inspiração de iniciativas sociais
 - [Observatório do Terceiro Setor](https://observatorio3setor.org.br/carrossel/lista-conheca-projetos-sociais-de-15-causas-diferentes/): inspiração de iniciativas sociais
