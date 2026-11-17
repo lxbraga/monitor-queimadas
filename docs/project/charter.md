@@ -166,4 +166,4 @@ Para os casos que faltam, a API já oferece o caminho: um serviço de LLM pode c
 | Mudança no formato ou URL dos arquivos | Quebra da coleta | Coleta isolada em `fetch_inpe.py`; fontes alternativas mapeadas no Data Summary Report |
 | Sazonalidade (poucos focos na estação chuvosa) | Painel pouco expressivo em certos meses | Usar agregados mensais e históricos nas próximas etapas |
 | Mudança no HTML da Agência Brasil ou do G1 | Quebra do scraping | Scrapers isolados em scripts próprios; dados raspados versionados como fallback |
-| Filtro por palavras nas seções do G1 aceita títulos fora do tema (vulcões, terremotos) | Corpus com algumas notícias fora do tema | Filtro restrito a termos de fogo; casos residuais documentados no Data Summary Report |
+| Filtro por palavras nas seções do G1 aceita títulos fora do tema | Corpus com algumas notícias fora do tema | Filtro exige termos de queimada e descarta usos de fogo fora do tema (vulcões, Círculo de Fogo, garimpo) e notícias de fora do Brasil; limitação documentada no Data Summary Report |
