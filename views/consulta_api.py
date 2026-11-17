@@ -5,9 +5,10 @@ import streamlit as st
 st.title("🔌 API do projeto")
 st.markdown(
     "A aplicação expõe os dados por uma API FastAPI. Suba o servidor em outro "
-    "terminal e use esta página para consultar e enviar dados."
+    "terminal, com o ambiente virtual ativado, e use esta página para consultar "
+    "e enviar dados."
 )
-st.code(".venv/bin/uvicorn code.api.main:app --port 8010", language="bash")
+st.code("uvicorn code.api.main:app --port 8010", language="bash")
 
 url_base = st.text_input("Endereço da API", key="api_url")
 

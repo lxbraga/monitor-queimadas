@@ -70,13 +70,27 @@ monitor-queimadas/
 
 ## Como executar
 
-Requer Python 3.10 ou superior.
+Requer Python 3.10 ou superior. Os comandos valem para Linux, macOS e Windows; só a criação e a ativação do ambiente virtual mudam.
+
+No Linux e no macOS:
 
 ```bash
-# criar e ativar o ambiente virtual
 python3 -m venv .venv
 source .venv/bin/activate
+```
 
+No Windows (PowerShell):
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+No Prompt de Comando (cmd), a ativação é `.venv\Scripts\activate.bat`. Se o PowerShell bloquear o script de ativação, libere-o só para a sessão atual com `Set-ExecutionPolicy -Scope Process RemoteSigned`.
+
+Com o ambiente ativado, o resto é igual em todos os sistemas:
+
+```bash
 # instalar as dependências
 pip install -r requirements.txt
 
@@ -95,7 +109,7 @@ streamlit run app.py
 
 Os scripts de coleta são opcionais porque o repositório já traz dados em `data/` como fallback. Na interface, o botão "Atualizar dados do INPE" baixa os dias mais recentes sem sair do app.
 
-As dependências incluem o PyTorch, então a instalação é grande. Os modelos de linguagem (cerca de 1,4 GB no total) são baixados do HuggingFace na primeira vez que cada análise é usada e ficam em cache em `~/.cache/huggingface`.
+As dependências incluem o PyTorch, então a instalação é grande. Os modelos de linguagem (cerca de 1,4 GB no total) são baixados do HuggingFace na primeira vez que cada análise é usada e ficam em cache na pasta `.cache/huggingface` do usuário.
 
 Para rodar os testes:
 
@@ -104,14 +118,24 @@ pip install -r requirements-dev.txt
 python -m pytest
 ```
 
-Os testes trocam os modelos por respostas fixas e rodam em segundos. Para incluir os modelos reais, use `TESTAR_MODELOS=1 python -m pytest`.
+Os testes trocam os modelos por respostas fixas e rodam em segundos. Para incluir os modelos reais, ligue a variável `TESTAR_MODELOS`:
+
+```bash
+TESTAR_MODELOS=1 python -m pytest
+```
+
+```powershell
+$env:TESTAR_MODELOS=1; python -m pytest
+```
+
+O primeiro comando é para Linux e macOS; o segundo, para o PowerShell do Windows.
 
 ## API
 
-A API serve os mesmos dados da aplicação. Para subir:
+A API serve os mesmos dados da aplicação. Para subir, com o ambiente ativado:
 
 ```bash
-.venv/bin/uvicorn code.api.main:app --port 8010
+uvicorn code.api.main:app --port 8010
 ```
 
 A documentação interativa (Swagger) fica em `http://localhost:8010/docs`. Rotas:

@@ -1,8 +1,8 @@
-"""Testes da API. Rodar com: .venv/bin/python -m pytest
+"""Testes da API. Rodar com o ambiente ativado: python -m pytest
 
 Os modelos de linguagem são trocados por respostas fixas, então os testes
-rodam em segundos e sem download. Para testar também os modelos reais:
-TESTAR_MODELOS=1 .venv/bin/python -m pytest
+rodam em segundos e sem download. Para testar também os modelos reais, ligue
+a variável TESTAR_MODELOS (comandos para cada sistema no README).
 """
 
 import os

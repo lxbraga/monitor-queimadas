@@ -1,6 +1,6 @@
 """API do Monitor de Queimadas.
 
-Rodar com: .venv/bin/uvicorn code.api.main:app --port 8010
+Rodar com o ambiente ativado: uvicorn code.api.main:app --port 8010
 Documentação interativa: http://localhost:8010/docs
 """
 
