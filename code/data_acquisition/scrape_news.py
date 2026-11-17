@@ -3,6 +3,8 @@
 Gera data/raw/noticias_queimadas.csv (título, categoria, data, link) e
 data/processed/corpus_noticias.txt (texto completo dos artigos).
 
+Segue o robots.txt do site, que pede 10 segundos entre requisições.
+
 Uso: python code/data_acquisition/scrape_news.py [paginas]
 """
 
@@ -12,16 +14,15 @@ import csv
 import json
 import re
 import sys
-import time
 from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
 
+from robots import ColetaNaoPermitida, Coletor
+
 BASE_URL = "https://agenciabrasil.ebc.com.br"
 TAG_URL = f"{BASE_URL}/tags/queimadas"
-HEADERS = {"User-Agent": "monitor-queimadas (projeto academico Infnet)"}
-TIMEOUT_SECONDS = 30
 PAUSE_SECONDS = 1
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
@@ -29,8 +30,11 @@ CSV_PATH = DATA_DIR / "raw" / "noticias_queimadas.csv"
 CORPUS_PATH = DATA_DIR / "processed" / "corpus_noticias.txt"
 
 
+coletor = Coletor()
+
+
 def get_soup(url: str) -> BeautifulSoup:
-    response = requests.get(url, headers=HEADERS, timeout=TIMEOUT_SECONDS)
+    response = coletor.get(url, pausa_minima=PAUSE_SECONDS)
     response.raise_for_status()
     return BeautifulSoup(response.text, "html.parser")
 
@@ -85,9 +89,8 @@ def main() -> int:
                 if noticia["link"] not in vistos:
                     vistos.add(noticia["link"])
                     noticias.append(noticia)
-        except requests.RequestException as exc:
+        except (ColetaNaoPermitida, requests.RequestException) as exc:
             print(f"Falha na listagem: {exc}", file=sys.stderr)
-        time.sleep(PAUSE_SECONDS)
 
     if not noticias:
         print("Nenhuma notícia encontrada.", file=sys.stderr)
@@ -105,12 +108,11 @@ def main() -> int:
         print(f"Artigo: {noticia['titulo'][:60]}")
         try:
             texto = extract_article_text(get_soup(noticia["link"]))
-        except requests.RequestException as exc:
+        except (ColetaNaoPermitida, requests.RequestException) as exc:
             print(f"Falha no artigo: {exc}", file=sys.stderr)
             continue
         if texto:
             textos.append(texto)
-        time.sleep(PAUSE_SECONDS)
 
     CORPUS_PATH.parent.mkdir(parents=True, exist_ok=True)
     CORPUS_PATH.write_text("\n\n".join(textos), encoding="utf-8")

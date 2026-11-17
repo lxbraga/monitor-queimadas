@@ -1,5 +1,8 @@
 """Baixa CSVs diários de focos de queimadas do INPE para data/raw/.
 
+As requisições seguem o robots.txt do servidor (hoje ele não publica um, o
+que libera o acesso).
+
 Uso: python code/data_acquisition/fetch_inpe.py [dias]
 """
 
@@ -11,6 +14,8 @@ from pathlib import Path
 
 import requests
 
+from robots import ColetaNaoPermitida, Coletor
+
 BASE_URL = (
     "https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/diario/Brasil"
 )
@@ -18,7 +23,8 @@ RAW_DIR = Path(__file__).resolve().parents[2] / "data" / "raw"
 
 # O arquivo do dia pode ainda não ter sido publicado; recuamos até este limite.
 MAX_LOOKBACK_DAYS = 5
-TIMEOUT_SECONDS = 30
+
+coletor = Coletor()
 
 
 def daily_csv_url(day: date) -> str:
@@ -29,7 +35,9 @@ def fetch_day(day: date, raw_dir: Path = RAW_DIR) -> Path | None:
     """Baixa o CSV de um dia. Retorna o caminho salvo ou None se indisponível."""
     raw_dir.mkdir(parents=True, exist_ok=True)
     try:
-        response = requests.get(daily_csv_url(day), timeout=TIMEOUT_SECONDS)
+        response = coletor.get(daily_csv_url(day))
+    except ColetaNaoPermitida as exc:
+        raise RuntimeError(str(exc)) from exc
     except requests.RequestException:
         return None
     if response.status_code != 200 or not response.content:

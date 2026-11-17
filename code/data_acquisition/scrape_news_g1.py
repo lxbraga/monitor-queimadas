@@ -1,12 +1,15 @@
-"""Raspa notícias sobre queimadas da busca do G1 com Selenium.
+"""Raspa notícias sobre queimadas das seções de meio ambiente do G1 com Selenium.
 
-A busca do G1 carrega os resultados por JavaScript (o HTML inicial vem vazio),
-por isso o Selenium é necessário. O texto dos artigos, que são páginas
-estáticas, é baixado depois com requests e Beautiful Soup.
+As seções carregam mais notícias por JavaScript, a cada clique em "Mostrar mais",
+por isso o Selenium é necessário. A busca do G1 seria mais direta, mas o
+robots.txt do site proíbe robôs nela (Disallow: /busca/*), e as seções são
+permitidas. Como as seções cobrem vários assuntos, só ficam os títulos sobre
+fogo. O texto dos artigos, páginas estáticas, vem depois com requests e
+Beautiful Soup.
 
 Gera data/raw/noticias_g1.csv e data/processed/corpus_g1.txt.
 
-Uso: python code/data_acquisition/scrape_news_g1.py [cliques_em_veja_mais]
+Uso: python code/data_acquisition/scrape_news_g1.py [cliques_em_mostrar_mais]
 """
 
 from __future__ import annotations
@@ -16,7 +19,7 @@ import re
 import sys
 import time
 from pathlib import Path
-from urllib.parse import parse_qs, unquote, urlparse
+from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -25,29 +28,29 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-BUSCA_URL = "https://g1.globo.com/busca/?q=queimadas&order=recent"
-HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
-TIMEOUT_SECONDS = 30
+from robots import ColetaNaoPermitida, Coletor
+
+SECOES = [
+    "https://g1.globo.com/meio-ambiente/",
+    "https://g1.globo.com/meio-ambiente/amazonia/",
+]
+TEMA = re.compile(
+    r"queimad|incêndi|incendi|fogo|focos de calor|fumaça|brigadist|chamas", re.I
+)
 PAUSE_SECONDS = 1
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 CSV_PATH = DATA_DIR / "raw" / "noticias_g1.csv"
 CORPUS_PATH = DATA_DIR / "processed" / "corpus_g1.txt"
 
-
-def url_real(href: str) -> str:
-    """A busca envelopa os links num redirecionador; extrai a URL final."""
-    query = parse_qs(urlparse(href).query)
-    if "u" in query:
-        return unquote(query["u"][0])
-    return href
+coletor = Coletor()
 
 
 def data_do_link(url: str) -> str:
     """Data de publicação (dd/mm/aaaa) tirada do endereço da notícia.
 
-    Os links do G1 seguem o padrão .../noticia/AAAA/MM/DD/...; é a fonte de
-    data mais confiável, porque a busca mostra datas relativas ("há 3 dias").
+    Os links do G1 seguem o padrão .../noticia/AAAA/MM/DD/...; as seções
+    mostram datas relativas ("há 3 dias"), então o link é a fonte confiável.
     """
     achado = re.search(r"/noticia/(\d{4})/(\d{2})/(\d{2})/", url)
     if not achado:
@@ -56,68 +59,68 @@ def data_do_link(url: str) -> str:
     return f"{dia}/{mes}/{ano}"
 
 
-def coletar_cards(cliques: int) -> list[dict]:
-    opcoes = webdriver.ChromeOptions()
-    opcoes.add_argument("--headless=new")
-    opcoes.add_argument("--window-size=1280,2000")
-    driver = webdriver.Chrome(options=opcoes)
-    try:
-        driver.get(BUSCA_URL)
-        WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "li.widget--card"))
-        )
-        for _ in range(cliques):
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-            time.sleep(1)
-            botoes = driver.find_elements(
-                By.CSS_SELECTOR, ".pagination__load-more, [class*='load-more']"
-            ) or driver.find_elements(By.PARTIAL_LINK_TEXT, "Veja mais")
-            if not botoes:
-                break
-            driver.execute_script("arguments[0].click()", botoes[0])
-            time.sleep(2)
-        html = driver.page_source
-    finally:
-        driver.quit()
+def html_da_secao(driver, url: str, cliques: int) -> str:
+    driver.get(url)
+    WebDriverWait(driver, 20).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "div.feed-post"))
+    )
+    for _ in range(cliques):
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+        time.sleep(PAUSE_SECONDS)
+        botoes = driver.find_elements(By.CSS_SELECTOR, "button.load-more")
+        if not botoes:
+            break
+        driver.execute_script("arguments[0].click()", botoes[0])
+        time.sleep(2)
+    return driver.page_source
 
+
+def noticias_do_html(html: str, vistos: set[str]) -> list[dict]:
     noticias = []
-    vistos: set[str] = set()
-    soup = BeautifulSoup(html, "html.parser")
-    for card in soup.select("li.widget--card"):
-        titulo = card.select_one(".widget--info__title")
-        link = card.select_one("a[href]")
-        data = card.select_one(".widget--info__meta")
-        if not titulo or not link:
-            continue
-        url = url_real(link["href"])
-        if url.startswith("//"):
-            url = "https:" + url
+    for link in BeautifulSoup(html, "html.parser").select("div.feed-post a.feed-post-link"):
+        url, titulo = link["href"], link.get_text(strip=True)
         if (
-            "g1.globo.com" not in url
+            not TEMA.search(titulo)
             or "/video/" in url
             or "especial-publicitario" in url
-            # A busca também acha as cidades chamadas Queimadas (BA e PB),
-            # principalmente apuração de eleições; fora do tema do projeto.
-            or "/eleicoes/" in url
             or url in vistos
         ):
             continue
         vistos.add(url)
-        data_match = re.search(r"\d{2}/\d{2}/\d{4}", data.get_text() if data else "")
         caminho = urlparse(url).path.strip("/").split("/")
         noticias.append(
             {
-                "titulo": titulo.get_text(strip=True),
+                "titulo": titulo,
                 "categoria": caminho[0] if caminho else "",
-                "data": data_match.group() if data_match else data_do_link(url),
+                "data": data_do_link(url),
                 "link": url,
             }
         )
     return noticias
 
 
+def coletar_cards(cliques: int) -> list[dict]:
+    opcoes = webdriver.ChromeOptions()
+    opcoes.add_argument("--headless=new")
+    opcoes.add_argument("--window-size=1280,2000")
+    opcoes.add_argument(f"--user-agent={coletor.agente}")
+    noticias: list[dict] = []
+    vistos: set[str] = set()
+    driver = webdriver.Chrome(options=opcoes)
+    try:
+        for secao in SECOES:
+            if not coletor.permite(secao):
+                print(f"robots.txt proíbe {secao}; seção ignorada.", file=sys.stderr)
+                continue
+            print(f"Seção: {secao}")
+            noticias += noticias_do_html(html_da_secao(driver, secao, cliques), vistos)
+    finally:
+        driver.quit()
+    return noticias
+
+
 def extrair_texto(url: str) -> str:
-    resposta = requests.get(url, headers=HEADERS, timeout=TIMEOUT_SECONDS)
+    resposta = coletor.get(url, pausa_minima=PAUSE_SECONDS)
     resposta.raise_for_status()
     soup = BeautifulSoup(resposta.text, "html.parser")
     paragrafos = [
@@ -133,12 +136,12 @@ def extrair_texto(url: str) -> str:
 
 
 def main() -> int:
-    cliques = int(sys.argv[1]) if len(sys.argv) > 1 else 3
+    cliques = int(sys.argv[1]) if len(sys.argv) > 1 else 30
 
-    print(f"Abrindo a busca do G1 com Selenium ({cliques} cliques em VEJA MAIS)...")
+    print(f"Abrindo as seções do G1 com Selenium ({cliques} cliques em Mostrar mais)...")
     noticias = coletar_cards(cliques)
     if not noticias:
-        print("Nenhuma notícia encontrada.", file=sys.stderr)
+        print("Nenhuma notícia sobre fogo encontrada.", file=sys.stderr)
         return 1
 
     CSV_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -153,12 +156,11 @@ def main() -> int:
         print(f"Artigo: {noticia['titulo'][:60]}")
         try:
             texto = extrair_texto(noticia["link"])
-        except requests.RequestException as exc:
+        except (ColetaNaoPermitida, requests.RequestException) as exc:
             print(f"Falha no artigo: {exc}", file=sys.stderr)
             continue
         if texto:
             textos.append(texto)
-        time.sleep(PAUSE_SECONDS)
 
     CORPUS_PATH.parent.mkdir(parents=True, exist_ok=True)
     CORPUS_PATH.write_text("\n\n".join(textos), encoding="utf-8")

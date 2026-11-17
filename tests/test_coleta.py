@@ -5,7 +5,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "code" / "data_acquisition"))
 
-from scrape_news_g1 import data_do_link, url_real  # noqa: E402
+from scrape_news_g1 import data_do_link, noticias_do_html  # noqa: E402
+
+SECAO = """
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/pa/noticia/2026/10/19/fumaca.ghtml">Fumaça de queimadas cobre Santarém</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/meio-ambiente/noticia/2026/10/18/onca.ghtml">Onça é vista em reserva</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/am/video/incendio.ghtml">Vídeo mostra incêndio</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/pa/noticia/2026/10/19/fumaca.ghtml">Fumaça de queimadas cobre Santarém</a></div>
+"""
 
 
 def test_data_vem_do_link_da_noticia():
@@ -14,12 +21,11 @@ def test_data_vem_do_link_da_noticia():
 
 
 def test_link_fora_do_padrao_fica_sem_data():
-    assert data_do_link("https://g1.globo.com/busca/?q=queimadas") == ""
+    assert data_do_link("https://g1.globo.com/meio-ambiente/") == ""
 
 
-def test_url_real_desembrulha_o_redirecionador():
-    href = (
-        "https://measures.globo.com/v1/click?c=busca&u="
-        "https%3A%2F%2Fg1.globo.com%2Fam%2Fnoticia%2F2026%2F10%2F01%2Fx.ghtml"
-    )
-    assert url_real(href) == "https://g1.globo.com/am/noticia/2026/10/01/x.ghtml"
+def test_secao_fica_so_com_noticias_sobre_fogo_sem_video_nem_repeticao():
+    noticias = noticias_do_html(SECAO, set())
+    assert [n["titulo"] for n in noticias] == ["Fumaça de queimadas cobre Santarém"]
+    assert noticias[0]["data"] == "19/10/2026"
+    assert noticias[0]["categoria"] == "pa"
