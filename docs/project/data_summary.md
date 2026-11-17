@@ -35,13 +35,14 @@ Arquivo de referência: `data/raw/focos_diario_br_AAAAMMDD.csv`. Na estação se
 
 ## Dicionário de dados das notícias
 
-Arquivos: `data/raw/noticias_queimadas.csv` (Agência Brasil, gerado por `scrape_news.py`) e `data/raw/noticias_g1.csv` (G1, gerado por `scrape_news_g1.py`). Mesmas colunas nos dois.
+Arquivos: `data/raw/noticias_queimadas.csv` (Agência Brasil, gerado por `scrape_news.py`) e `data/raw/noticias_g1.csv` (G1, gerado por `scrape_news_g1.py`). Mesmas colunas nos dois, exceto `estado`, que só o G1 tem.
 
 | Coluna | Tipo | Descrição |
 |--------|------|-----------|
 | `titulo` | texto | Título da notícia |
 | `categoria` | texto | Editoria da Agência Brasil (Geral, Meio Ambiente, Justiça...) |
 | `data` | texto (dd/mm/aaaa) | Data de publicação (no G1, extraída do link da notícia) |
+| `estado` | texto (sigla) | Só no G1: estado da notícia regional (como AP ou RO), tirado do início do link; vazio nas notícias das seções nacionais |
 | `link` | texto | URL da notícia |
 
 O texto completo dos artigos fica em `data/processed/corpus_noticias.txt` e `data/processed/corpus_g1.txt`, um artigo por bloco. Alimenta a nuvem de palavras e é o insumo natural das análises com LLM: desde o TP4, qualquer trecho pode ser resumido ou classificado por sentimento em `POST /processar_texto`. Os modelos leem até 512 tokens (cerca de 2.000 caracteres), então artigos longos devem ser enviados em partes.
@@ -54,7 +55,7 @@ O texto completo dos artigos fica em `data/processed/corpus_noticias.txt` e `dat
 - O volume de focos varia muito ao longo do ano, com pico na estação seca (julho a outubro).
 - Para contagens oficiais o INPE usa um satélite de referência; o arquivo diário agrega todos.
 - O scraping depende da estrutura HTML das fontes e cobre as páginas mais recentes. Todas as coletas seguem o robots.txt de cada site (`code/data_acquisition/robots.py`): endereços proibidos não são acessados e o intervalo pedido é respeitado, como os 10 segundos entre requisições da Agência Brasil. Por isso o G1 é coletado pelas seções, e não pela busca, que o robots.txt dele proíbe.
-- As seções do G1 cobrem vários assuntos, então só ficam os títulos com palavras sobre queimadas e incêndios. "Fumaça" sozinha não basta (aparecia em vulcões e poluição urbana), usos de fogo fora do tema, como "Círculo de Fogo do Pacífico", armas de fogo e dragas de garimpo incendiadas, são descartados, e notícias que citam outro país ou região sem citar o Brasil (como incêndios na Europa) também ficam de fora. Por ser um filtro de palavras, algum caso fora do tema ainda pode passar.
+- As seções do G1 cobrem vários assuntos, então só ficam os títulos com palavras sobre queimadas e incêndios. "Fumaça" sozinha não basta (aparecia em vulcões e poluição urbana), usos de fogo fora do tema, como "Círculo de Fogo do Pacífico", armas de fogo e dragas de garimpo incendiadas, são descartados, e notícias que citam outro país ou região sem citar o Brasil (como incêndios na Europa) também ficam de fora. Essa última regra vale só para as seções nacionais, que não marcam o lugar da notícia: as regionais (endereço começando pela sigla do estado, como `g1.globo.com/ap/...`) são sempre do Brasil. Por ser um filtro de palavras, algum caso fora do tema ainda pode passar.
 - O G1 mostra datas relativas ("há 3 dias"), então a data de publicação vem do próprio link da notícia, que segue o padrão `.../noticia/AAAA/MM/DD/...`. Um link fora desse padrão deixaria o campo vazio; na coleta atual, todas as notícias têm data.
 - CSVs enviados por upload são validados apenas pelas colunas; o conteúdo é responsabilidade de quem envia e não persiste ao reiniciar o app.
 

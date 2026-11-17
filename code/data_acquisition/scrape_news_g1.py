@@ -41,8 +41,15 @@ TEMA = re.compile(r"queimad|incêndi|incendi|fogo|focos de calor|brigadist|chama
 FORA_DO_TEMA = re.compile(
     r"círculo de fogo|arma de fogo|fogos de artifício|fogo cruzado|vulc|draga", re.I
 )
-# O projeto é sobre o Brasil: sai a notícia que cita outro país ou região sem
-# citar o Brasil, para não perder casos como "fumaça da Bolívia chega a Rondônia".
+# Notícias regionais do G1 têm a sigla do estado no início do endereço
+# (g1.globo.com/ap/...): são do Brasil, e o estado vai para a coluna estado.
+ESTADOS = {
+    "ac", "al", "am", "ap", "ba", "ce", "df", "es", "go", "ma", "mg", "ms", "mt", "pa",
+    "pb", "pe", "pi", "pr", "rj", "rn", "ro", "rr", "rs", "sc", "se", "sp", "to",
+}
+# Nas seções nacionais não há marcação de lugar, então vale o título: sai a
+# notícia que cita outro país ou região sem citar o Brasil, para não perder
+# casos como "fumaça da Bolívia chega a Rondônia".
 EXTERIOR = re.compile(
     r"europ|portugal|espanha|grécia|frança|itália|turquia|estados unidos|\beua\b|"
     r"califórnia|havaí|canadá|austrália|chile|bolívia|argentina|paraguai|índia|"
@@ -95,6 +102,18 @@ def html_da_secao(driver, url: str, cliques: int) -> str:
     return driver.page_source
 
 
+def estado_do_link(url: str) -> str:
+    """Sigla do estado de uma notícia regional, ou vazio se for nacional."""
+    caminho = urlparse(url).path.strip("/").split("/")
+    return caminho[0].upper() if caminho and caminho[0] in ESTADOS else ""
+
+
+def e_do_brasil(titulo: str, url: str) -> bool:
+    if estado_do_link(url):
+        return True
+    return not EXTERIOR.search(titulo) or bool(BRASIL.search(titulo))
+
+
 def noticias_do_html(html: str, vistos: set[str]) -> list[dict]:
     noticias = []
     for link in BeautifulSoup(html, "html.parser").select("div.feed-post a.feed-post-link"):
@@ -102,7 +121,7 @@ def noticias_do_html(html: str, vistos: set[str]) -> list[dict]:
         if (
             not TEMA.search(titulo)
             or FORA_DO_TEMA.search(titulo)
-            or (EXTERIOR.search(titulo) and not BRASIL.search(titulo))
+            or not e_do_brasil(titulo, url)
             or "/video/" in url
             or "especial-publicitario" in url
             or url in vistos
@@ -115,6 +134,7 @@ def noticias_do_html(html: str, vistos: set[str]) -> list[dict]:
                 "titulo": titulo,
                 "categoria": caminho[0] if caminho else "",
                 "data": data_do_link(url),
+                "estado": estado_do_link(url),
                 "link": url,
             }
         )
@@ -168,7 +188,7 @@ def main() -> int:
 
     CSV_PATH.parent.mkdir(parents=True, exist_ok=True)
     with CSV_PATH.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["titulo", "categoria", "data", "link"])
+        writer = csv.DictWriter(f, fieldnames=["titulo", "categoria", "data", "estado", "link"])
         writer.writeheader()
         writer.writerows(noticias)
     print(f"{len(noticias)} notícias salvas em {CSV_PATH}")

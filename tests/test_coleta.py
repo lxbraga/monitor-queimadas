@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "code" / "data_acquisition"))
 
-from scrape_news_g1 import data_do_link, noticias_do_html  # noqa: E402
+from scrape_news_g1 import data_do_link, estado_do_link, noticias_do_html  # noqa: E402
 
 SECAO = """
 <div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/pa/noticia/2026/10/19/fumaca.ghtml">Fumaça de queimadas cobre Santarém</a></div>
@@ -32,6 +32,21 @@ def test_falsos_positivos_ficam_de_fora():
         "Dupla é indiciada por atear fogo em floresta no Amapá",
         "Fumaça de queimadas na Bolívia chega a Rondônia",
     ]
+
+
+def test_noticia_regional_e_do_brasil_mesmo_citando_outro_pais():
+    html = """
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/ro/rondonia/noticia/2024/09/01/fumaca.ghtml">Fumaça de queimadas da Bolívia encobre Porto Velho</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/meio-ambiente/noticia/2024/09/01/chile.ghtml">Incêndios florestais no Chile deixam mortos</a></div>
+"""
+    noticias = noticias_do_html(html, set())
+    assert [n["titulo"] for n in noticias] == ["Fumaça de queimadas da Bolívia encobre Porto Velho"]
+    assert noticias[0]["estado"] == "RO"
+
+
+def test_estado_vem_do_inicio_do_endereco():
+    assert estado_do_link("https://g1.globo.com/ap/amapa/noticia/2026/10/13/x.ghtml") == "AP"
+    assert estado_do_link("https://g1.globo.com/meio-ambiente/noticia/2026/10/13/x.ghtml") == ""
 
 
 def test_data_vem_do_link_da_noticia():
