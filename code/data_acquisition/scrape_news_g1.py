@@ -34,8 +34,28 @@ SECOES = [
     "https://g1.globo.com/meio-ambiente/",
     "https://g1.globo.com/meio-ambiente/amazonia/",
 ]
-TEMA = re.compile(
-    r"queimad|incêndi|incendi|fogo|focos de calor|fumaça|brigadist|chamas", re.I
+# "Fumaça" sozinha não entra: aparecia em vulcões e poluição urbana, e as
+# notícias de fumaça de queimadas já trazem "queimadas" ou "incêndio".
+TEMA = re.compile(r"queimad|incêndi|incendi|fogo|focos de calor|brigadist|chamas", re.I)
+# Usos de fogo que não são queimada (dragas de garimpo são queimadas em operações).
+FORA_DO_TEMA = re.compile(
+    r"círculo de fogo|arma de fogo|fogos de artifício|fogo cruzado|vulc|draga", re.I
+)
+# O projeto é sobre o Brasil: sai a notícia que cita outro país ou região sem
+# citar o Brasil, para não perder casos como "fumaça da Bolívia chega a Rondônia".
+EXTERIOR = re.compile(
+    r"europ|portugal|espanha|grécia|frança|itália|turquia|estados unidos|\beua\b|"
+    r"califórnia|havaí|canadá|austrália|chile|bolívia|argentina|paraguai|índia|"
+    r"indonésia|rússia|sibéria|áfrica|ásia",
+    re.I,
+)
+BRASIL = re.compile(
+    r"brasil|amazôni|amazonas|cerrado|pantanal|caatinga|mata atlântica|pampa|"
+    r"\bacre\b|alagoas|amapá|bahia|ceará|distrito federal|espírito santo|goiás|"
+    r"maranhão|mato grosso|minas gerais|\bpará\b|paraíba|paraná|pernambuco|piauí|"
+    r"rio de janeiro|rio grande|rondônia|roraima|santa catarina|são paulo|sergipe|"
+    r"tocantins",
+    re.I,
 )
 PAUSE_SECONDS = 1
 
@@ -81,6 +101,8 @@ def noticias_do_html(html: str, vistos: set[str]) -> list[dict]:
         url, titulo = link["href"], link.get_text(strip=True)
         if (
             not TEMA.search(titulo)
+            or FORA_DO_TEMA.search(titulo)
+            or (EXTERIOR.search(titulo) and not BRASIL.search(titulo))
             or "/video/" in url
             or "especial-publicitario" in url
             or url in vistos

@@ -15,6 +15,25 @@ SECAO = """
 """
 
 
+FALSOS_POSITIVOS = """
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/mundo/noticia/2026/10/09/panama.ghtml">Panamá fica no Círculo de Fogo do Pacífico</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/mundo/noticia/2026/09/10/vulcao.ghtml">Imagens mostram nuvem de fumaça após erupção de vulcão</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/mundo/noticia/2026/11/09/india.ghtml">Densa camada de fumaça encobre capital da Índia</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/ro/noticia/2022/10/12/br319.ghtml">Garimpeiros protestam após dragas serem incendiadas</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/meio-ambiente/noticia/2026/10/02/europa.ghtml">Europa Ocidental teve verão mais quente da história, com seca e incêndios</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/ap/noticia/2025/10/23/ovos.ghtml">Dupla é indiciada por atear fogo em floresta no Amapá</a></div>
+<div class="feed-post"><a class="feed-post-link" href="https://g1.globo.com/ro/noticia/2024/09/01/bolivia.ghtml">Fumaça de queimadas na Bolívia chega a Rondônia</a></div>
+"""
+
+
+def test_falsos_positivos_ficam_de_fora():
+    titulos = [n["titulo"] for n in noticias_do_html(FALSOS_POSITIVOS, set())]
+    assert titulos == [
+        "Dupla é indiciada por atear fogo em floresta no Amapá",
+        "Fumaça de queimadas na Bolívia chega a Rondônia",
+    ]
+
+
 def test_data_vem_do_link_da_noticia():
     link = "https://g1.globo.com/pa/santarem-regiao/noticia/2026/10/19/fumaca.ghtml"
     assert data_do_link(link) == "19/10/2026"
