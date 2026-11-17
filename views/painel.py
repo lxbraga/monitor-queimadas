@@ -19,7 +19,11 @@ col1.metric("Focos de calor", f"{len(filtrado):,}".replace(",", "."))
 col2.metric("Municípios", filtrado["municipio"].nunique())
 col3.metric("Estados", filtrado["estado"].nunique())
 frp_medio = filtrado["frp"].mean()
-col4.metric("FRP médio (MW)", f"{frp_medio:.1f}" if pd.notna(frp_medio) else "s/d")
+col4.metric(
+    "FRP médio (MW)",
+    f"{frp_medio:.1f}" if pd.notna(frp_medio) else "s/d",
+    help=u.AJUDA_FRP + " Aqui, a média dos focos filtrados.",
+)
 
 if filtrado.empty:
     st.info("Nenhum foco com os filtros atuais.")

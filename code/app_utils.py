@@ -16,6 +16,11 @@ from fetch_inpe import fetch_last_days  # noqa: E402
 
 COLUNAS_FOCOS = {"lat", "lon", "data_hora_gmt", "municipio", "estado", "bioma", "frp"}
 
+AJUDA_FRP = (
+    "FRP (Fire Radiative Power) é a energia que o fogo irradia, medida pelo "
+    "satélite em megawatts. Quanto maior, mais intenso o fogo."
+)
+
 STOPWORDS_PT = set(
     """a o os as e é de do da dos das em no na nos nas um uma uns umas para por com sem
     sob sobre entre até após ante desde contra que se não mais menos muito muita
@@ -152,7 +157,13 @@ def filtros_sidebar(focos: pd.DataFrame) -> pd.DataFrame:
     frp_max = float(frp_max) if pd.notna(frp_max) and frp_max > 0 else 1.0
     # A base pode encolher (uploads removidos) e deixar o valor salvo acima do máximo.
     st.session_state.filtro_frp = min(st.session_state.get("filtro_frp", 0.0), frp_max)
-    frp_min = st.sidebar.slider("FRP mínimo (MW)", 0.0, frp_max, key="filtro_frp")
+    frp_min = st.sidebar.slider(
+        "FRP mínimo (MW)",
+        0.0,
+        frp_max,
+        key="filtro_frp",
+        help=AJUDA_FRP + " Aumente o valor para ver só os focos mais intensos.",
+    )
 
     st.sidebar.divider()
     qtd_dias = st.sidebar.number_input("Dias a baixar", 1, 14, key="qtd_dias")
