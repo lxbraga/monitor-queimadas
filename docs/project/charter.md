@@ -115,29 +115,29 @@ Critérios usados: desempenho na tarefa em português, custo computacional para 
 
 | Tarefa | Modelo | Por que ele |
 |--------|--------|-------------|
-| Sentimento | `MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`, em classificação zero-shot | Modelo de inferência textual treinado em mais de 100 idiomas, incluindo português. Em vez de um classificador de sentimento pronto, ele julga qual hipótese o texto confirma: "Esta notícia é positiva", "negativa" ou "neutra". Foi a abordagem que melhor entendeu notícias sobre queimadas na avaliação abaixo; ~530 MB, cerca de 90 ms por texto em CPU |
+| Sentimento | `MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`, em classificação zero-shot | Modelo de inferência textual treinado em mais de 100 idiomas, incluindo português. Em vez de um classificador de sentimento pronto, ele julga qual hipótese o texto confirma: "Esta notícia é positiva", "negativa" ou "neutra". Foi a abordagem que melhor entendeu notícias sobre queimadas na avaliação abaixo; ~530 MB, de 60 a 120 ms por texto em CPU |
 | Resumo | `recogna-nlp/ptt5-base-summ` | PTT5 (T5 pré-treinado em português pelo grupo Recogna/Unesp) ajustado para sumarização de notícias, exatamente o domínio do corpus; ~890 MB, resume em 1 a 5 s em CPU |
 
 ### Avaliação do sentimento
 
-O primeiro modelo escolhido, um classificador de sentimento multilíngue (DistilBERT), errava notícias boas sobre queimadas: palavras como "incêndio", "fumaça" e "focos" puxavam o resultado para negativo, e quase todo texto do projeto tem essas palavras. Para escolher com dados, montamos um conjunto rotulado em `data/processed/avaliacao_sentimento.csv`, com 54 textos (20 negativos, 20 positivos e 14 neutros): 33 títulos reais das notícias raspadas e 21 frases escritas no mesmo estilo, positivas e neutras, com vocabulário de fogo. Os rótulos foram atribuídos manualmente e só entraram casos sem ambiguidade.
+O primeiro modelo escolhido, um classificador de sentimento multilíngue (DistilBERT), errava notícias boas sobre queimadas: palavras como "incêndio", "fumaça" e "focos" puxavam o resultado para negativo, e quase todo texto do projeto tem essas palavras. Para escolher com dados, montamos um conjunto rotulado em `data/processed/avaliacao_sentimento.csv`, com 50 textos (20 negativos, 20 positivos e 10 neutros): 29 títulos reais das notícias raspadas e 21 frases escritas no mesmo estilo, positivas e neutras, com vocabulário de fogo. Os rótulos foram atribuídos manualmente com um critério fixo: positivo é notícia boa para o meio ambiente e a população (queda de focos, controle, recuperação), negativo é notícia ruim (aumento, recorde, dano) e neutro é informativa ou procedimental. Numa segunda revisão, saíram quatro títulos que misturavam um fato ruim com uma reação (como "Após avanço das queimadas, Ibama inicia fiscalização"), porque admitiam mais de um rótulo.
 
 | Abordagem | Acerto | F1 macro | Positivos | Neutros | Negativos | ms por texto |
 |-----------|--------|----------|-----------|---------|-----------|--------------|
-| **Zero-shot mDeBERTa, hipótese "Esta notícia é {}." (em uso)** | **70%** | **0,58** | **85%** | 7% | **100%** | 91 |
-| Classificador XLM-R (`cardiffnlp/twitter-xlm-roberta-base-sentiment`) | 52% | 0,48 | 15% | 86% | 65% | 42 |
-| Zero-shot mDeBERTa, hipótese "Esta é uma notícia {}." | 52% | 0,48 | 50% | 14% | 80% | 53 |
-| LLM Qwen2.5 0,5B com instrução | 52% | 0,39 | 100% | 0% | 40% | 181 |
-| LLM Qwen2.5 1,5B com instrução | 48% | 0,35 | 30% | 0% | 100% | 376 |
-| Classificador DistilBERT (`lxyuan/...-sentiments-student`, escolha anterior) | 37% | 0,28 | 30% | 0% | 70% | 25 |
-| Classificador BERTweet-pt (`pysentimiento/bertweet-pt-sentiment`) | 35% | 0,28 | 0% | 100% | 25% | 25 |
-| Classificador DistilBERT multilíngue (`tabularisai/multilingual-sentiment-analysis`) | 30% | 0,20 | 0% | 100% | 10% | 24 |
+| **Zero-shot mDeBERTa, hipótese "Esta notícia é {}." (em uso)** | **76%** | **0,62** | **85%** | 10% | **100%** | 58 a 116 |
+| Classificador XLM-R (`cardiffnlp/twitter-xlm-roberta-base-sentiment`) | 52% | 0,48 | 15% | 100% | 65% | 58 |
+| Zero-shot mDeBERTa, hipótese "Esta é uma notícia {}." | 52% | 0,45 | 50% | 0% | 80% | 57 |
+| LLM Qwen2.5 0,5B com instrução | 56% | 0,41 | 100% | 0% | 40% | 182 |
+| LLM Qwen2.5 1,5B com instrução | 52% | 0,36 | 30% | 0% | 100% | 417 |
+| Classificador DistilBERT (`lxyuan/...-sentiments-student`, escolha anterior) | 40% | 0,29 | 30% | 0% | 70% | 36 |
+| Classificador BERTweet-pt (`pysentimiento/bertweet-pt-sentiment`) | 30% | 0,26 | 0% | 100% | 25% | 28 |
+| Classificador DistilBERT multilíngue (`tabularisai/multilingual-sentiment-analysis`) | 24% | 0,18 | 0% | 100% | 10% | 32 |
 
-Os classificadores prontos foram treinados com tweets e avaliações de produtos, onde vocabulário de fogo quase sempre indica algo ruim; os LLMs pequenos não seguiram bem a instrução. As hipóteses e o prompt foram fixados antes de rodar a avaliação, e todas as variantes testadas estão na tabela, para não escolher a que por acaso se ajustou melhor a estes 54 textos. A comparação dos classificadores e da abordagem em uso pode ser refeita com `python -m code.modeling.avaliar_sentimento`.
+Os tempos variam entre execuções conforme a carga da máquina. Os classificadores prontos foram treinados com tweets e avaliações de produtos, onde vocabulário de fogo quase sempre indica algo ruim; os LLMs pequenos não seguiram bem a instrução. As hipóteses e o prompt foram fixados antes de rodar a avaliação, e todas as variantes testadas estão na tabela, para não escolher a que por acaso se ajustou melhor a estes 54 textos. A comparação dos classificadores e da abordagem em uso pode ser refeita com `python -m code.modeling.avaliar_sentimento`.
 
 Alternativas consideradas também: modelos generativos maiores (família Llama, por exemplo) pedem vários GB de memória e latência alta sem GPU; ajuste fino próprio exigiria um conjunto rotulado muito maior que o disponível.
 
-Limitações conhecidas: a análise de sentimento quase nunca responde "neutro" (acertou 7% dos neutros na avaliação), então textos informativos tendem a sair como positivos ou negativos; o conjunto de avaliação é pequeno e serve como indicação, não como medida definitiva; o resumidor funciona melhor com textos de notícia completos e pode gerar prefixos estranhos em textos muito curtos ou genéricos. Os dois leem no máximo 512 tokens (cerca de 2.000 caracteres); o excedente é descartado e a resposta da API avisa pelo campo `truncado`.
+Limitações conhecidas: a análise de sentimento quase nunca responde "neutro" (acertou 1 dos 10 neutros na avaliação), então textos informativos tendem a sair como positivos ou negativos; o conjunto de avaliação é pequeno e serve como indicação, não como medida definitiva; o resumidor funciona melhor com textos de notícia completos e pode gerar prefixos estranhos em textos muito curtos ou genéricos. Os dois leem no máximo 512 tokens (cerca de 2.000 caracteres); o excedente é descartado e a resposta da API avisa pelo campo `truncado`.
 
 ## Como a integração local foi feita
 
