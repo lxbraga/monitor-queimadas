@@ -41,7 +41,7 @@ Arquivos: `data/raw/noticias_queimadas.csv` (Agência Brasil, gerado por `scrape
 |--------|------|-----------|
 | `titulo` | texto | Título da notícia |
 | `categoria` | texto | Editoria da Agência Brasil (Geral, Meio Ambiente, Justiça...) |
-| `data` | texto (dd/mm/aaaa) | Data de publicação |
+| `data` | texto (dd/mm/aaaa) | Data de publicação (no G1, extraída do link da notícia) |
 | `link` | texto | URL da notícia |
 
 O texto completo dos artigos fica em `data/processed/corpus_noticias.txt` e `data/processed/corpus_g1.txt`, um artigo por bloco. Alimenta a nuvem de palavras e é o insumo natural das análises com LLM: desde o TP4, qualquer trecho pode ser resumido ou classificado por sentimento em `POST /processar_texto`. Os modelos leem até 512 tokens (cerca de 2.000 caracteres), então artigos longos devem ser enviados em partes.
@@ -55,7 +55,7 @@ O texto completo dos artigos fica em `data/processed/corpus_noticias.txt` e `dat
 - Para contagens oficiais o INPE usa um satélite de referência; o arquivo diário agrega todos.
 - O scraping depende da estrutura HTML das fontes e cobre as páginas mais recentes; é executado com pausa entre requisições.
 - A busca do G1 por "queimadas" também devolve notícias das cidades de Queimadas (BA e PB); o scraper descarta as URLs de eleições, o caso mais comum, mas alguma notícia municipal fora do tema ainda pode passar.
-- As datas do G1 nem sempre vêm no formato dd/mm/aaaa (a busca mostra datas relativas, como "há 3 dias"); nesses casos o campo fica vazio.
+- A busca do G1 mostra datas relativas ("há 3 dias"), então a data de publicação vem do próprio link da notícia, que segue o padrão `.../noticia/AAAA/MM/DD/...`. Um link fora desse padrão deixaria o campo vazio; na coleta atual, todas as notícias têm data.
 - CSVs enviados por upload são validados apenas pelas colunas; o conteúdo é responsabilidade de quem envia e não persiste ao reiniciar o app.
 
 ## Dados versionados

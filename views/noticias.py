@@ -37,7 +37,10 @@ with col_fonte:
 with col_ano:
     st.subheader("Notícias por ano")
     por_ano = noticias["ano"].dropna().value_counts().sort_index()
-    st.bar_chart(por_ano, color="#ff7f0e")
+    if por_ano.empty:
+        st.info("As notícias selecionadas não têm data de publicação.")
+    else:
+        st.bar_chart(por_ano, color="#ff7f0e")
 
 st.subheader(f"Notícias ({len(noticias)})")
 st.dataframe(

@@ -48,6 +48,7 @@ monitor-queimadas/
 │       └── scrape_news_g1.py   # Selenium na busca dinâmica do G1
 ├── tests/
 │   ├── test_api.py             # testes das rotas e dos códigos de erro
+│   ├── test_coleta.py          # testes das funções do scraper do G1
 │   └── test_upload.py          # testes da validação de CSVs enviados
 └── data/
     ├── raw/                    # CSVs do INPE e das notícias (versionados como fallback)

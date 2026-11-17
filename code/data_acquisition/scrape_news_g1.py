@@ -43,6 +43,19 @@ def url_real(href: str) -> str:
     return href
 
 
+def data_do_link(url: str) -> str:
+    """Data de publicação (dd/mm/aaaa) tirada do endereço da notícia.
+
+    Os links do G1 seguem o padrão .../noticia/AAAA/MM/DD/...; é a fonte de
+    data mais confiável, porque a busca mostra datas relativas ("há 3 dias").
+    """
+    achado = re.search(r"/noticia/(\d{4})/(\d{2})/(\d{2})/", url)
+    if not achado:
+        return ""
+    ano, mes, dia = achado.groups()
+    return f"{dia}/{mes}/{ano}"
+
+
 def coletar_cards(cliques: int) -> list[dict]:
     opcoes = webdriver.ChromeOptions()
     opcoes.add_argument("--headless=new")
@@ -96,7 +109,7 @@ def coletar_cards(cliques: int) -> list[dict]:
             {
                 "titulo": titulo.get_text(strip=True),
                 "categoria": caminho[0] if caminho else "",
-                "data": data_match.group() if data_match else "",
+                "data": data_match.group() if data_match else data_do_link(url),
                 "link": url,
             }
         )
