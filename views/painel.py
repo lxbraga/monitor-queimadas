@@ -9,10 +9,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "code"))
 import app_utils as u  # noqa: E402
 
 st.title("🔥 Painel de focos de calor")
-st.caption("Focos detectados por satélite no Brasil, dados abertos do INPE.")
-
 focos = u.focos_completos()
 filtrado = u.filtros_sidebar(focos)
+if st.session_state.filtro_satelite == u.OPCOES_SATELITE[0]:
+    st.caption(
+        "Focos do satélite de referência do INPE, o usado para comparar lugares e datas. "
+        "Para ver todas as detecções, mude em Satélites, na barra lateral."
+    )
+else:
+    st.caption(
+        "Detecções de todos os satélites. O mesmo incêndio pode aparecer mais de uma vez."
+    )
 
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Focos de calor", f"{len(filtrado):,}".replace(",", "."))

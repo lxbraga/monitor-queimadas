@@ -81,13 +81,16 @@ def analisar_sentimento(texto: str) -> dict:
 
 
 def resumir(texto: str) -> dict:
+    import torch
+
     tokenizer, modelo = carregar("resumo")
-    tokens = _contar_tokens(tokenizer, texto)
-    entrada = tokenizer(
-        texto, truncation=True, max_length=MAX_TOKENS, return_tensors="pt"
-    )
+    ids = tokenizer(texto, verbose=False)["input_ids"]
+    tokens = len(ids)
+    if tokens > MAX_TOKENS:
+        # O modelo espera o marcador de fim, que o corte deixaria de fora.
+        ids = ids[: MAX_TOKENS - 1] + [tokenizer.eos_token_id]
     saida = modelo.generate(
-        **entrada,
+        input_ids=torch.tensor([ids]),
         max_new_tokens=150,
         min_new_tokens=20,
         num_beams=4,

@@ -165,7 +165,11 @@ def saude():
     return {"status": "ok"}
 
 
-@app.get("/focos", response_model=RespostaFocos)
+@app.get(
+    "/focos",
+    response_model=RespostaFocos,
+    responses={503: {"model": Erro, "description": "Sem dados de focos"}},
+)
 def listar_focos(
     estado: str | None = Query(default=None, description="Filtra por estado"),
     bioma: str | None = Query(default=None, description="Filtra por bioma"),
@@ -173,6 +177,14 @@ def listar_focos(
 ):
     """Lista focos de calor, com filtros opcionais por estado e bioma."""
     df = carregar_focos()
+    if df.empty:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Não há dados de focos em data/raw/. Baixe com "
+                "python code/data_acquisition/fetch_inpe.py 3."
+            ),
+        )
     if estado:
         df = df[df["estado"].str.upper() == estado.upper()]
     if bioma:
@@ -268,8 +280,8 @@ def processar_texto(pedido: PedidoProcessarTexto):
     tarefa = _executor.submit(executar)
     # A espera na fila não conta como lentidão do texto: se não houver
     # processador livre, o pedido desiste com 503 em vez de um 504 enganoso.
-    if not comecou.wait(timeout=TEMPO_FILA_SEGUNDOS):
-        tarefa.cancel()
+    # Se o cancelamento falha, a tarefa começou neste instante: segue e responde.
+    if not comecou.wait(timeout=TEMPO_FILA_SEGUNDOS) and tarefa.cancel():
         raise HTTPException(
             status_code=503,
             detail=(

@@ -13,6 +13,26 @@ st.code("uvicorn code.api.main:app --port 8010", language="bash")
 url_base = st.text_input("Endereço da API", key="api_url")
 
 
+def explicar(detalhe) -> str:
+    """Traduz a lista de problemas do 422 para uma frase."""
+    if not isinstance(detalhe, list):
+        return str(detalhe)
+    frases = []
+    for problema in detalhe:
+        campo = problema.get("loc", ["entrada"])[-1]
+        limites = problema.get("ctx", {})
+        modelos = {
+            "string_too_short": f"precisa de pelo menos {limites.get('min_length')} caracteres",
+            "string_too_long": f"aceita no máximo {limites.get('max_length')} caracteres",
+            "missing": "é obrigatório",
+            "literal_error": f"deve ser um destes: {limites.get('expected')}",
+            "greater_than_equal": f"deve ser no mínimo {limites.get('ge')}",
+            "less_than_equal": f"deve ser no máximo {limites.get('le')}",
+        }
+        frases.append(f"{campo} {modelos.get(problema.get('type'), 'tem valor inválido')}")
+    return "; ".join(frases) + "."
+
+
 def chamar(metodo: str, rota: str, timeout: float = 30, **kwargs):
     """Chama a API e mostra o erro na tela em vez de quebrar a página."""
     try:
@@ -30,7 +50,7 @@ def chamar(metodo: str, rota: str, timeout: float = 30, **kwargs):
             detalhe = resposta.json().get("detail", resposta.text)
         except ValueError:
             detalhe = resposta.text
-        st.error(f"HTTP {resposta.status_code}: {detalhe}")
+        st.error(f"HTTP {resposta.status_code}: {explicar(detalhe)}")
         return None
     return resposta.json()
 

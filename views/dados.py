@@ -30,14 +30,31 @@ st.caption(
 st.subheader("Enviar CSV complementar")
 st.markdown(
     "Aceita CSVs no formato dos arquivos diários do INPE. Os focos enviados "
-    "entram nos filtros, gráficos e mapa junto com a base oficial. Enviar de "
-    "novo um arquivo com o mesmo nome substitui a versão anterior."
+    "entram nos filtros, gráficos e mapa do Painel junto com a base oficial. "
+    "Na visão de referência ficam os do AQUA ou sem satélite informado; os de "
+    "outros satélites aparecem em \"Todos\". Enviar de novo um arquivo com o "
+    "mesmo nome substitui a versão anterior."
 )
+CHAVE_UPLOAD = f"upload_csv_{st.session_state.upload_versao}"
+
+
+def ao_mudar_upload():
+    """Remover o arquivo no X também tira os focos dele da base.
+
+    Só o clique dispara esta função; trocar de página esvazia o uploader sem
+    chamá-la, e os uploads continuam valendo.
+    """
+    if st.session_state[CHAVE_UPLOAD] is None:
+        st.session_state.uploads.pop(st.session_state.get("upload_ultimo_nome"), None)
+        st.session_state.upload_erro = None
+
+
 arquivo = st.file_uploader(
-    "Arquivo CSV", type="csv", key=f"upload_csv_{st.session_state.upload_versao}"
+    "Arquivo CSV", type="csv", key=CHAVE_UPLOAD, on_change=ao_mudar_upload
 )
 if arquivo is not None and arquivo.file_id != st.session_state.upload_ultimo_id:
     st.session_state.upload_ultimo_id = arquivo.file_id
+    st.session_state.upload_ultimo_nome = None
     st.session_state.upload_erro = None
     try:
         df_novo = pd.read_csv(arquivo)
@@ -47,6 +64,7 @@ if arquivo is not None and arquivo.file_id != st.session_state.upload_ultimo_id:
         df_valido, st.session_state.upload_erro = u.validar_upload(df_novo)
         if df_valido is not None:
             st.session_state.uploads[arquivo.name] = df_valido
+            st.session_state.upload_ultimo_nome = arquivo.name
             st.rerun()
 if arquivo is not None and st.session_state.get("upload_erro"):
     st.error(st.session_state.upload_erro)

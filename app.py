@@ -13,6 +13,7 @@ VALORES_INICIAIS = {
     "filtro_estados": [],
     "filtro_biomas": [],
     "filtro_fontes": [],
+    "filtro_satelite": "Referência (AQUA)",
     "filtro_frp": 0.0,
     "qtd_dias": 3,
     "api_url": "http://localhost:8010",

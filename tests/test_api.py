@@ -9,6 +9,7 @@ import os
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
@@ -130,6 +131,36 @@ def test_fila_ocupada_retorna_503_em_vez_de_504(modelos_falsos, monkeypatch):
         executor.shutdown()
     assert resposta.status_code == 503
     assert "ocupados" in resposta.json()["detail"]
+
+
+def test_texto_que_comecou_no_limite_da_fila_e_respondido(modelos_falsos, monkeypatch):
+    class JaComecou:
+        """Espera da fila vence no mesmo instante em que o texto começa."""
+
+        def set(self):
+            pass
+
+        def wait(self, timeout=None):
+            while not inicio.is_set():
+                time.sleep(0.01)
+            return False
+
+    inicio = threading.Event()
+
+    def sentimento(texto):
+        inicio.set()
+        return sentimento_fixo(texto)
+
+    monkeypatch.setattr(main, "threading", SimpleNamespace(Event=JaComecou))
+    monkeypatch.setattr(llm, "analisar_sentimento", sentimento)
+    assert processar().status_code == 200
+
+
+def test_sem_dados_de_focos_retorna_503(csv_temporario, monkeypatch):
+    monkeypatch.setattr(base_dados, "arquivos_focos", lambda incluir_api=False: [])
+    resposta = cliente.get("/focos")
+    assert resposta.status_code == 503
+    assert "fetch_inpe.py" in resposta.json()["detail"]
 
 
 def test_modelo_carregado_nao_espera_o_download_do_outro(monkeypatch):

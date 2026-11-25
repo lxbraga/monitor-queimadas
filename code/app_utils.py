@@ -21,6 +21,13 @@ AJUDA_FRP = (
     "satélite em megawatts. Quanto maior, mais intenso o fogo."
 )
 
+OPCOES_SATELITE = ["Referência (AQUA)", "Todos"]
+AJUDA_SATELITE = (
+    "O INPE recebe dados de vários satélites, e o mesmo incêndio pode aparecer em "
+    "mais de um. Para comparar lugares e datas, usa só o de referência (AQUA). "
+    "Todos mostra cada detecção, sem servir para comparação."
+)
+
 STOPWORDS_PT = set(
     """a o os as e é de do da dos das em no na nos nas um uma uns umas para por com sem
     sob sobre entre até após ante desde contra que se não mais menos muito muita
@@ -47,6 +54,18 @@ def load_focos() -> pd.DataFrame:
         fetch_last_days(1)
         arquivos = base_dados.arquivos_focos()
     return _com_dia(base_dados.ler_focos(arquivos))
+
+
+def focos_ou_aviso() -> pd.DataFrame:
+    """Base oficial; sem dados locais nem download possível, explica e para a página."""
+    try:
+        return load_focos()
+    except RuntimeError as exc:
+        st.error(
+            "Não há arquivos de focos em data/raw/ e o download do INPE falhou. "
+            f"Verifique a internet e recarregue a página. ({exc})"
+        )
+        st.stop()
 
 
 @st.cache_data(ttl=3600)
@@ -117,17 +136,35 @@ def validar_upload(df: pd.DataFrame) -> tuple[pd.DataFrame | None, str | None]:
 
     for coluna in ("municipio", "estado", "bioma"):
         df[coluna] = df[coluna].astype("string")
+    if "satelite" not in df.columns:
+        df["satelite"] = pd.NA
     df["dia"] = df["data_hora_gmt"].dt.date
     return df, None
 
 
 def focos_completos() -> pd.DataFrame:
     """Base oficial mais os CSVs enviados por upload na sessão."""
-    focos = load_focos()
+    focos = focos_ou_aviso()
     uploads = st.session_state.get("uploads", {})
-    if uploads:
-        focos = pd.concat([focos, *uploads.values()], ignore_index=True)
-    return focos
+    if not uploads:
+        return focos
+    # A combinação só é refeita quando os uploads ou os arquivos do INPE mudam.
+    chave = (
+        tuple((nome, id(df)) for nome, df in uploads.items()),
+        base_dados.assinatura(base_dados.arquivos_focos()),
+        len(focos),
+    )
+    guardado = st.session_state.get("_focos_com_uploads")
+    if guardado is None or guardado[0] != chave:
+        guardado = (chave, pd.concat([focos, *uploads.values()], ignore_index=True))
+        st.session_state["_focos_com_uploads"] = guardado
+    return guardado[1]
+
+
+def da_referencia(focos: pd.DataFrame) -> pd.DataFrame:
+    """Focos do satélite de referência; uploads sem satélite também entram."""
+    satelite = focos["satelite"]
+    return focos[(satelite == base_dados.SATELITE_REFERENCIA) | satelite.isna()]
 
 
 def multiselect_persistente(container, rotulo: str, opcoes: list, chave: str):
@@ -144,6 +181,11 @@ def multiselect_persistente(container, rotulo: str, opcoes: list, chave: str):
 def filtros_sidebar(focos: pd.DataFrame) -> pd.DataFrame:
     """Desenha os filtros na sidebar e retorna a base filtrada."""
     st.sidebar.header("Filtros")
+    escolha = st.sidebar.radio(
+        "Satélites", OPCOES_SATELITE, key="filtro_satelite", help=AJUDA_SATELITE
+    )
+    if escolha == OPCOES_SATELITE[0]:
+        focos = da_referencia(focos)
     dias = multiselect_persistente(
         st.sidebar, "Dias", sorted(focos["dia"].unique()), "filtro_dias"
     )
