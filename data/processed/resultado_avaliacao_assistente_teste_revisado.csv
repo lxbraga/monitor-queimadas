@@ -1,243 +1,191 @@
 parte,variante,conversa,tipo,pergunta,resposta,acertou,numeros_sem_origem,tendencia_sem_base,segundos,acertou_revisado,motivo_da_revisao
-teste,completo,0,dados,Quantos focos a Caatinga registrou?,A Caatinga registrou 198 focos durante o período mencionado.,True,,,1.19,True,
-teste,completo,0,memoria,Qual estado concentra mais focos nela?,"O estado que concentra mais focos na Caatinga é o Ceará, com 98 focos.",True,,,1.22,True,
-teste,completo,0,memoria,Em que dia ela teve mais?,"Naqueles três dias, o dia com mais focos foi 21/09/2026, com 1.616 focos.",False,,,1.29,False,
-teste,completo,0,memoria,"E o Pantanal, quantos teve?","No Pantanal, houve 7 focos.",True,,,1.47,True,
-teste,completo,1,dados,Qual o total de focos em Mato Grosso?,"Em Mato Grosso, foram identificados 479 focos de queima. Esses focos correspondem a 13,2% do total de focos no Brasil durante esse período.",True,,,1.67,True,
-teste,completo,1,memoria,E em Rondônia?,"Em Rondônia, foram identificados 80 focos de queima. Esses focos correspondem a 2,2% do total de focos no Brasil durante esse período.",True,,,1.29,True,
-teste,completo,1,memoria,Qual deles teve menos?,"Os estados com menos focos foram:
+teste,completo,0,dados,Quantos focos o Maranhão registrou?,O Maranhão registrou 260 focos de queimada durante o período analisado.,True,,,1.63,True,
+teste,completo,0,memoria,Qual bioma foi o mais atingido lá?,"O bioma Cerrado foi o mais atingido pelo Maranhão, com 209 focos de queimada.",True,,,1.18,True,
+teste,completo,0,memoria,E qual a classe de risco?,"O risco de fogo em Maranhão foi classificado como CRÍTICO, com um índice de 0,98 de 1.",True,,,1.36,True,
+teste,completo,0,memoria,E no Pará?,"No Pará, o risco de fogo foi classificado como ALTO, com um índice de 0,77 de 1.",True,,,1.33,True,
+teste,completo,0,memoria,Qual dos dois teve menos focos?,"O Pará teve menos focos de queimada do que o Maranhão. No Pará, foram 1.060 focos, enquanto no Maranhão foram apenas 260.",False,,,1.58,False,
+teste,completo,0,fora,Quem escreveu Dom Casmurro?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,completo,0,dados,Qual o total de focos no Brasil?,O total de focos de queimada no Brasil durante esse período foi de 3.639 focos.,True,,,1.07,True,
+teste,completo,0,fora,E em agosto de 2025?,"Só tenho focos de 19/09/2026 a 21/09/2026; não encontrei essa data nos dados. Para outras épocas, pergunte o que as notícias dizem.",True,,,0.0,True,
+teste,completo,0,dados,Qual estado tem o menor número de focos?,"O estado com o menor número de focos no Brasil é Rio Grande do Sul, com 1 foco.",True,,,1.12,True,
+teste,completo,0,noticias,O que as notícias falam sobre o plano homologado por Dino?,"O ministro Flavio Dino homologou um plano anti-incêndios para combater queimadas na Amazônia e Pantanal. O governo federal deve detalhar o custeio para execução das ações dentro de 20 dias. O plano inclui medidas de apoio logístico, integração de dados e aperfeiçoamento de sistemas ambientais.",True,,,2.12,True,
+teste,completo,0,memoria,Qual foi a primeira pergunta que eu fiz?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,False,,,0.0,False,
+teste,completo,0,fora,Conta uma piada?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,completo,1,dados,Qual município teve mais focos no Tocantins?,"Formoso do Araguaia, com 79 focos, foi o município que teve mais focos no Tocantins durante este período.",True,,,1.17,True,
+teste,completo,1,memoria,Quantos focos ele teve?,Formoso do Araguaia teve 79 focos.,True,,,1.06,True,
+teste,completo,1,dados,Qual bioma tem o maior FRP médio?,"O bioma com o maior FRP médio no Brasil é o Cerrado, com 58,9 MW.",True,,,1.08,True,
+teste,completo,1,memoria,E o maior risco?,"O bioma com o maior índice de risco de fogo no Brasil é Caatinga, com um índice de 0,99 de 1.",True,,,1.44,True,
+teste,completo,1,fora,Qual a altura do Cristo Redentor?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,completo,1,dados,"Há quanto tempo não chove no Ceará, em média?","Em média, o Ceará não choveu por cerca de 57,3 dias nas últimas 12,7 dias sem chuva.",True,,,1.38,False,"mistura 57,3 com 12,7 dias na mesma frase"
+teste,completo,1,dados,Em que dia o Pará teve mais focos?,"No Pará, o dia com mais focos foi 21/09/2026, com 747 focos.",True,,,1.45,True,
+teste,completo,1,memoria,E o Amazonas?,"No Amazonas, o dia com mais focos foi 21/09/2026, com 1.616 focos.",False,,,1.46,False,
+teste,completo,2,dados,Qual é o terceiro bioma com mais focos?,"O terceiro bioma com mais focos é o Caatinga, com 198 focos.",True,,,1.06,True,
+teste,completo,2,memoria,E o quarto?,"O quarto bioma com mais focos é o Mata Atlântico, com 17 focos.",False,,,1.2,True,Mata Atlântica com erro de grafia
+teste,completo,3,dados,O risco de fogo na Bahia está em que nível?,O risco de fogo na Bahia está em nível CRÍTICO.,True,,,1.15,True,
+teste,completo,3,fora,Como vai ser o mês que vem?,"Só tenho focos de 19/09/2026 a 21/09/2026; não encontrei essa data nos dados. Para outras épocas, pergunte o que as notícias dizem.",True,,,0.0,True,
+teste,completo,3,fora,Qual a senha do wifi?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,completo,4,noticias,"Por que o STF deu prazo de 30 dias, segundo as notícias?","O STF deu prazo de 30 dias para que o governo federal, estados da Amazônia Legal e estados do Pantanal apresentem planos emergenciais de ação educativa e conscientização sobre o manejo integrado do fogo.",True,,,1.37,True,
+teste,completo,4,noticias,"Quanto do fogo no Brasil é causado pela ação humana, segundo o monitoramento?","Segundo o monitoramento, 99% dos incêndios são por ação humana.",True,,,1.36,True,
+teste,completo,4,noticias,O que aconteceu em Tartarugalzinho?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,False,recusou; a palavra do gabarito estava na própria recusa
+teste,completo,5,dados,Compare Piauí e Bahia em número de focos.,"Em número de focos, Piauí teve mais focos que Bahia. Piauí contava com 138 focos contra 89 no Estado da Bahia. A diferença foi de 49 focos.",True,,,1.76,True,
+teste,completo,5,dados,Quantos focos houve em 19/09/2026?,"No dia 19/09/2026, foram registrados 1.035 focos de queima no Brasil.",True,,,1.22,True,
+teste,sem_regras,0,dados,Quantos focos o Maranhão registrou?,"O Maranhão registrou 260 focos de queimada durante o período mencionado. Esses focos correspondem a 7,1% do total nacional de focos de queimada entre os anos de 2020 e 2024, conforme dados fornecidos pela plataforma Terrabrasilis, do Instituto Nacional de Pesquisas Espaciais (Inpe).",True,,,2.67,True,
+teste,sem_regras,0,memoria,Qual bioma foi o mais atingido lá?,"O bioma que foi o mais atingido pelo Maranhão neste período foi o Cerrado, com 209 focos de queimada.",True,,,1.23,True,
+teste,sem_regras,0,memoria,E qual a classe de risco?,"A classe de risco de fogo para o Maranhão é CRÍTICO, como informado no dado calculado para esta pergunta.",True,,,1.34,True,
+teste,sem_regras,0,memoria,E no Pará?,"No Pará, também conhecido como Estado do Pará, a classe de risco de fogo é classificada como ALTO, com um índice de 0,77 de 1. Este indicador indica uma situação de alto risco de incêndios florestais.",True,,,1.93,True,
+teste,sem_regras,0,memoria,Qual dos dois teve menos focos?,"Peço desculpas pela confusão anterior. No entanto, não há informações disponíveis sobre quantos focos foram registrados no Pará. Portanto, não posso afirmar claramente se o Pará teve menos ou mais focos do que o Maranhão.",False,,,1.8,False,
+teste,sem_regras,0,fora,Quem escreveu Dom Casmurro?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,sem_regras,0,dados,Qual o total de focos no Brasil?,O total de focos de queimadas no Brasil durante o período de 19/09/2026 a 21/09/2026 foi de aproximadamente 3.639 focos.,True,,,1.68,True,
+teste,sem_regras,0,fora,E em agosto de 2025?,"Só tenho focos de 19/09/2026 a 21/09/2026; não encontrei essa data nos dados. Para outras épocas, pergunte o que as notícias dizem.",True,,,0.0,True,
+teste,sem_regras,0,dados,Qual estado tem o menor número de focos?,"O estado com o menor número de focos de queimadas no Brasil durante este período foi o Rio Grande do Sul, com apenas 1 foco registrado.",True,,,1.17,True,
+teste,sem_regras,0,noticias,O que as notícias falam sobre o plano homologado por Dino?,"As notícias sobre o plano homologado por Dino enfatizam que ele foi apresentado pelo governo brasileiro para combater incêndios florestais na Amazônia e no Pantanal. O plano inclui medidas emergenciais de prevenção e enfrentamento aos incêndios, além de medidas para a integração de dados e aperfeiçoamento dos sistemas federais de gestão ambiental e territorial. O objetivo é garantir que o governo federal cumpra suas metas contra o desmatamento na Amazônia, conforme determinado pelo Supremo Tribunal Federal (STF).",True,,,3.07,True,
+teste,sem_regras,0,memoria,Qual foi a primeira pergunta que eu fiz?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,False,,,0.0,False,
+teste,sem_regras,0,fora,Conta uma piada?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,sem_regras,1,dados,Qual município teve mais focos no Tocantins?,"O município com o maior número de focos no Tocantins foi Formoso do Araguaia, com 79 focos.",True,,,1.06,True,
+teste,sem_regras,1,memoria,Quantos focos ele teve?,"Formoso do Araguaia, no Tocantins, teve 79 focos.",True,,,1.12,True,
+teste,sem_regras,1,dados,Qual bioma tem o maior FRP médio?,"O bioma com o maior FRP médio no Brasil é o Cerrado, com 58,9 MW.",True,,,1.13,True,
+teste,sem_regras,1,memoria,E o maior risco?,"O bioma com o maior índice de risco de fogo no Brasil é o Caatinga, com um índice de 0,99 de 1.",True,,,1.52,True,
+teste,sem_regras,1,fora,Qual a altura do Cristo Redentor?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,sem_regras,1,dados,"Há quanto tempo não chove no Ceará, em média?","No Ceará, a média de dias sem chuva desde o início das informações até o último registro (21/09/2026) é de 57,3 dias.",True,,,1.46,True,
+teste,sem_regras,1,dados,Em que dia o Pará teve mais focos?,"O Pará registrou seu dia com mais focos em 21/09/2026, com 747 focos.",True,,,1.41,True,
+teste,sem_regras,1,memoria,E o Amazonas?,"O Amazonas registrou seu dia com mais focos em 20/09/2026, com 83 focos.",False,,,1.37,False,
+teste,sem_regras,2,dados,Qual é o terceiro bioma com mais focos?,"O terceiro bioma com mais focos no Brasil, segundo os dados fornecidos, é o Caatinga, com 198 focos.",True,,,1.16,True,
+teste,sem_regras,2,memoria,E o quarto?,"O quarto bioma com mais focos no Brasil, baseando-se nos dados fornecidos, é o Mata Atlântico, com 17 focos.",False,,,1.37,True,Mata Atlântica com erro de grafia
+teste,sem_regras,3,dados,O risco de fogo na Bahia está em que nível?,"O risco de fogo na Bahia está classificado como CRÍTICO (índice 1,00 de 1). Isso significa que o risco é extremamente alto e pode levar a grandes incêndios se não for controlado rapidamente.",True,,,1.86,True,
+teste,sem_regras,3,fora,Como vai ser o mês que vem?,"Só tenho focos de 19/09/2026 a 21/09/2026; não encontrei essa data nos dados. Para outras épocas, pergunte o que as notícias dizem.",True,,,0.0,True,
+teste,sem_regras,3,fora,Qual a senha do wifi?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,sem_regras,4,noticias,"Por que o STF deu prazo de 30 dias, segundo as notícias?","De acordo com as notícias fornecidas:
 
-- Mato Grosso: 479 focos
-- Rondônia: 80 focos
+- O STF (Supremo Tribunal Federal) determinou um prazo de 30 dias para que os governos federais e estaduais elaborem planos emergenciais de ação educativa e de conscientização sobre o manejo integrado do fogo.
+  
+- Esses planos são necessários porque o governo federal e os estados estão sob pressão para responder rapidamente às queimadas que têm ocorrido recentemente.
 
-Esses dois estados tiveram menos focos em relação ao restante do país.",True,,,1.59,False,lista os dois estados e não diz qual teve menos
-teste,completo,1,memoria,Qual a diferença entre eles?,"Sim, você está correto. Em Mato Grosso, foram identificados 479 focos de queima, enquanto em Rondônia foram apenas 80 focos. Isso significa que Mato Grosso tinha mais focos em comparação com Rondônia, com uma diferença de 399 focos.",True,,,1.86,True,
-teste,completo,2,dados,Que porcentagem dos focos está no Cerrado?,"O Cerrado representa 27,5% dos focos detectados no Brasil durante esse período.",True,,,1.05,True,
-teste,completo,2,dados,Qual estado aparece em terceiro lugar?,"O estado que aparece em terceiro lugar é Mato Grosso, com 479 focos.",True,,,1.02,True,
-teste,completo,2,dados,Quantos focos foram detectados em 20/09/2026?,"Em 20/09/2026, foram detectados 988 focos.",True,,,1.05,True,
-teste,completo,2,dados,Qual foi a maior FRP registrada no país?,"A maior FRP registrada no país foi de 1.355,8 MW.",True,,,1.58,True,
-teste,completo,3,dados,Quantos focos houve em Marcelândia?,"Em Marcelândia, foram registrados 82 focos de queima.",True,,,0.86,True,
-teste,completo,3,memoria,Que percentual do país isso representa?,"Em Marcelândia, 82 focos representam 2,3% do total de focos registrados no Brasil durante o período mencionado.",True,,,1.6,True,
-teste,completo,3,dados,Santa Catarina teve focos?,Nenhum foco foi registrado em Santa Catarina neste período.,True,,,1.17,True,
-teste,completo,4,dados,Qual o risco de fogo médio no Maranhão?,"No Maranhão, o risco de fogo médio é de 0,98 (de 0 a 1, classe crítico).",True,,,1.57,True,
-teste,completo,4,dados,"Entre Acre e Bahia, quem teve mais focos?","Em relação ao número de focos de queima, Acre teve mais focos que Bahia. Acre tinha 115 focos contra 89 focos na Bahia.",True,,,1.91,True,
-teste,completo,5,noticias,Quantos parques estaduais São Paulo reabriu após os incêndios?,Não encontrei essa informação nos dados do projeto.,False,,,0.81,False,
-teste,completo,5,noticias,"Quantos hectares de desmatamento ou queda a Mata Atlântica teve no primeiro semestre, segundo as notícias?","O desmatamento na Mata Atlântica caiu 55% no primeiro semestre de 2024, conforme informado nas notícias.",True,,,1.57,True,
-teste,completo,5,noticias,O que as notícias de 2026 dizem sobre a fumaça em Manaus?,"As notícias mencionam que Manaus tem 10 focos de calor, representando 10% do Brasil. Os focos de calor têm um médio de 16,9 MW e um máximo de 45,6 MW. O risco de fogo é de 0,35 (classe baixa) e a média de dias sem chuva é de 1,2 dias.",False,,,2.6,False,
-teste,completo,6,noticias,Quanto o Brasil reduziu de emissões de gases do efeito estufa em 2023?,O Brasil reduziu em 12% as emissões de gás carbônico equivalente (GtCO2e) em 2023 em comparação com o ano anterior.,True,,,1.67,True,
-teste,completo,6,noticias,"Qual foi o aumento de crimes ambientais na Amazônia Legal, segundo a PRF?","Houve um aumento de 88% nas ocorrências de crimes ambientais na Amazônia Legal entre o início de agosto de 2023 e o final de setembro deste ano, conforme informado pela Polícia Rodoviária Federal (PRF).",True,,,1.86,True,
-teste,completo,7,fora,"Quantos focos houve em janeiro de 2020, segundo a base do INPE carregada?",Não encontrei essa informação nos dados do projeto.,True,,,0.77,True,
-teste,completo,7,fora,Quem é o prefeito de Porto Velho?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
-teste,completo,7,fora,Qual a cotação do dólar hoje?,Não encontrei essa informação nos dados do projeto.,True,,,1.31,True,
-teste,completo,7,fora,Escreva um poema sobre o mar.,Não encontrei essa informação nos dados do projeto.,True,,,1.21,True,
-teste,sem_regras,0,dados,Quantos focos a Caatinga registrou?,A Caatinga registrou 198 focos durante os últimos três dias da análise.,True,,,0.83,True,
-teste,sem_regras,0,memoria,Qual estado concentra mais focos nela?,"O estado que concentra mais focos na Caatinga é o Ceará, com 98 focos.",True,,,0.97,True,
-teste,sem_regras,0,memoria,Em que dia ela teve mais?,"Na data analisada (19/09/2026), a Caatinga teve 19 focos. No dia seguinte (20/09/2026), houve 93 focos, e no último dia (21/09/2026), foram registrados apenas 8 focos.",True,,,1.83,False,"diz 19 focos no dia 19, são 97"
-teste,sem_regras,0,memoria,"E o Pantanal, quantos teve?","No período analisado (19/09/2026 a 21/09/2026), o Pantanal registrou 7 focos.",True,,,1.6,True,
-teste,sem_regras,1,dados,Qual o total de focos em Mato Grosso?,"O total de focos em Mato Grosso é de 479. Esses focos representam 13,2% do total de focos registrados no Brasil.",True,,,1.49,True,
-teste,sem_regras,1,memoria,E em Rondônia?,"No estado de Rondônia, existem atualmente 80 focos de queima. Esses focos correspondem a 2,2% do total de focos registrados no Brasil.",True,,,1.29,True,
-teste,sem_regras,1,memoria,Qual deles teve menos?,"Peço desculpas pela confusão anterior. Você está correto na comparação. No estado de Mato Grosso, foram identificados 479 focos de queima, enquanto no estado de Rondônia, foram identificados 80 focos. Isso significa uma diferença de 399 focos entre os dois estados.",True,,,1.82,False,não diz qual teve menos
-teste,sem_regras,1,memoria,Qual a diferença entre eles?,"Sim, você está correto. No estado de Mato Grosso, foram identificados 479 focos de queima, enquanto no estado de Rondônia, foram identificados 80 focos. Isso resulta em uma diferença de 399 focos entre os dois estados.",True,,,1.69,True,
-teste,sem_regras,2,dados,Que porcentagem dos focos está no Cerrado?,"No Cerrado, estão registrados 1.001 focos de queima, representando aproximadamente 27,5% do total de focos detectados no Brasil durante esse período. Esses focos estão localizados principalmente nos estados de Tocantins, Maranhão, Mato Grosso e Piauí.",True,,,1.68,True,
-teste,sem_regras,2,dados,Qual estado aparece em terceiro lugar?,"O estado que aparece em terceiro lugar na lista dos estados com mais focos de queima é Mato Grosso, com 157 focos.",True,,,1.19,False,"dá 157 focos a Mato Grosso, são 479"
-teste,sem_regras,2,dados,Quantos focos foram detectados em 20/09/2026?,"Em 20/09/2026, foram detectados 988 focos de queima.",True,,,1.18,True,
-teste,sem_regras,2,dados,Qual foi a maior FRP registrada no país?,"A maior FRP (Força Relativista Potencial) registrada no país foi de 1.355,8 MW, correspondendo à região do Pantanal.",True,,,1.8,False,inventa o significado de FRP e o lugar
-teste,sem_regras,3,dados,Quantos focos houve em Marcelândia?,"Em Marcelândia, foram registrados 82 focos de queima nas últimas três datas analisadas. Esses focos representaram aproximadamente 2,3% do total de focos registrados no Brasil durante esse período.",True,,,1.37,True,
-teste,sem_regras,3,memoria,Que percentual do país isso representa?,"Os 82 focos de queima registrados em Marcelândia correspondem a cerca de 2,3% do total de focos de queima registrados no Brasil nos últimos três dias.",True,,,1.69,True,
-teste,sem_regras,3,dados,Santa Catarina teve focos?,"Não, na análise dos dados fornecidos, não há registro de focos de queima em Santa Catarina nos períodos mencionados.",True,,,1.29,True,
-teste,sem_regras,4,dados,Qual o risco de fogo médio no Maranhão?,"No Maranhão, o risco de fogo médio está em 0,98 (de 0 a 1, classe crítico). Isso significa que existe uma situação de risco moderado ou leve para ocorrências de incêndios florestais. No entanto, é importante lembrar que o risco pode variar dependendo do tempo e condições climáticas específicas.",True,,,2.42,False,chama de moderado ou leve um risco crítico
-teste,sem_regras,4,dados,"Entre Acre e Bahia, quem teve mais focos?","Sim, você está correto. Entre Acre e Bahia, Acre teve mais focos de queimadas. Foram 115 focos em Acre contra 89 focos em Bahia.",True,,,1.92,True,
-teste,sem_regras,5,noticias,Quantos parques estaduais São Paulo reabriu após os incêndios?,Não tenho informações específicas sobre quantos parques estaduais de São Paulo foram reabertos após os incêndios ocorridos entre 19/09/2026 e 21/09/2026. É importante lembrar que as medidas de restabelecimento das áreas afetadas podem variar dependendo da situação local e das políticas de recuperação implementadas pelos órgãos responsáveis pela gestão ambiental e de proteção ao meio ambiente. Recomenda-se consultar fontes oficiais ou autoridades locais para obter informações mais precisas e atualizadas sobre esse assunto.,False,,,2.65,False,
-teste,sem_regras,5,noticias,"Quantos hectares de desmatamento ou queda a Mata Atlântica teve no primeiro semestre, segundo as notícias?","De acordo com as informações fornecidas nas notícias:
+- O objetivo desses planos é promover a educação e conscientização sobre como lidar com o fogo de forma saudável e responsável, visando prevenir futuras queimadas.
 
-- No primeiro semestre de 2024, o desmatamento na Mata Atlântica caiu 55% em comparação com o mesmo período do ano anterior. 
+- Além disso, o prazo forçará esses órgãos a atualizar suas informações sobre as investigações policiais e as sanções administrativas relacionadas a incêndios florestais ilícitos.
 
-Portanto, o desmatamento na Mata Atlântica no primeiro semestre de 2024 foi de aproximadamente 21.401 hectares.
+Portanto, o prazo de 30 dias serve tanto para dar tempo ao governo para desenvolver medidas eficazes quanto para garantir que essas medidas estejam alinhadas com as políticas nacionais de manejo integrado do fogo.",True,,,4.73,True,
+teste,sem_regras,4,noticias,"Quanto do fogo no Brasil é causado pela ação humana, segundo o monitoramento?","Segundo o monitoramento realizado pelo Sistema de Alertas de Fogo Ocasionais (SAFO), o fogo no Brasil é predominantemente causado pela ação humana. De acordo com a informação fornecida, apenas uma pequena parte - cerca de 1% - dos incêndios florestais que se espalham pelo país é originado por causas naturais, como por exemplo, por raio. 
 
-É importante notar que essas são estimativas baseadas em dados divulgados pela Fundação SOS Mata Atlântica, em parceria com o MapBiomas.",True,,,3.07,True,
-teste,sem_regras,5,noticias,O que as notícias de 2026 dizem sobre a fumaça em Manaus?,"As notícias de 2026 mencionam que Manaus tem sido atingida por focos de calor e queima, mas não especificam detalhes exatos sobre a quantidade de fumaça ou sua intensidade. As notícias enfatizam que a situação é preocupante e que a fiscalização e a implementação de políticas públicas ambientais estão contribuindo para reduzir o desmatamento e, consequentemente, o risco de incêndios na região.",True,,,2.69,False,não traz o conteúdo das notícias
-teste,sem_regras,6,noticias,Quanto o Brasil reduziu de emissões de gases do efeito estufa em 2023?,"O Brasil reduziu em 12% as emissões de gás carbônico equivalente (GtCO2e) em 2023 em comparação com o ano anterior. Essa é a maior queda percentual nas emissões desde 2009, quando o país registrou a menor emissão da série histórica iniciada em 1990 (1,77 bilhão de GtCO2e).",True,,,2.35,True,
-teste,sem_regras,6,noticias,"Qual foi o aumento de crimes ambientais na Amazônia Legal, segundo a PRF?","Segundo a PRF (Polícia Rodoviária Federal), o número de crimes ambientais na Amazônia Legal aumentou 88% entre o início de agosto de 2023 e o final de setembro deste ano. Isso significa que houve um aumento significativo nesse período, comparado aos 14 meses anteriores.",True,,,2.08,True,
-teste,sem_regras,7,fora,"Quantos focos houve em janeiro de 2020, segundo a base do INPE carregada?","Desculpe pela confusão anterior. Infelizmente, não tenho acesso direto aos dados históricos da base do INPE carregada ou às informações específicas sobre focos de queima registrados nos anos anteriores ao período mencionado na sua pergunta. No entanto, posso informar que os dados são atualizados regularmente e podem ser consultados através das plataformas oficiais do Instituto Nacional de Pesquisas Espaciais (INPE) ou outros canais oficiais de notícias ambientais. Se você precisar de informações mais recentes ou detalhadas sobre focos de queima no Brasil, recomendo buscar essas informações diretamente nas fontes oficiais.",True,,,2.77,True,
-teste,sem_regras,7,fora,Quem é o prefeito de Porto Velho?,O prefeito de Porto Velho é Carlos Eduardo Melo. Ele assume o cargo em 2022 após ter sido eleito em outubro de 2021.,False,2021,,1.63,False,
-teste,sem_regras,7,fora,Qual a cotação do dólar hoje?,"Desculpe, mas como assistente de monitoramento de queimadas, eu não tenho capacidade de fornecer atualizações financeiras ou econômicas. Você pode verificar as cotações do dólar diretamente em sites financeiros confiáveis ou aplicativos de câmbio.",True,,,2.03,True,
-teste,sem_regras,7,fora,Escreva um poema sobre o mar.,"Aqui está um poema sobre o mar:
+A grande maioria dos incêndios florestais que ocorrem no Brasil são resultantes de ação humana, incluindo desmatamento, queima ilegal, negligência e outros fatores humanos que contribuem para o aumento das queimadas.",False,,aumento,3.79,False,
+teste,sem_regras,4,noticias,O que aconteceu em Tartarugalzinho?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,False,recusou; a palavra do gabarito estava na própria recusa
+teste,sem_regras,5,dados,Compare Piauí e Bahia em número de focos.,"Em relação ao número de focos registrados nos últimos três dias, o Estado da Piauí apresentou um total de 138 focos de queima, enquanto o Estado da Bahia contabilizou apenas 89 focos. Isso significa que o Piauí teve mais focos (138) que o Bahia (89); a diferença entre os dois estados é de 49 focos.",True,,,2.41,True,
+teste,sem_regras,5,dados,Quantos focos houve em 19/09/2026?,"No dia 19/09/2026, foram registrados 1.035 focos de queima no Brasil.",True,,,1.13,True,
+teste,sem_material,0,dados,Quantos focos o Maranhão registrou?,"Desculpe pela confusão anterior, mas como assistente de monitoramento de queimadas, não tenho acesso direto às informações atualizadas sobre os focos de queima registrados pelo governo ou outras fontes oficiais. Para obter essa informação atualizada, sugiro entrar em contato diretamente com órgãos governamentais responsáveis por esse tipo de monitoramento, como a Secretaria Estadual de Meio Ambiente do Maranhão, ou verificar as notícias oficiais da mídia local.",False,,,2.25,False,
+teste,sem_material,0,memoria,Qual bioma foi o mais atingido lá?,"Como assistente de monitoramento de queimadas, eu não tenho acesso a dados específicos sobre quais biomas foram mais afetados pelas queimas no Maranhão. Os dados precisam ser fornecidos por organizações governamentais ou instituições de pesquisa especializadas em meio ambiente. No entanto, geralmente, áreas rurais e pastagens são frequentemente alvo de queimadas, pois essas regiões costumam ter menos vegetação nativa para combater incêndios. A distribuição geográfica dessas queimadas pode variar dependendo das condições climáticas locais e dos eventos naturais.",False,,,2.71,False,
+teste,sem_material,0,memoria,E qual a classe de risco?,"A classificação de risco das queimadas varia dependendo do contexto específico, incluindo a região, a época do ano, a condição ambiental e outros fatores. Em geral, as queimadas podem ser classificadas em diferentes níveis de risco, desde ""baixo"" até ""alto"", baseando-se na potencialidade de danos causados.
 
-Mar infinito, vastidão,
-Quebrando-se em ondas brancas,
-Sussurra sonhos à beira-mar,
-Ecelete o coração.
+No caso do Maranhão, se você estiver interessado em saber a classificação específica de risco das queimadas ocorridas neste estado, seria necessário consultar informações oficiais do governo maranhense ou de organizações ambientais que monitoram regularmente essas atividades. Isso poderia incluir dados sobre o número de focos de queima, a área afetada, a intensidade das queimadas e outras características relevantes que ajudem a determinar o nível de risco.
 
-Coração que dança ao som do mar,
-Um eco eterno, inabalável,
-Em cada olhar, em cada riso,
-Navega a paz.
+É importante lembrar que a classificação de risco é um processo complexo e que muitas vezes requer análises detalhadas e considerações técnicas para uma compreensão precisa.",False,,,4.65,False,
+teste,sem_material,0,memoria,E no Pará?,"Para obter informações sobre a situação das queimadas no Pará, recomendo entrar em contato com órgãos governamentais brasileiros responsáveis por esse tipo de monitoramento, como a Secretaria Estadual de Meio Ambiente do Pará, ou verificar as notícias oficiais da mídia local. As informações sobre focos de queima, áreas afetadas e níveis de risco podem mudar ao longo do tempo e dependeriam de atualizações constantes.",False,,,2.26,False,
+teste,sem_material,0,memoria,Qual dos dois teve menos focos?,"Como assistente de monitoramento de queimadas, eu não tenho acesso a dados específicos sobre quantos focos de queima foram registrados nos estados do Maranhão e do Pará. Para obter essa informação atualizada, sugiro entrar em contato diretamente com órgãos governamentais responsáveis por esse tipo de monitoramento, como a Secretaria Estadual de Meio Ambiente do Maranhão ou do Pará, ou verificar as notícias oficiais da mídia local.",True,,,2.37,False,diz que não tem dados
+teste,sem_material,0,fora,Quem escreveu Dom Casmurro?,"Dom Casmurro é um romance escrito por Machado de Assis. Ele foi publicado originalmente em 1892 e é considerado um dos maiores escritores brasileiros. O livro retrata a vida de um homem chamado Casmurro, que vive numa ilha misteriosa e tem relações amorosas com duas mulheres: a jovem Rosângela e a velha Serafina. O romance aborda temas como sexualidade, religião, política e socialismo.",False,1892,,2.46,False,
+teste,sem_material,0,dados,Qual o total de focos no Brasil?,"Desculpe pela confusão anterior, mas como assistente de monitoramento de queimadas, eu não tenho acesso a dados atualizados sobre o total de focos de queima no Brasil. Esses dados são frequentemente atualizados pelo Instituto Nacional de Pesquisas Espaciais (INPE) através do Sistema de Monitoramento de Incêndios Florestais (SIMIF). 
 
-Mar que abriga corvos e aves,
-Que voam livre entre suas águas,
-Eles cantam, eles dançam,
-Na vida, na morte, sempre.
+Se você está buscando informações sobre focos de queima recentes ou específicos para seu estado, sugerimos entrar em contato com órgãos governamentais locais ou instituições de pesquisa ambiental.",False,,,2.75,False,
+teste,sem_material,0,fora,E em agosto de 2025?,"Desculpe pela confusão, mas como assistente de monitoramento de queimadas, eu não tenho acesso a dados atuais ou futuros. Os dados sobre focos de queima no Brasil são frequentemente atualizados pelo INPE através do SIMIF. Se você precisar de informações mais recentes, sugiro entrar em contato com os órgãos governamentais brasileiros responsáveis por esse tipo de monitoramento, como a Secretaria de Meio Ambiente do Estado ou do Município, ou verificar as notícias oficiais da mídia nacional.",True,,,2.68,True,
+teste,sem_material,0,dados,Qual estado tem o menor número de focos?,"O estado com o menor número de focos de queima na última década pode variar dependendo das fontes de dados disponíveis. No entanto, geralmente, o estado com o menor número de focos é o Amazonas, que possui uma grande área florestal e muita vegetação nativa. No entanto, isso pode ser influenciado pelas condições climáticas e outras circunstâncias locais.
 
-Mar que temos que cuidar,
-Como cuidamos de nossas vidas,
-Com amor, com compreensão,
-Para que possamos continuar.
+É importante lembrar que o número de focos de queima varia significativamente de ano para ano e pode ser altamente influenciado por fatores como chuvas, temperatura, combustível disponível e atividades humanas nas regiões de incêndio. Portanto, para obter informações mais precisas e atualizadas, seria recomendável consultar regularmente os sites oficiais dos órgãos ambientais locais ou consultas à base de dados do INPE.",False,,,3.89,False,
+teste,sem_material,0,noticias,O que as notícias falam sobre o plano homologado por Dino?,"Desculpe, mas como assistente de monitoramento de queimadas, eu não tenho acesso a informações sobre planos específicos ou eventos políticos. Minha principal função é fornecer informações sobre queimadas e seus impactos ambientais. Se você tiver alguma dúvida específica sobre o planejamento ou implementação de algum evento político relacionado às queimadas, recomendo entrar em contato com fontes oficiais ou autoridades envolvidas para obter informações mais detalhadas e atualizadas.",False,,,2.43,False,
+teste,sem_material,0,memoria,Qual foi a primeira pergunta que eu fiz?,"Como assistente de monitoramento de queimadas, minha principal função é fornecer informações sobre queimadas e suas implicações ambientais. Não tenho memória de conversas passadas, então não posso responder perguntas anteriores. Se você tiver alguma dúvida específica sobre queimadas ou outros assuntos relacionados ao meio ambiente, ficarei feliz em tentar ajudá-lo!",False,,,2.01,False,
+teste,sem_material,0,fora,Conta uma piada?,"Claro, aqui vai uma:
 
-Este poema busca capturar a beleza e a profundidade do mar, além de expressar sentimentos relacionados ao seu encanto e importância. Espero que goste!",False,,,4.24,False,
-teste,sem_material,0,dados,Quantos focos a Caatinga registrou?,"A Caatinga, uma das regiões mais importantes para a biodiversidade brasileira, não possui um registro oficial ou padrão de quantificação dos focos de queima. A Caatinga abrange áreas de diferentes dimensões e tipos de uso, incluindo pastagens, florestas nativas, campos agrícolas e áreas urbanas.
+Por que os pássaros usam internet?
 
-No entanto, algumas estimativas podem ser feitas com base nas informações disponíveis:
+Porque eles sabem que uns têm redes sociais e outros têm blogs!
 
-1. Em 2019, o Instituto Nacional de Pesquisas Espaciais (Inpe) divulgou dados sobre incêndios na Amazônia Legal, mas esses dados não são diretamente aplicáveis à Caatinga.
+Espero que essa piada tenha sido divertida!",False,,,1.28,False,
+teste,sem_material,1,dados,Qual município teve mais focos no Tocantins?,"Para obter informações precisas sobre os focos de queima na região do Tocantins, recomendo consultar dados oficiais da Secretaria Estadual de Meio Ambiente ou do Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (Ibama). Esses órgãos têm acesso aos dados mais atualizados e confiáveis sobre incêndios florestais.
 
-2. No Nordeste, onde a Caatinga tem maior densidade populacional, as estimativas variam entre 50 mil e 300 mil focos por ano.
+Além disso, você pode acessar as notícias locais e regionais para entender melhor como está sendo gerenciada a situação nos diferentes municípios tocantis.",False,,,2.36,False,
+teste,sem_material,1,memoria,Quantos focos ele teve?,"Desculpe pela confusão anterior. Como um assistente de monitoramento de queimadas, não tenho acesso direto às informações específicas sobre focos de queima em cada município. Para obter essa informação precisa, sugiro entrar em contato diretamente com fontes oficiais como a Secretaria Estadual de Meio Ambiente ou o Ibama do Tocantins. Eles podem fornecer dados atualizados e detalhados sobre o número de focos de queima em cada localidade.",False,,,2.09,False,
+teste,sem_material,1,dados,Qual bioma tem o maior FRP médio?,"O Bioma Cerrado possui o maior Fator de Regeneração Permanente (FRP) médio entre todos os biomas brasileiros. Este indicador mede a capacidade das áreas degradadas de se recuperarem naturalmente após uma queima. No Cerrado, o FRP médio é geralmente superior a 0,5, o que significa que essas áreas tendem a se recuperares bem após uma queima.",True,"0,5",,1.94,False,inventa o significado de FRP
+teste,sem_material,1,memoria,E o maior risco?,"O maior risco associado à queima em regiões tropicais, incluindo o Cerrado, é a perda de biodiversidade. Aquecimento global, mudanças climáticas e práticas agrícolas intensivas contribuem para aumentar o número de focos de queima e reduzir a capacidade das plantas nativas de se reerguer após uma queima. Além disso, a queima também afeta significativamente a qualidade do solo e a saúde das árvores, prejudicando assim a produção agrícola e a economia regional.",False,,aumentar,2.83,False,
+teste,sem_material,1,fora,Qual a altura do Cristo Redentor?,"A altura total do Cristo Redentor, desde o topo do pedestal até o topo do corpo do Cristo, é de aproximadamente 70 metros.",False,70,,0.88,False,
+teste,sem_material,1,dados,"Há quanto tempo não chove no Ceará, em média?","Os períodos de estiagem no Ceará variam dependendo da região e do clima específico. Em geral, a estiagem pode durar de algumas semanas a meses, mas normalmente ocorre durante o verão catarinense, que ocupa a maioria do período de calor do ano. É importante lembrar que a precipitação varia muito de acordo com a localização geográfica dentro do estado. Para obter informações mais precisas, seria útil consultar dados meteorológicos atuais ou consultas ao site oficial do Climatempo ou do INMET (Instituto Nacional de Meteorologia).",False,,,2.88,False,
+teste,sem_material,1,dados,Em que dia o Pará teve mais focos?,"Para obter informações exatas sobre o número de focos de queima em determinado dia, você deve verificar as estimativas diárias dos órgãos ambientais locais ou federais responsáveis pelo monitoramento dessas incêndios. Isso pode ser feito através de plataformas online, sites oficiais ou aplicativos desenvolvidos por organizações ambientais. Recomenda-se entrar em contato com fontes oficiais para obter dados mais precisos e recentes.",False,,,2.31,False,
+teste,sem_material,1,memoria,E o Amazonas?,"Para obter informações específicas sobre o número de focos de queima na Amazônia, recomendo entrar em contato diretamente com fontes oficiais como o Instituto Nacional de Pesquisas Espaciais (INPE), que é responsável pela monitoração do deforestamento na região. Também podem ser úteis consultas aos relatórios mensais do Programa de Monitoramento da Biodiversidade (PMDB) ou outros recursos oficiais do governo federal.",False,,,2.24,False,
+teste,sem_material,2,dados,Qual é o terceiro bioma com mais focos?,"O terceiro bioma com mais focos de queima no Brasil é o Cerrado. Este bioma, conhecido como ""jardim da natureza"", está localizado principalmente na região nordeste do país.
 
-3. As estimativas podem variar dependendo da região específica dentro da Caatinga, como sejam áreas rurais, urbanas ou áreas protegidas.
+Alguns pontos importantes sobre o Cerrado:
 
-4. É importante notar que os dados precisos e atualizados sobre o número de focos de queima na Caatinga são difíceis de obter, pois",False,2019 50 300,,4.95,False,
-teste,sem_material,0,memoria,Qual estado concentra mais focos nela?,"O estado que concentra mais focos na Caatinga é o Ceará, seguido pelo Piauí. Estudos recentes indicaram que cerca de 70% dos focos de queima ocorrem na Caatinga no Ceará, enquanto que 60% dos focos ocorrem no Piauí. Esses estados têm uma grande parte da área caatingueira e frequentemente enfrentam problemas de queima associados ao uso intensivo da terra e às condições climáticas adversas.",True,70 60,,2.0,False,inventa percentuais
-teste,sem_material,0,memoria,Em que dia ela teve mais?,"Desculpe pela confusão anterior. Não há um único ""dia"" específico em que a Caatinga registrou mais focos de queima. Isso porque a quantidade de focos pode variar significativamente dependendo da região específica e das condições climáticas. 
+1. É um dos biomas mais biodiversificados do mundo.
+2. Está localizado entre os estados de Goiás, Mato Grosso do Sul, Minas Gerais, Tocantins e Bahia.
+3. Sua vegetação típica é formada por árvores baixas e herbáceas.
+4. É uma importante fonte de recursos naturais, incluindo minérios e água.
+5. A sua grande diversidade de espécies faz dele um bioma vulnerável à queima.
 
-Para obter dados mais precisos e atualizados sobre o número de focos de queima na Caatinga, recomendo consultar fontes oficiais como o Instituto Nacional de Pesquisas Espaciais (Inpe), que monitora regularmente incêndios em todo o país.",False,,,2.34,False,
-teste,sem_material,0,memoria,"E o Pantanal, quantos teve?","O Pantanal, um vasto ecossistema inundável situado no centro-norte do Brasil, também sofre com incêndios, mas sua situação é menos conhecida em comparação com outras áreas. Os incêndios no Pantanal geralmente ocorrem durante períodos de estiagem, quando as chuvas diminuem e a vegetação se torna mais propensa a queimar facilmente.
+É importante lembrar que além do Cerrado, outros biomas brasileiros também sofrem com problemas relacionados às queimas, mas o Cerrado tem sido particularmente notado por suas características únicas e importância ambiental.",False,,,4.25,False,
+teste,sem_material,2,memoria,E o quarto?,"O quarto bioma com mais focos de queima no Brasil é o Pantanal. Este bioma, conhecido como ""o jardim das bacias hidrográficas"", está localizado principalmente nos estados do Paraná, Santa Catarina e Mato Grosso do Sul.
 
-Estudos e registros específicos sobre o número de focos de queima no Pantanal são limitados. No entanto, sabemos que ele enfrenta desafios similares aos outros biomas brasileiros, com focos de queima sendo registrados em áreas de pastagem, florestas tropicais e áreas protegidas.
+Alguns pontos importantes sobre o Pantanal:
 
-Para obter dados mais precisos e atualizados sobre o número de focos de queima no Pantanal, sugiro consultar fontes oficiais como o Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renováveis (IBAMA) ou o Instituto Nacional de Pesquisas Espaciais (Inpe).",False,,,3.88,False,
-teste,sem_material,1,dados,Qual o total de focos em Mato Grosso?,"Desculpe pela confusão anterior, mas como assistente de monitoramento de queimadas, não tenho acesso direto às informações atualizadas sobre os focos de queima em tempo real ou por estado específico. Para obter essa informação atualizada, recomendo que você consulte as fontes oficiais da Secretaria Estadual de Meio Ambiente (SEMA) do Estado de Mato Grosso ou veja notícias oficiais locais para ter uma visão mais precisa e atualizada dos focos de queima naquele estado.",False,,,1.84,False,
-teste,sem_material,1,memoria,E em Rondônia?,"Desculpe pela confusão anterior, mas como assistente de monitoramento de queimadas, não tenho acesso direto às informações atualizadas sobre os focos de queima em tempo real ou por estado específico. Para obter essa informação atualizada, recomendo que você consulte as fontes oficiais da Secretaria Estadual de Meio Ambiente (SEMA) do Estado de Rondônia ou veja notícias oficiais locais para ter uma visão mais precisa e atualizada dos focos de queima naquele estado.",False,,,2.23,False,
-teste,sem_material,1,memoria,Qual deles teve menos?,"Como assistente de monitoramento de queimadas, eu não tenho acesso a dados específicos sobre quantas áreas foram atingidas por queimas em cada estado. No entanto, é importante lembrar que esses números podem variar dependendo das fontes e períodos de coleta de dados. Para obter informações mais precisas e atualizadas, sugiro consultar as fontes oficiais dos governos estaduais ou órgãos ambientais desses estados.",False,,,1.7,False,
-teste,sem_material,1,memoria,Qual a diferença entre eles?,"A diferença entre Mato Grosso e Rondônia pode ser percebida em termos geográficos, climáticos e econômicos. Mato Grosso está localizado no centro-norte do Brasil, enquanto Rondônia se encontra no norte do país. Isso resulta em diferenças significativas nas condições climáticas e ecologicamente.
+1. É um bioma caracterizado por seu vasto lago e planície inundável.
+2. Está localizado entre os rios Paraguai e Madeira.
+3. Suas características únicas são a presença de grandes áreas de água durante todo o ano e a abundância de vida aquática e terrestre.
+4. É um importante habitat para muitas espécies animais e plantas endêmicas.
+5. Tem uma grande importância econômica, sendo usado para atividades turísticas e agricultura.
 
-Mato Grosso tem um clima tropical semiárido com baixas precipitações e alta temperatura durante todo o ano. A região é conhecida por sua agricultura irrigada, especialmente no Pantanal, onde ocorrem grandes eventos de queima de pastagens.
+É importante lembrar que além do Pantanal, outros biomas brasileiros também sofrem com problemas relacionados às queimas, mas o Pantanal tem sido particularmente notado por suas características únicas e importância ambiental.",False,,,4.35,False,
+teste,sem_material,3,dados,O risco de fogo na Bahia está em que nível?,"A situação atual do risco de fogo na Bahia é considerada moderado. A previsão meteorológica para o estado indica condições climáticas favoráveis ao crescimento das chamas, especialmente durante períodos de seca prolongados.
 
-Rondônia, por outro lado, possui um clima tropical amazônico com altas temperaturas e poucas precipitações. É conhecido por suas florestas tropicais e rios importantes, incluindo o Rio Madeira, que desemboca no Amazonas.
+No entanto, é importante lembrar que as condições podem variar dependendo da localização geográfica dentro do estado. Portanto, é recomendável que os órgãos responsáveis pelo monitoramento de queimadas e defesa civil mantenham uma vigilância constante e ajustem suas estratégias conforme necessário.
 
-Em termos econômicos, Mato Grosso é um importante centro industrial e agrícola, enquanto Rondônia é conhecida por seu turismo e mineração, principalmente a extração de diamantes.
+Para obter informações mais precisas e atualizadas, recomenda-se consultar fontes oficiais como o site do Instituto Nacional de Pesquisas Espaciais (INPE) ou o site do Ministério da Defesa Civil.",False,,crescimento,3.01,False,
+teste,sem_material,3,fora,Como vai ser o mês que vem?,"Desculpe pela confusão anterior, mas como assistente de monitoramento de queimadas, não tenho acesso às informações atuais ou futuras. Para obter informações sobre o mês que vem, sugiro que você consulte sites oficiais de defesa civil ou serviços meteorológicos locais. Esses recursos fornecem dados mais recentes e precisos sobre condições climáticas e riscos de incêndios.",True,,,1.84,True,
+teste,sem_material,3,fora,Qual a senha do wifi?,"Desculpe, mas como assistente de monitoramento de queimadas, eu não tenho acesso aos detalhes específicos de redes Wi-Fi. Se você estiver tentando acessar um Wi-Fi público, é sempre bom verificar a senha pública disponível. No entanto, lembre-se de nunca compartilhar senhas de rede com outras pessoas, pois isso pode comprometer sua privacidade e segurança online.",True,,,1.83,True,
+teste,sem_material,4,noticias,"Por que o STF deu prazo de 30 dias, segundo as notícias?","O Supremo Tribunal Federal (STF) decidiu dar um prazo de 30 dias para que os estados e municípios apresentem suas propostas de combate às queimadas na Amazônia Legal. Esta decisão foi tomada após uma série de queimadas devastadoras ocorridas nos últimos anos, especialmente nas regiões amazônica e atlântica.
 
-Portanto, embora ambos os estados possam ter problemas relacionados à queima de veget",False,,alta,4.09,False,
-teste,sem_material,2,dados,Que porcentagem dos focos está no Cerrado?,"O Cerrado representa aproximadamente 20% da área total de queimadas registradas nos Estados Unidos desde 2014. No entanto, é importante notar que essa proporção pode variar dependendo das fontes e períodos analisados. Para obter uma estimativa mais precisa atualizada, recomendo consultar os dados oficiais ou especialistas na área.",False,20 2014,,1.29,False,
-teste,sem_material,2,dados,Qual estado aparece em terceiro lugar?,"Para fornecer um ranking atualizado com as informações mais precisas, sugiro verificar os dados recentemente publicados pela Secretaria de Meio Ambiente ou pelo Instituto Nacional de Pesquisas Espaciais (INPE) no site oficial do INPE. Esses órgãos têm acesso direto aos dados meteorológicos e climáticos, incluindo as condições atmosféricas que podem influenciar as queimadas.",False,,,1.48,False,
-teste,sem_material,2,dados,Quantos focos foram detectados em 20/09/2026?,"Desculpe, mas como assistente de monitoramento de queimadas, não tenho acesso real a dados atuais ou futuros. Os dados são geralmente disponibilizados diariamente pelos órgãos governamentais responsáveis pela monitoração de incêndios florestais. Se você estiver interessado em saber quantos focos foram detectados em determinada data específica, seria melhor procurar informações através desses órgãos oficiais.",False,,,1.78,False,
-teste,sem_material,2,dados,Qual foi a maior FRP registrada no país?,"A Grande Fumaça Regional (GFRP) é um termo usado para descrever grandes volumes de fumaça provenientes de áreas de queima em larga escala. Embora não haja uma ""maior"" FRP registrada no Brasil, a Grande Fumaça Regional de 2015-2016 é considerada a mais significativa já registrada.
+A medida tem como objetivo garantir que esses órgãos possam elaborar planos eficazes de prevenção e combate às queimadas, levando em consideração as condições locais e regionais. A intenção é evitar que novas grandes incêndios sejam causados por negligência ou falta de planejamento adequado.
 
-Esta grande fumaça ocorreu entre maio e outubro de 2015, causando danos ambientais significativos e afetando a saúde humana e animais. A fumaça resultou de uma série de incêndios florestais intensos em várias regiões brasileiras, especialmente no Nordeste, Centro-Oeste e Sudeste.
+É importante lembrar que esta decisão não impede que outras medidas urgentes sejam adotadas imediatamente para conter as queimadas, mas sim que haja tempo suficiente para que os governos estaduais e municipais desenvolvam estratégias específicas e implementem programas efetivos de prevenção e combate às queimadas.",True,,,4.5,True,
+teste,sem_material,4,noticias,"Quanto do fogo no Brasil é causado pela ação humana, segundo o monitoramento?","Desculpe, mas como assistente de monitoramento de queimadas, eu não tenho acesso direto aos dados atualizados da situação dos incêndios florestais no Brasil. Os números exatos sobre a proporção de queimadas causadas pela ação humana são frequentemente discutidos e podem variar dependendo das fontes e períodos analisados.
 
-É importante lembrar que a defesa contra incêndios florestais é uma tarefa complexa e envolve muitos aspectos, incluindo planejamento, preparação, resposta rápida e comunicação eficaz.",False,2015 2016,,3.46,False,
-teste,sem_material,3,dados,Quantos focos houve em Marcelândia?,"Desculpe pela confusão anterior, mas como assistente de monitoramento de queimadas, eu não tenho acesso direto às informações específicas sobre focos de queima em uma cidade específica como Marcelândia. Para obter essa informação atualizada, você precisaria consultar fontes oficiais ou especializadas em monitoramento ambiental, como as agências governamentais brasileiras responsáveis por esse tipo de monitoramento.
+Para obter informações mais precisas e atuais sobre esse tema, recomendo consultar fontes oficiais do governo brasileiro, organizações ambientais ou instituições especializadas em monitoramento de incêndios florestais. Essas entidades geralmente disponibilizam estatísticas detalhadas sobre o número de incêndios registrados, sua distribuição geográfica e a causa principal de cada caso.",False,,,3.35,False,
+teste,sem_material,4,noticias,O que aconteceu em Tartarugalzinho?,"Desculpe, mas parece que há um erro na sua pergunta. Não existe local chamado ""Tartarugalzinho"" no Brasil. É possível que você esteja confundindo com outro lugar ou terminei de escrever algo anteriormente. 
 
-Se você precisa saber quantos focos de queima existem em Marcelândia, sugiro que você verifique os dados oficiais da Secretaria Estadual de Meio Ambiente (SEMA) do estado de Minas Gerais, onde Marcelândia está localizada, ou consulte um site de monitoramento de incêndios florestais na internet. Esses recursos fornecem informações mais precisas e atualizadas sobre o estado das queimas em todo o país.",False,,,2.93,False,
-teste,sem_material,3,memoria,Que percentual do país isso representa?,"Como assistente de monitoramento de queimadas, eu não tenho acesso a dados detalhados sobre a proporção exata desses focos em relação ao total do território nacional. No entanto, para obter essas informações, você pode verificar os dados oficiais dos órgãos ambientais federais ou estaduais, como a Agência Nacional de Vigilância Sanitária (Anvisa), a Agência Nacional de Energia Elétrica (Aneel), ou a Secretaria de Meio Ambiente e Desenvolvimento Sustentável (Semasa).
+Se você está interessado em saber sobre alguma área específica, por favor forneça mais detalhes ou contexto. Se você está procurando informações sobre eventos recentes, posso tentar ajudar com informações gerais sobre incêndios florestais ou outros assuntos relacionados à Amazônia.",False,,,2.52,False,
+teste,sem_material,5,dados,Compare Piauí e Bahia em número de focos.,"Para comparar o número de focos de queima (ou incêndios florestais) entre os estados do Piauí e da Bahia, seria necessário consultar dados oficiais ou estatísticas atualizadas dos órgãos ambientais desses estados.
 
-Esses órgãos geralmente mantêm registros detalhados sobre incêndios florestais e podem fornecer informações sobre a proporção relativa desses focos em relação ao território nacional. Além disso, você também pode acessar plataformas online dedicadas à monitoração de incêndios florestais, como o Sistema de Informações Integradas de Incêndios Florestais (Siiif).",False,,,3.38,False,
-teste,sem_material,3,dados,Santa Catarina teve focos?,"Desculpe, mas como assistente de monitoramento de queimadas, eu não tenho acesso a informações específicas sobre focos de queima em Santa Catarina. Para obter essa informação atualizada, você precisaria consultar fontes oficiais ou especializadas em monitoramento ambiental, como as agências governamentais brasileiras responsáveis por esse tipo de monitoramento.
+No entanto, aqui estão algumas informações gerais:
 
-Para obter dados mais precisos e recentes, sugiro que você verifique os dados oficiais da Secretaria Estadual de Meio Ambiente (SEM-SC) ou outras fontes governamentais locais. Isso permitirá que você obtenha informações mais precisas e atualizadas sobre o estado das queimas em Santa Catarina.",True,,,2.58,False,não responde
-teste,sem_material,4,dados,Qual o risco de fogo médio no Maranhão?,"O risco de incêndios florestais ou ""fogo médio"" no Maranhão varia dependendo da região e das condições climáticas específicas. No entanto, geralmente, o estado enfrenta um alto nível de riscos associados à vegetação exuberante e às condições úmidas.
+1. **Piauí**: O estado do Piauí tem uma área extensa de floresta nativa, especialmente na região amazônica. Além disso, o estado possui um sistema de defesa civil robusto e uma política pública para combater incêndios florestais.
 
-Aqui estão alguns pontos importantes:
+2. **Bahia**: A Bahia também tem uma grande parte de sua área coberta por florestas tropicais. No entanto, a região costeira e as áreas urbanas têm maior risco de incêndio florestal.
 
-1. **Vegetação Exuberante**: A grande quantidade de árvores e plantas na região favorece incêndios naturais.
+Sem acesso direto aos dados mais recentes, não posso fornecer números exatos. No entanto, geralmente, estados com maior densidade urbana e atividades agrícolas podem ter mais focos de queima. 
 
-2. **Condicionamento Climático**: As temperaturas elevadas e as precipitações frequentes podem aumentar o potencial de incêndios.
-
-3. **População Rural**: A presença de muitos agricultores e pastores pode contribuir para o aumento dos incêndios.
-
-4. **Desmatamento**: A remoção de áreas de mata nativa pode tornar a terra mais propensa a incêndios.
-
-5. **Intervenção Humana**: A falta de controle e monitoramento adequado também contribui para o aumento do risco.
-
-Para manter os níveis de incêndios controlados, é importante uma combinação de políticas ambientais, gestão de combustível",False,,,3.86,False,
-teste,sem_material,4,dados,"Entre Acre e Bahia, quem teve mais focos?","Como assistente de monitoramento de queimadas, não tenho acesso direto aos dados atualizados e precisos sobre focos de queima por regiões específicas como Acre e Bahia. Para obter informações mais recentes e detalhadas sobre focos de queima em cada estado, recomendo consultar fontes oficiais ou especializadas em monitoramento de incêndios florestais, como a Secretaria Nacional de Defesa Civil (Secondef) ou outras agências governamentais brasileiras.",True,,,1.87,False,não responde
-teste,sem_material,5,noticias,Quantos parques estaduais São Paulo reabriu após os incêndios?,"Infelizmente, não tenho informações específicas sobre quantos parques estaduais de São Paulo foram reabertos após os incêndios. Para obter essa informação precisa, recomendo que você consulte as últimas notícias oficiais ou fontes confiáveis sobre o estado das áreas afetadas pelo desastre ambiental na região metropolitana de São Paulo.",False,,,1.29,False,
-teste,sem_material,5,noticias,"Quantos hectares de desmatamento ou queda a Mata Atlântica teve no primeiro semestre, segundo as notícias?","Desculpe pela confusão anterior, mas como assistente de monitoramento de queimadas, eu não tenho acesso direto às informações mais recentes sobre desmatamentos ou quedas da Mata Atlântica. As informações precisas sobre esses eventos são frequentemente divulgadas por órgãos governamentais e organizações ambientais.
-
-Para obter dados atualizados e precisos sobre esse tipo de atividade, sugiro consultar:
-
-1. Portais oficiais dos órgãos ambientais brasileiros.
-2. Sites de notícias especializados em meio ambiente.
-3. Relatórios anuais do IBGE (Instituto Brasileiro de Geografia e Estatística).
-4. Organizações ambientais e defensores da natureza.
-
-Essas fontes fornecem informações detalhadas e atualizadas sobre desmatamentos e outras atividades ameaçadoras à biodiversidade brasileira.",False,,,3.03,False,
-teste,sem_material,5,noticias,O que as notícias de 2026 dizem sobre a fumaça em Manaus?,"Como assistente de monitoramento de queimadas, eu não tenho acesso a informações atuais ou futuras sobre fumaça em Manaus ou qualquer outra cidade. Minha capacidade se limita ao monitoramento real-time de queimadas em todo o Brasil. Se você estiver interessado em notícias sobre fumaça em Manaus, sugiro verificar sites de notícias locais ou internacionais para obter informações mais atualizadas.",True,,,1.7,False,não responde
-teste,sem_material,6,noticias,Quanto o Brasil reduziu de emissões de gases do efeito estufa em 2023?,"Peço desculpas pela confusão anterior, mas como assistente de monitoramento de queimadas, não tenho acesso direto às informações específicas sobre as emissões de gases do efeito estufa do Brasil em 2023 ou qualquer outro ano específico.
-
-Para obter essas informações precisas, você pode consultar os relatórios anuais da Organização Meteorológica Mundial (OMM) ou outros órgãos governamentais responsáveis por monitorar e analisar esses dados. Estes documentos fornecem detalhes sobre as emissões globais de gases do efeito estufa, incluindo aquecimento global, que são importantes para entendermos o impacto das atividades humanas na atmosfera.
-
-Se você está interessado em saber mais sobre as queimadas no Brasil, posso ajudá-lo com informações gerais sobre esse assunto, como sua natureza, impactos ambientais e medidas preventivas implementadas pelo governo brasileiro.",False,,,3.1,False,
-teste,sem_material,6,noticias,"Qual foi o aumento de crimes ambientais na Amazônia Legal, segundo a PRF?","Desculpe, mas como assistente de monitoramento de queimadas, não tenho acesso a informações atualizadas sobre crimes ambientais na Amazônia Legal ou outras áreas. Minha principal função é monitorar e informar sobre incêndios florestais e suas consequências. Para obter informações mais recentes sobre crimes ambientais, sugiro verificar fontes oficiais como a Polícia Rodoviária Federal (PRF), órgãos ambientais locais ou instituições de pesquisa especializadas em segurança pública e meio ambiente.",False,,,1.92,False,
-teste,sem_material,7,fora,"Quantos focos houve em janeiro de 2020, segundo a base do INPE carregada?","Desculpe pela confusão anterior, mas como assistente de monitoramento de queimadas, não tenho acesso direto à base de dados do Instituto Nacional de Pesquisas Espaciais (INPE) ou aos dados específicos daquele mês. Para obter informações atualizadas e precisas sobre o número de focos de queima registrados em janeiro de 2020, recomendo consultar os relatórios oficiais do INPE ou fontes oficiais do governo brasileiro.",True,,,1.78,True,
-teste,sem_material,7,fora,Quem é o prefeito de Porto Velho?,"Como assistente de monitoramento de queimadas, eu não tenho acesso ao mais recente informação sobre políticos locais. Por favor, consulte um site oficial do governo federal ou uma fonte confiável para obter as informações mais atuais sobre o prefeito de Porto Velho.",True,,,1.04,True,
-teste,sem_material,7,fora,Qual a cotação do dólar hoje?,"Desculpe pelo inconveniente, mas como assistente de monitoramento de queimadas, eu não tenho capacidade de fornecer informações financeiras atualizadas. A cotação do dólar pode variar dependendo das condições cambiais do mercado internacional. Recomendo verificar sites financeiros confiáveis ou aplicativos de câmbio para obter as últimas informações.",True,,,1.42,True,
-teste,sem_material,7,fora,Escreva um poema sobre o mar.,"Aqui está um poema sobre o mar:
-
-Oceano vasto e profundo,
-Sussurra sonhos na brisa.
-Corpo d'água imenso,
-Que abriga milhares de vida.
-
-Parede de areia branca,
-Caminhando entre suas ondas.
-Um mundo submerso,
-Que se revela com cada sol.
-
-Mar azul, coragem,
-Luz que ilumina o caminho.
-Vida selvagem, beleza,
-Que nos inspira sempre.
-
-Navegante dos tempos,
-Porto seguro onde todos se encontram.
-O mar, seu amigo eterno,
-Que nos ensina a ser fortes.",False,,,2.4,False,
-teste,sem_memoria,0,dados,Quantos focos a Caatinga registrou?,A Caatinga registrou 198 focos durante o período mencionado.,True,,,0.96,True,
-teste,sem_memoria,0,memoria,Qual estado concentra mais focos nela?,"O estado que concentra mais focos é o Pará, com 1.060 focos.",False,,,0.94,False,
-teste,sem_memoria,0,memoria,Em que dia ela teve mais?,"Naqueles três dias, ela teve mais focos em 21/09/2026, com 1.616 focos.",False,,,1.06,False,
-teste,sem_memoria,0,memoria,"E o Pantanal, quantos teve?","No Pantanal, houve 7 focos de queima, representando 0,2% do Brasil.",True,,,1.67,True,
-teste,sem_memoria,1,dados,Qual o total de focos em Mato Grosso?,"Em Mato Grosso, foram identificados 479 focos de queima. Esses focos correspondem a 13,2% do total de focos no Brasil durante esse período.",True,,,1.87,True,
-teste,sem_memoria,1,memoria,E em Rondônia?,"Em Rondônia, foram registrados 19 focos de queima nas últimas três datas analisadas. Este número representa aproximadamente 2,2% do total de focos registrados no Brasil durante esse período. As condições climáticas, incluindo um médio de 69,1 megawatts de potência relativa à queima (FRP) e um risco de fogo médio de 0,44, indicam que o risco de incêndios florestais está moderado. No bioma amazônico, Rondônia tem sido particularmente afetado, com 80 focos sendo registrados nesse período.",True,,,3.3,False,"diz 19 focos em três dias, são 80"
-teste,sem_memoria,1,memoria,Qual deles teve menos?,"O bioma com menos focos foi a Mata Atlântica, com apenas 17 focos.",False,,,0.92,False,
-teste,sem_memoria,1,memoria,Qual a diferença entre eles?,"Os focos de queima observados pelo INPE representam áreas de alta atividade de queima nas regiões brasileiras. Os dados mostram que:
-
-- O total de focos em todo o país durante o período de 19/09/2026 a 21/09/2026 foi de 3.639 focos.
-- O máximo de focos notificados em um único dia foi 1.616.
-- As regiões mais afetadas incluem a Amazônia (com 2.415 focos), seguida pela Cerrado (1.001 focos) e a Caatinga (198 focos).
-
-No entanto, a principal diferença está na natureza e impacto dessas queimadas. Elas podem ter origem humanizada, causando danos significativos aos ecossistemas locais, especialmente em áreas sensíveis ao fogo como o Cerrado e o Pantanal. Além disso, a intensidade e duração destes incêndios são maiores, resultando em perdas ainda maiores.",False,,,4.81,False,
-teste,sem_memoria,2,dados,Que porcentagem dos focos está no Cerrado?,"O Cerrado representa 27,5% dos focos detectados no Brasil durante esse período.",True,,,1.03,True,
-teste,sem_memoria,2,dados,Qual estado aparece em terceiro lugar?,"O estado em terceiro lugar é o Amazonas, com 696 focos.",False,,,1.12,False,
-teste,sem_memoria,2,dados,Quantos focos foram detectados em 20/09/2026?,988 focos foram detectados em 20/09/2026.,True,,,1.07,True,
-teste,sem_memoria,2,dados,Qual foi a maior FRP registrada no país?,"A maior FRP (Foco Relativamente à População) registrada no país foi de 1.355,8 MW, ocorrendo em 21/09/2026.",True,,,2.08,False,inventa o significado de FRP
-teste,sem_memoria,3,dados,Quantos focos houve em Marcelândia?,"Em Marcelândia, foram registrados 82 focos de queima.",True,,,0.86,True,
-teste,sem_memoria,3,memoria,Que percentual do país isso representa?,"O Brasil acumulou 2,45 milhões de hectares de área queimada entre janeiro e julho de 2025, representando cerca de 11% da área total do país.",False,,,1.73,False,
-teste,sem_memoria,3,dados,Santa Catarina teve focos?,Nenhum foco de calor registrado no período mencionado em Santa Catarina.,True,,,1.27,True,
-teste,sem_memoria,4,dados,Qual o risco de fogo médio no Maranhão?,"No Maranhão, o risco de fogo médio é de 0,98 (de 0 a 1, classe crítico).",True,,,1.87,True,
-teste,sem_memoria,4,dados,"Entre Acre e Bahia, quem teve mais focos?","Acre teve mais focos de queima do que Bahia, com 115 focos contra 89 focos.",True,,,2.04,True,
-teste,sem_memoria,5,noticias,Quantos parques estaduais São Paulo reabriu após os incêndios?,Não encontrei essa informação nos dados do projeto.,False,,,0.87,False,
-teste,sem_memoria,5,noticias,"Quantos hectares de desmatamento ou queda a Mata Atlântica teve no primeiro semestre, segundo as notícias?","O desmatamento na Mata Atlântica caiu 55% no primeiro semestre de 2024 em comparação com o mesmo período do ano anterior, conforme informado nas notícias.",True,,,2.09,True,
-teste,sem_memoria,5,noticias,O que as notícias de 2026 dizem sobre a fumaça em Manaus?,"Manaus registrou a pior qualidade do ar do país nesta sexta-feira, com o índice de qualidade do ar (AQI⁺) carregado de partículas liberadas pelas queimadas. Os bombeiros precisaram de um avião para conter um incêndio que já passava de 48 horas dentro da própria cidade. Este cenário ocorre após um mês sem chuva e início de setembro sob chamas, levando à suspensão do uso do fogo em todo o estado.",True,,,2.96,True,
-teste,sem_memoria,6,noticias,Quanto o Brasil reduziu de emissões de gases do efeito estufa em 2023?,O Brasil reduziu em 12% as emissões de gás carbônico equivalente (GtCO2e) em 2023 em comparação com o ano anterior.,True,,,1.85,True,
-teste,sem_memoria,6,noticias,"Qual foi o aumento de crimes ambientais na Amazônia Legal, segundo a PRF?","Houve um aumento de 88% nas ocorrências de crimes ambientais na Amazônia Legal entre o início de agosto de 2023 e o final de setembro deste ano, conforme informado pela Polícia Rodoviária Federal (PRF).",True,,,1.98,True,
-teste,sem_memoria,7,fora,"Quantos focos houve em janeiro de 2020, segundo a base do INPE carregada?",Não encontrei essa informação nos dados do projeto.,True,,,0.81,True,
-teste,sem_memoria,7,fora,Quem é o prefeito de Porto Velho?,Não encontrei essa informação nos dados do projeto.,True,,,1.29,True,
-teste,sem_memoria,7,fora,Qual a cotação do dólar hoje?,Não encontrei essa informação nos dados do projeto.,True,,,1.02,True,
-teste,sem_memoria,7,fora,Escreva um poema sobre o mar.,"Oceano vasto, infinito,
-Mar encantador, onde sonhos dançam.
-Nuvens brancas, como vestígios,
-Caminham pelo horizonte, silencioso.
-
-Corações batem forte, esperança,
-Em cada olhar, em cada riso.
-Na areia branca, as ondas dançam,
-E o sol brilha, iluminando a paz.
-
-Vozes harmoniosas, melodias,
-Enfeitam o ar, refletindo a beleza.
-Amor incondicional, em cada pétala,
-Celebra a natureza, em seu lindo esplendor.
-
-Oceano, teu rosto, tão belo,
-Teu sorriso, tão sincero.
-Nosso lar, nosso refúgio,
-Tu és nossa mãe, sempre presente.",False,,,3.79,False,
+É importante lembrar que a gestão de incêndios florestais é complexa e varia muito dependendo das",False,,,4.84,False,
+teste,sem_material,5,dados,Quantos focos houve em 19/09/2026?,"Desculpe pela confusão anterior. Como assistente de monitoramento de queimadas, eu não tenho acesso real a dados atuais ou históricos específicos. Para obter informações precisas sobre focos de queima em determinado dia específico, você deve verificar fontes oficiais como o Sistema Nacional de Informações de Incêndios Florestais e de Proteção ao Meio Ambiente (SININFRA), que são responsáveis pelo registro e monitoramento desses eventos.",False,,,2.14,False,
+teste,sem_memoria,0,dados,Quantos focos o Maranhão registrou?,O Maranhão registrou 260 focos de queimada durante o período analisado.,True,,,1.75,True,
+teste,sem_memoria,0,memoria,Qual bioma foi o mais atingido lá?,"O bioma Amazônico foi o mais atingido, com 2.415 focos de queima.",False,,,1.22,False,
+teste,sem_memoria,0,memoria,E qual a classe de risco?,"A classe de risco de fogo foi classificada como CRÍTICO para estados como Piauí, Rio Grande do Norte, Bahia, Ceará, Paraíba, Pernambuco, Tocantins, Maranhão, Goiás, além de outros. No entanto, não há informações específicas sobre as classes de risco para cada município individualmente.",True,,,2.36,False,"lista estados, sem responder sobre o Maranhão"
+teste,sem_memoria,0,memoria,E no Pará?,"No Pará, foram registrados 1.060 focos de queima, representando 29,1% do total de focos no Brasil durante o período analisado. Este estado tem sido um epicentro das queimas, com altos níveis de risco de incêndios florestais. As áreas amazônicas têm sido particularmente afetadas, com 2.415 focos, correspondendo a 66,4% do total de focos no país.",True,,,2.94,False,não responde sobre o risco
+teste,sem_memoria,0,memoria,Qual dos dois teve menos focos?,O Cerrado teve menos focos do que o Pantanal neste período.,False,,,0.97,False,
+teste,sem_memoria,0,fora,Quem escreveu Dom Casmurro?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,sem_memoria,0,dados,Qual o total de focos no Brasil?,O total de focos no Brasil durante esse período foi de 3.639 focos.,True,,,1.05,True,
+teste,sem_memoria,0,fora,E em agosto de 2025?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,sem_memoria,0,dados,Qual estado tem o menor número de focos?,"O estado com o menor número de focos é Rio Grande do Sul, com apenas 1 foco.",True,,,1.08,True,
+teste,sem_memoria,0,noticias,O que as notícias falam sobre o plano homologado por Dino?,"O ministro Flavio Dino homologou um plano anti-incêndios na Amazônia e Pantanal. Ele determinou que o governo federal detalhe o custeio para a execução das ações dentro de 20 dias. O plano inclui medidas de prevenção e enfrentamento a incêndios, além de melhorias nos sistemas de gestão ambiental e territorial.",True,,,2.42,True,
+teste,sem_memoria,0,memoria,Qual foi a primeira pergunta que eu fiz?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,False,,,0.0,False,
+teste,sem_memoria,0,fora,Conta uma piada?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,sem_memoria,1,dados,Qual município teve mais focos no Tocantins?,"Formoso do Araguaia, com 79 focos, foi o município que teve mais focos no Tocantins durante este período.",True,,,1.33,True,
+teste,sem_memoria,1,memoria,Quantos focos ele teve?,O total de focos de queima registrados foi de 3.639.,False,,,1.09,False,
+teste,sem_memoria,1,dados,Qual bioma tem o maior FRP médio?,"O bioma com o maior FRP médio no Brasil é o Cerrado, com 58,9 MW.",True,,,1.23,True,
+teste,sem_memoria,1,memoria,E o maior risco?,"O maior risco de queima foi classificado como ALTO, com um índice de 0,78 de 1.",False,,,1.21,False,
+teste,sem_memoria,1,fora,Qual a altura do Cristo Redentor?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,sem_memoria,1,dados,"Há quanto tempo não chove no Ceará, em média?","No Ceará, a média de 12,7 dias sem chuva foi registrada durante o período analisado.",False,,,1.36,False,
+teste,sem_memoria,1,dados,Em que dia o Pará teve mais focos?,"O Pará teve mais focos em 21/09/2026, com 747 focos.",True,,,1.48,True,
+teste,sem_memoria,1,memoria,E o Amazonas?,"No Amazonas, existem 696 focos de queimadas, representando 19,1% do total nacional. Os focos ocorreram entre 19/09/2026 e 21/09/2026, tendo um médio de 40,2 MW de potência relativa perda (FRP) e um índice de risco de fogo classificado como MÉDIO. O estado tem sido afetado por um número significativo de focos, superando o valor registrado em outubro de 2025.",True,,,3.87,False,não diz o dia
+teste,sem_memoria,2,dados,Qual é o terceiro bioma com mais focos?,"O terceiro bioma com mais focos é o Caatinga, com 198 focos.",True,,,1.12,True,
+teste,sem_memoria,2,memoria,E o quarto?,O quarto artigo de Luciana como autora principal na Nature foi o quarto artigo.,False,,,1.55,False,
+teste,sem_memoria,3,dados,O risco de fogo na Bahia está em que nível?,O risco de fogo na Bahia está em nível CRÍTICO.,True,,,1.22,True,
+teste,sem_memoria,3,fora,Como vai ser o mês que vem?,"Só tenho focos de 19/09/2026 a 21/09/2026; não encontrei essa data nos dados. Para outras épocas, pergunte o que as notícias dizem.",True,,,0.0,True,
+teste,sem_memoria,3,fora,Qual a senha do wifi?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,True,
+teste,sem_memoria,4,noticias,"Por que o STF deu prazo de 30 dias, segundo as notícias?","O STF deu prazo de 30 dias para que o governo federal, estados da Amazônia Legal e estados do Pantanal apresentem planos emergenciais de ação educativa e conscientização sobre o manejo integrado do fogo.",True,,,1.56,True,
+teste,sem_memoria,4,noticias,"Quanto do fogo no Brasil é causado pela ação humana, segundo o monitoramento?","Segundo o monitoramento, 99% dos incêndios são por ação humana.",True,,,1.46,True,
+teste,sem_memoria,4,noticias,O que aconteceu em Tartarugalzinho?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0,False,recusou; a palavra do gabarito estava na própria recusa
+teste,sem_memoria,5,dados,Compare Piauí e Bahia em número de focos.,"Em número de focos, Piauí teve mais focos que Bahia. Piauí contava com 138 focos contra 89 no Estado da Bahia. A diferença foi de 49 focos.",True,,,2.1,True,
+teste,sem_memoria,5,dados,Quantos focos houve em 19/09/2026?,"Em 19/09/2026, foram registrados 1.035 focos de queima no Brasil.",True,,,1.18,True,

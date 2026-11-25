@@ -41,7 +41,7 @@ st.caption(
     "confira em \"De onde veio\"."
 )
 st.sidebar.button("Nova conversa", on_click=nova_conversa)
-st.sidebar.caption(f"Perguntas nesta conversa: {len(st.session_state.conversa.trocas)}")
+st.sidebar.caption(f"Perguntas nesta conversa: {len(st.session_state.mensagens)}")
 
 
 def mostrar_origem(m: dict):
@@ -82,9 +82,9 @@ if pergunta:
     with st.chat_message("assistant"):
         assunto, fatos, trechos = analise.reunir(pergunta, focos, u.load_busca(), memoria)
         conversa_recente = memoria.ultimas_respostas()
-        if assunto.fora_do_tema:
-            resposta, derivados, sem_origem, tendencia = a.FORA_DO_TEMA, [], [], None
-            fatos, trechos = [], []
+        if assunto.recusa:
+            resposta = a.recusar(assunto.recusa, focos["dia"].min(), focos["dia"].max())
+            derivados, sem_origem, tendencia, fatos, trechos = [], [], None, [], []
             st.markdown(resposta)
         else:
             mensagens = a.montar_mensagens(
@@ -104,8 +104,9 @@ if pergunta:
             tendencia = a.conferir_tendencia(
                 resposta, "\n".join(fatos) + a.formatar_noticias(trechos)
             )
-    memoria.adicionar(pergunta, resposta)
-    if not assunto.fora_do_tema:
+    # O que foi recusado não entra na memória, para não desviar a conversa.
+    if not assunto.recusa:
+        memoria.adicionar(pergunta, resposta)
         memoria.assunto = assunto
         analise.aprender_da_resposta(assunto, pergunta, resposta, focos)
     st.session_state.mensagens.append(

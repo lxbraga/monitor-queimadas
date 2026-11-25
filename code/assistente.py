@@ -25,10 +25,20 @@ PAPEL = (
     "jornalistas sobre queimadas no Brasil, em português do Brasil."
 )
 NAO_ENCONTREI = "Não encontrei essa informação nos dados do projeto."
-FORA_DO_TEMA = (
-    NAO_ENCONTREI + " Posso responder sobre os focos de calor do período carregado e "
-    "sobre as notícias de queimadas coletadas."
-)
+
+
+def recusar(motivo: str, inicio, fim) -> str:
+    """Resposta dada por código, sem o modelo, quando a pergunta não tem como ser respondida."""
+    if motivo == "periodo":
+        return (
+            f"Só tenho focos de {inicio:%d/%m/%Y} a {fim:%d/%m/%Y}; não encontrei essa data nos "
+            "dados. Para outras épocas, pergunte o que as notícias dizem."
+        )
+    return (
+        NAO_ENCONTREI + " Posso responder sobre os focos de calor do período carregado e "
+        "sobre as notícias de queimadas coletadas."
+    )
+
 
 REGRAS = """Regras:
 1. Use somente o material abaixo (DADOS e NOTÍCIAS) e a conversa. Não use outro conhecimento.
@@ -91,6 +101,8 @@ def montar_mensagens(
         blocos.append("NOTÍCIAS:\n" + formatar_noticias(trechos))
     if antigas := memoria.antigas():
         blocos.append("Início da conversa:\n" + antigas)
+    if destaque:
+        destaque = f"(Dado calculado para esta pergunta, use-o na resposta: {destaque})"
     return [
         {"role": "system", "content": "\n\n".join(blocos)},
         *memoria.recentes(),

@@ -330,7 +330,7 @@
   ]
  },
  {
-  "parte": "teste",
+  "parte": "desenvolvimento",
   "turnos": [
    {
     "tipo": "dados",
@@ -363,7 +363,7 @@
   ]
  },
  {
-  "parte": "teste",
+  "parte": "desenvolvimento",
   "turnos": [
    {
     "tipo": "dados",
@@ -399,7 +399,7 @@
   ]
  },
  {
-  "parte": "teste",
+  "parte": "desenvolvimento",
   "turnos": [
    {
     "tipo": "dados",
@@ -432,7 +432,7 @@
   ]
  },
  {
-  "parte": "teste",
+  "parte": "desenvolvimento",
   "turnos": [
    {
     "tipo": "dados",
@@ -458,7 +458,7 @@
   ]
  },
  {
-  "parte": "teste",
+  "parte": "desenvolvimento",
   "turnos": [
    {
     "tipo": "dados",
@@ -480,7 +480,7 @@
   ]
  },
  {
-  "parte": "teste",
+  "parte": "desenvolvimento",
   "turnos": [
    {
     "tipo": "noticias",
@@ -506,7 +506,7 @@
   ]
  },
  {
-  "parte": "teste",
+  "parte": "desenvolvimento",
   "turnos": [
    {
     "tipo": "noticias",
@@ -525,7 +525,7 @@
   ]
  },
  {
-  "parte": "teste",
+  "parte": "desenvolvimento",
   "turnos": [
    {
     "tipo": "fora",
@@ -546,6 +546,702 @@
     "tipo": "fora",
     "pergunta": "Escreva um poema sobre o mar.",
     "recusa": true
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual estado teve mais focos?",
+    "esperado": [
+     "Pará"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E o segundo?",
+    "esperado": [
+     "Amazonas"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Somando os dois, quantos focos?",
+    "esperado": [
+     "1\\.?756"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual bioma tem mais focos?",
+    "esperado": [
+     "Amazônia"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual o risco de fogo no Tocantins?",
+    "esperado": [
+     "crític"
+    ],
+    "proibido": [
+     "médio a alto",
+     "\\b(é|está|considerado|como)( um risco)? (médi[oa]|moderad[oa]|baix[oa]|alt[oa])\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E em Goiás?",
+    "esperado": [
+     "crític"
+    ],
+    "proibido": [
+     "médio a alto",
+     "\\b(é|está|considerado|como)( um risco)? (médi[oa]|moderad[oa]|baix[oa]|alt[oa])\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual dos dois teve mais focos?",
+    "esperado": [
+     "Tocantins"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual foi o primeiro estado que eu perguntei?",
+    "esperado": [
+     "Pará|não"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "O que as notícias dizem sobre a fumaça em Manaus?",
+    "esperado": [
+     "fumaça"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Quem ganhou a Copa do Mundo?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Quantos focos teve em janeiro de 2020?",
+    "recusa": true
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Onde priorizar as brigadas, pelos dados?",
+    "esperado": [
+     "Pará|Altamira|Tocantins"
+    ],
+    "proibido": [
+     "2020"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "O que as notícias dizem sobre crime nos incêndios do Amazonas?",
+    "esperado": [
+     "crimin|investiga"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Como está o Cerrado?",
+    "esperado": [
+     "1\\.?001"
+    ],
+    "proibido": [
+     "menos que a Amazônia"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Quantos anos tem o presidente?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "E em 2019?",
+    "recusa": true
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos o Ceará teve?",
+    "esperado": [
+     "\\b98\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual município teve mais focos lá?",
+    "esperado": [
+     "Forquilha"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E qual o risco de fogo?",
+    "esperado": [
+     "crític"
+    ],
+    "proibido": [
+     "médio a alto",
+     "\\b(é|está|considerado|como)( um risco)? (médi[oa]|moderad[oa]|baix[oa]|alt[oa])\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E na Bahia?",
+    "esperado": [
+     "crític"
+    ],
+    "proibido": [
+     "médio a alto",
+     "\\b(é|está|considerado|como)( um risco)? (médi[oa]|moderad[oa]|baix[oa]|alt[oa])\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual dos dois teve mais focos?",
+    "esperado": [
+     "Ceará"
+    ],
+    "proibido": [
+     "Bahia teve mais"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual estado do país tem o maior FRP médio?",
+    "esperado": [
+     "Bahia"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "E quem venceu o Oscar de melhor filme?",
+    "recusa": true
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos houve em todo o país?",
+    "esperado": [
+     "3\\.?639"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E só no dia 19?",
+    "esperado": [
+     "1\\.?035"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "E no ano passado, nesse mesmo dia?",
+    "recusa": true
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "O que as notícias dizem sobre a Terra Indígena Kayapó?",
+    "esperado": [
+     "17"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual foi o primeiro estado sobre o qual perguntei?",
+    "esperado": [
+     "Ceará"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Há quantos dias não chove no Piauí, em média?",
+    "esperado": [
+     "29,8"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Me passa a receita de um bolo?",
+    "recusa": true
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual bioma tem menos focos?",
+    "esperado": [
+     "Pampa"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E o segundo com menos?",
+    "esperado": [
+     "Pantanal"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos teve Rondônia?",
+    "esperado": [
+     "\\b80\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Em que dia foi pior?",
+    "esperado": [
+     "20/09|20 de setembro"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E o risco lá, é alto?",
+    "esperado": [
+     "médio|0,44"
+    ],
+    "proibido": [
+     "crític",
+     "^sim"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "Segundo as notícias, em que tipo de propriedade está o fogo no Amazonas?",
+    "esperado": [
+     "rurais|privad"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Quantos focos houve em fevereiro de 2018?",
+    "recusa": true
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual o total de focos no Acre?",
+    "esperado": [
+     "\\b115\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E em que município houve mais?",
+    "esperado": [
+     "Brasil[eé]ia"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Qual a capital da França?",
+    "recusa": true
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Voltando ao Acre, qual bioma é atingido?",
+    "esperado": [
+     "Amazônia|amazônico"
+    ],
+    "proibido": [
+     "2\\.?415"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Goiás ou Roraima: qual teve mais focos?",
+    "esperado": [
+     "Goiás"
+    ],
+    "proibido": [
+     "Roraima teve mais"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "O risco de fogo no Cerrado é preocupante?",
+    "esperado": [
+     "crític|0,99"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E na Amazônia?",
+    "esperado": [
+     "médio|0,65"
+    ],
+    "proibido": [
+     "Amazônia[^.]*crític"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual município lidera o número de focos?",
+    "esperado": [
+     "Altamira"
+    ],
+    "proibido": [
+     "1\\.?035",
+     "108"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Vai ter mais fogo na semana que vem?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Qual time ganhou o Brasileirão?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Quantas queimadas ocorreram em março de 2015?",
+    "recusa": true
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "Quantos por cento os incêndios florestais aumentaram no Amapá em uma semana, segundo o Ibama?",
+    "esperado": [
+     "161"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "Quantos focos de queimada o Brasil registrou em cinco anos, segundo a imprensa?",
+    "esperado": [
+     "1 milhão"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "Quem foi indiciado por atear fogo em floresta no Amapá?",
+    "esperado": [
+     "dupla|dois|quelônio|homens"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual o risco de fogo no Amazonas?",
+    "esperado": [
+     "médio|0,55"
+    ],
+    "proibido": [
+     "crític",
+     "\\balt[oa]\\b"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "O Rio Grande do Norte está em que classe de risco?",
+    "esperado": [
+     "crític"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "Que área a fumaça das queimadas cobriu em 2022, segundo o G1?",
+    "esperado": [
+     "5 milhões"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "Por que as queimadas no Amapá preocupam, segundo as notícias?",
+    "esperado": [
+     "Amapá|seca|focos"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos o Maranhão registrou?",
+    "esperado": [
+     "\\b260\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual bioma foi o mais atingido lá?",
+    "esperado": [
+     "Cerrado"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E qual a classe de risco?",
+    "esperado": [
+     "crític"
+    ],
+    "proibido": [
+     "médio a alto",
+     "\\b(é|está|considerado|como)( um risco)? (médi[oa]|moderad[oa]|baix[oa]|alt[oa])\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E no Pará?",
+    "esperado": [
+     "\\balt[oa]\\b|ALTO|0,77"
+    ],
+    "proibido": [
+     "crític"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual dos dois teve menos focos?",
+    "esperado": [
+     "Maranhão"
+    ],
+    "proibido": [
+     "Pará teve menos"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Quem escreveu Dom Casmurro?",
+    "recusa": true
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual o total de focos no Brasil?",
+    "esperado": [
+     "3\\.?639"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "E em agosto de 2025?",
+    "recusa": true
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual estado tem o menor número de focos?",
+    "esperado": [
+     "Distrito Federal|Rio Grande do Sul|nenhum"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "O que as notícias falam sobre o plano homologado por Dino?",
+    "esperado": [
+     "Dino|Amazônia|Pantanal"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual foi a primeira pergunta que eu fiz?",
+    "esperado": [
+     "Maranhão"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Conta uma piada?",
+    "recusa": true
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual município teve mais focos no Tocantins?",
+    "esperado": [
+     "Formoso do Araguaia"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Quantos focos ele teve?",
+    "esperado": [
+     "\\b79\\b"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual bioma tem o maior FRP médio?",
+    "esperado": [
+     "Cerrado"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E o maior risco?",
+    "esperado": [
+     "Caatinga|1,00"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Qual a altura do Cristo Redentor?",
+    "recusa": true
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Há quanto tempo não chove no Ceará, em média?",
+    "esperado": [
+     "57,"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Em que dia o Pará teve mais focos?",
+    "esperado": [
+     "21/09|21 de setembro"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E o Amazonas?",
+    "esperado": [
+     "19/09|19 de setembro"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual é o terceiro bioma com mais focos?",
+    "esperado": [
+     "Caatinga"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E o quarto?",
+    "esperado": [
+     "Mata Atlântica"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "O risco de fogo na Bahia está em que nível?",
+    "esperado": [
+     "crític"
+    ],
+    "proibido": [
+     "médio a alto",
+     "\\b(é|está|considerado|como)( um risco)? (médi[oa]|moderad[oa]|baix[oa]|alt[oa])\\b"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Como vai ser o mês que vem?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Qual a senha do wifi?",
+    "recusa": true
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "Por que o STF deu prazo de 30 dias, segundo as notícias?",
+    "esperado": [
+     "plano"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "Quanto do fogo no Brasil é causado pela ação humana, segundo o monitoramento?",
+    "esperado": [
+     "99"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "O que aconteceu em Tartarugalzinho?",
+    "esperado": [
+     "emergência|seca|queimada"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Compare Piauí e Bahia em número de focos.",
+    "esperado": [
+     "Piauí",
+     "138",
+     "89"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos houve em 19/09/2026?",
+    "esperado": [
+     "1\\.?035"
+    ]
    }
   ]
  }

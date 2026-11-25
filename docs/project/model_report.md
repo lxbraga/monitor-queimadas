@@ -18,7 +18,7 @@ Todos rodam localmente com HuggingFace Transformers. Não há chamada paga nem t
 
 O modelo precisa seguir instruções em português, caber num notebook sem placa de vídeo e ter licença aberta. O Qwen2.5 1,5B atende aos três; a versão de 0,5B fica como alternativa para máquinas com pouca memória (variável `MODELO_ASSISTENTE`), sem avaliação própria. Modelos de 7B ou mais responderiam melhor, mas passam de 14 GB de memória e ficam lentos em CPU.
 
-Tempo por resposta, medido num MacBook com M3 Max: mediana de 1,3 s e máximo de 2,6 s na GPU integrada; só em CPU, duas respostas medidas, de 7 s e 16 s, com a primeira palavra entre 3 e 5 s. Pico de 7,3 GB de RAM em CPU. Em notebooks comuns deve ser mais lento.
+Tempo por resposta, medido num MacBook com M3 Max: mediana de 1,2 s e máximo de 2,1 s no teste 3 na GPU integrada; só em CPU, duas respostas medidas, de 7 s e 16 s, com a primeira palavra entre 3 e 5 s. Pico de 7,3 GB de RAM em CPU. Em notebooks comuns deve ser mais lento.
 
 ### Como uma resposta é montada
 
@@ -29,7 +29,7 @@ Tempo por resposta, medido num MacBook com M3 Max: mediana de 1,3 s e máximo de
 5. **Geração.** Sem sorteio (`do_sample=False`), para a mesma conversa dar a mesma resposta.
 6. **Conferência.** Todo número da resposta é procurado no material. O que sai de uma conta simples é marcado como conta do modelo; o que não aparece em lugar nenhum vira aviso na tela. Palavras de tendência ("aumento", "queda") que o material não traz também.
 
-Pergunta fora do tema é recusada pelo código, sem chamar o modelo.
+Pergunta fora do tema, ou sobre focos de uma data que a base não cobre, é recusada pelo código, sem chamar o modelo, e não entra na memória.
 
 ### Engenharia de prompts
 
@@ -41,7 +41,10 @@ O prompt nasceu simples e cada parte foi incluída por causa de um erro visto na
 | Respondia de conhecimento próprio | Regra 1, regra 4 com a frase exata de recusa e bloqueio fora do tema por código |
 | Esquecia as regras em prompts longos | Lembrete curto junto da pergunta, no fim |
 | Pegava o total do país em vez do estado | Fatos do lugar perguntado vêm antes dos gerais |
-| Errava "qual dos dois teve mais?" | Comparação pronta, calculada, ao lado da pergunta |
+| Lia "risco de fogo médio 1,00" como risco médio | Material diz "classe CRÍTICO (índice 1,00 de 1)", sem a palavra "médio" |
+| Dava número de notícia para data fora da base | Data fora do período é recusada por código |
+| Errava "qual tem menos?" e "e o segundo?" | A posição pedida é calculada e vai junto da pergunta |
+| Errava "qual dos dois teve mais?" | Comparação pronta, calculada, ao lado da pergunta, dita só no sentido perguntado |
 | Misturava números de notícia com os dos focos | Regra 3, e notícia só entra se for relevante para a pergunta |
 | Confundia "1º" e "2º" do ranking com quantidades | Ordinais retirados do material |
 
@@ -49,31 +52,39 @@ O texto completo do prompt está em `REGRAS` e `LEMBRETE`, em `code/assistente.p
 
 ### Avaliação
 
-As perguntas e gabaritos estão em `data/processed/avaliacao_assistente.json`, em conversas, porque a memória só é testada em sequência. O primeiro teste (22 perguntas, 16 acertos) mostrou problemas e virou material de desenvolvimento, junto com as conversas iniciais. Depois dos ajustes foram escritas 26 perguntas novas, rodadas uma única vez e sem nenhuma mudança posterior no assistente. A correção automática foi revista à mão, com o motivo de cada mudança registrado em `resultado_avaliacao_assistente_teste_revisado.csv`.
+As perguntas e gabaritos estão em `data/processed/avaliacao_assistente.json`, em conversas, porque a memória só é testada em sequência. Cada teste foi escrito antes das correções que ele mede e rodado uma vez; depois virou material de desenvolvimento. A correção automática foi revista à mão, com o motivo de cada mudança registrado.
 
-| Versão | Dados | Memória | Notícias | Fora do tema | Total |
-|--------|-------|---------|----------|--------------|-------|
-| **Em uso** | **10/10** | **5/7** | 3/5 | **4/4** | **22/26 (85%)** |
-| Sem as regras do prompt | 7/10 | 5/7 | 3/5 | 2/4 | 17/26 |
-| Sem memória | 8/10 | 1/7 | 4/5 | 3/4 | 16/26 |
-| Sem os dados do projeto | 0/10 | 0/7 | 0/5 | 3/4 | 3/26 |
+| Teste | Conversas | Acertos, depois da revisão |
+|-------|-----------|----------------------------|
+| 1 | Curtas, até 4 perguntas | 22 de 26 (85%) |
+| 2 | Até 14 perguntas | 27 de 39 (69%); a versão do teste 1, nas mesmas perguntas, fez 24 |
+| 3 (versão final) | Até 12 perguntas | **25 de 30 (83%)** |
+
+O teste 1 era otimista: só tinha conversas curtas. O 2 mostrou três falhas que ele não via (classe de risco trocada, data fora da base respondida com número de notícia e assunto estranho aceito no meio da conversa) e outras nas perguntas de "qual tem mais" e "qual tem menos". O 3 mede a versão entregue.
+
+| Versão, no teste 3 | Dados | Memória | Notícias | Recusa | Total |
+|--------------------|-------|---------|----------|--------|-------|
+| **Em uso** | 10/11 | 6/9 | 3/4 | 6/6 | **25/30** |
+| Sem as regras do prompt | 11/11 | 6/9 | 2/4 | 6/6 | 25/30 |
+| Sem memória | 10/11 | 0/9 | 3/4 | 6/6 | 19/30 |
+| Sem os dados do projeto | 0/11 | 0/9 | 1/4 | 3/6 | 4/30 |
 
 Leitura dos resultados:
 
-- O que mais pesa é o material do projeto: sem ele o modelo acerta 3 de 26.
-- A memória faz o que se espera dela: 5 de 7 perguntas de continuação, contra 1 de 7.
-- As regras melhoram as perguntas de dados. Parte da diferença em "fora do tema" vem do bloqueio por código, que só existe na versão em uso.
-- A correção automática sozinha daria 23 tanto à versão em uso quanto à sem regras. A revisão à mão reprovou seis respostas da sem regras, que trazia números trocados ou explicações inventadas ao lado do termo esperado.
-- São 26 perguntas, escritas e corrigidas dentro do próprio projeto. Serve para comparar versões e achar falhas, não como medida definitiva.
+- O que mais pesa é o material do projeto: sem ele, 4 de 30.
+- A memória decide as perguntas de continuação: 6 de 9 com ela, nenhuma sem.
+- As regras do prompt não mudaram o total neste teste. Com a conta pronta e as recusas no código, sobra menos para elas. Ficaram porque as respostas saem mais curtas e com menos invenção: no desenvolvimento, 1 resposta com número sem origem, contra 4 sem as regras.
+- São 30 perguntas, escritas e corrigidas dentro do próprio projeto. Serve para comparar versões e achar falhas, não como medida definitiva.
 
-Erros da versão em uso no teste: "Em que dia ela teve mais?" (respondeu pelo país em vez do município), "Qual deles teve menos?" (listou os dois sem escolher), "Quantos parques São Paulo reabriu?" (não encontrou a notícia) e "fumaça em Manaus" com o ano na pergunta (respondeu com os focos).
+Erros da versão em uso no teste 3: "Qual dos dois teve menos focos?" (inverteu), "Qual foi a primeira pergunta que eu fiz?" (recusou), "Há quanto tempo não chove no Ceará?" (misturou dois números), "E o Amazonas?" depois de perguntar o dia do Pará (usou o país) e "O que aconteceu em Tartarugalzinho?" (não encontrou).
 
-Para refazer: `python -m code.modeling.avaliar_assistente teste`.
+Para refazer: `python -m code.modeling.avaliar_assistente teste`. São 120 respostas, cerca de 4 minutos num M3 Max. Resultados em `resultado_avaliacao_assistente_teste_revisado.csv` (teste 3) e `resultado_avaliacao_assistente_segundo_teste.csv`.
 
 ### Limitações
 
-- Em resposta sobre notícias, o modelo pode trocar lugares ou inverter uma comparação usando números corretos. Dois casos vistos depois do teste: perguntado sobre crime no Amazonas no meio de uma conversa, citou Mato Grosso; perguntado sobre o Cerrado, disse que ele queimou menos que a Amazônia quando a notícia dizia o contrário. A conferência automática vê números, não relações entre eles. Por isso cada resposta mostra de onde veio.
-- A busca é por palavras: "crime" não encontra "criminoso" de forma confiável.
+- Em notícias, o modelo pode ligar números certos ao fato errado. No teste 2, disse que 61,25% dos focos do Brasil eram da Terra Indígena Kayapó; a notícia falava da parcela dos focos da própria terra registrada em setembro. A conferência automática vê números, não relações entre eles. Por isso cada resposta mostra de onde veio.
+- Perguntas gerais de conhecimento que coincidem com palavras das notícias ainda passam ("Qual a capital da França?").
+- A busca é por palavras, sem entender significado.
 - O assistente conhece só o período de focos carregado e as notícias coletadas.
 
 ## Sentimento e resumo

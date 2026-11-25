@@ -39,7 +39,9 @@ def mensagens(variante, pergunta, fatos, trechos, memoria, destaque):
     montadas = assistente.montar_mensagens(pergunta, fatos, trechos, memoria, destaque)
     if variante == "sem_regras":
         montadas[0]["content"] = montadas[0]["content"].replace(assistente.REGRAS + "\n\n", "")
-        montadas[-1]["content"] = "\n\n".join(filter(None, [pergunta, destaque]))
+        montadas[-1]["content"] = montadas[-1]["content"].replace(
+            "\n\n" + assistente.LEMBRETE, ""
+        )
     return montadas
 
 
@@ -91,17 +93,23 @@ def main() -> int:
                     analise.destaque(assunto, turno["pergunta"], focos),
                 )
                 inicio = time.perf_counter()
-                if assunto.fora_do_tema and variante == "completo":
-                    resposta = assistente.FORA_DO_TEMA
+                # O bloqueio por código vale para todas que usam o material, para a
+                # diferença entre elas ser só a parte retirada.
+                bloqueada = assunto.recusa and variante != "sem_material"
+                if bloqueada:
+                    resposta = assistente.recusar(
+                        assunto.recusa, focos["dia"].min(), focos["dia"].max()
+                    )
                 else:
                     resposta = "".join(gerador.gerar(msgs)).strip()
                 duracao = time.perf_counter() - inicio
                 conversa_recente = memoria.ultimas_respostas()
-                memoria.adicionar(turno["pergunta"], resposta)
-                memoria.assunto = assunto
-                analise.aprender_da_resposta(assunto, turno["pergunta"], resposta, focos)
+                if not bloqueada:
+                    memoria.adicionar(turno["pergunta"], resposta)
+                    memoria.assunto = assunto
+                    analise.aprender_da_resposta(assunto, turno["pergunta"], resposta, focos)
                 material = "\n".join(m["content"] for m in msgs)
-                _, sem_origem = assistente.conferir_numeros(
+                _, sem_origem = ([], []) if bloqueada else assistente.conferir_numeros(
                     resposta, material, conversa_recente
                 )
                 # As regras do prompt citam "aumento"; o material são fatos e notícias.
