@@ -30,6 +30,7 @@ for chave, valor in VALORES_INICIAIS.items():
 navegacao = st.navigation(
     [
         st.Page("views/painel.py", title="Painel", icon="🔥", default=True),
+        st.Page("views/assistente.py", title="Assistente", icon="💬"),
         st.Page("views/noticias.py", title="Notícias", icon="📰"),
         st.Page("views/dados.py", title="Dados", icon="📂"),
         st.Page("views/consulta_api.py", title="API", icon="🔌"),

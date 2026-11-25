@@ -1,0 +1,552 @@
+[
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos houve no Brasil no período?",
+    "esperado": [
+     "3\\.?639"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual estado teve mais focos?",
+    "esperado": [
+     "Pará",
+     "1\\.?060"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E o segundo?",
+    "esperado": [
+     "Amazonas",
+     "696"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Quantos focos de diferença entre os dois?",
+    "esperado": [
+     "364"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Como está a situação no Tocantins?",
+    "esperado": [
+     "388"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual o município mais afetado lá?",
+    "esperado": [
+     "Formoso do Araguaia"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E no Acre?",
+    "esperado": [
+     "Brasiléia"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "O que o governo federal fez contra os incêndios no Amazonas?",
+    "esperado": [
+     "brigadistas|aeronaves|Forças Armadas|investiga"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Há suspeita de crime?",
+    "esperado": [
+     "crimin"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "fora",
+    "pergunta": "Quantos focos houve em 2019?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Qual a previsão de focos para o mês que vem?",
+    "recusa": true
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual a FRP média do Cerrado?",
+    "esperado": [
+     "58,9"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "Quanto a AGU cobra de acusados de queimadas?",
+    "esperado": [
+     "89 milhões"
+    ]
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Quem ganhou a Copa do Mundo de 2022?",
+    "recusa": true
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Resuma a situação do país em três pontos.",
+    "esperado": [
+     "3\\.?639|Amazônia",
+     "Pará"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Onde priorizar as brigadas, pelos dados?",
+    "esperado": [
+     "Pará|Altamira"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual bioma concentra mais focos de calor?",
+    "esperado": [
+     "Amazônia",
+     "2\\.?415|66,4"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E qual vem depois?",
+    "esperado": [
+     "Cerrado",
+     "1\\.?001|27,5|segundo"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Que estado lidera nele?",
+    "esperado": [
+     "Tocantins"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Em que dia houve mais focos?",
+    "esperado": [
+     "21/09|21 de setembro",
+     "1\\.?616"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos teve o Maranhão?",
+    "esperado": [
+     "260"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E o Piauí?",
+    "esperado": [
+     "138"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual dos dois teve mais?",
+    "esperado": [
+     "Maranhão"
+    ],
+    "proibido": [
+     "Piauí teve mais"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual município teve mais focos no país?",
+    "esperado": [
+     "Altamira",
+     "136"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Em que estado ele fica?",
+    "esperado": [
+     "Pará"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos em Porto Velho?",
+    "esperado": [
+     "61"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual foi a FRP máxima na Bahia?",
+    "esperado": [
+     "1\\.?114,5"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos houve no Rio de Janeiro?",
+    "esperado": [
+     "nenhum|não (houve|teve|há|foram)|\\b0\\b|zero"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Quais os três estados com mais focos?",
+    "esperado": [
+     "Pará",
+     "Amazonas",
+     "Mato Grosso"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "As notícias dizem qual a participação humana nos incêndios?",
+    "esperado": [
+     "99%"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "Quantos hectares queimaram no país em 2024, segundo o MapBiomas?",
+    "esperado": [
+     "30 milhões"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual bioma foi mais atingido, segundo essa notícia?",
+    "esperado": [
+     "Amazônia"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "Qual foi o aumento de focos no Amapá segundo as notícias de outubro de 2026?",
+    "esperado": [
+     "176"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "Por que São Paulo reabriu parques estaduais?",
+    "esperado": [
+     "parques",
+     "incêndio|fechad|chuva|risco"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "desenvolvimento",
+  "turnos": [
+   {
+    "tipo": "fora",
+    "pergunta": "Quantos focos de calor houve no Brasil em agosto de 2024, pelos dados do INPE carregados aqui?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Qual é a população de Altamira?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Me recomende um restaurante em Manaus.",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Quantos focos houve na Argentina?",
+    "recusa": true
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos a Caatinga registrou?",
+    "esperado": [
+     "198"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual estado concentra mais focos nela?",
+    "esperado": [
+     "Ceará"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Em que dia ela teve mais?",
+    "esperado": [
+     "19/09|19 de setembro"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E o Pantanal, quantos teve?",
+    "esperado": [
+     "\\b7\\b|sete"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual o total de focos em Mato Grosso?",
+    "esperado": [
+     "479"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "E em Rondônia?",
+    "esperado": [
+     "\\b80\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual deles teve menos?",
+    "esperado": [
+     "Rondônia"
+    ],
+    "proibido": [
+     "Mato Grosso teve menos"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Qual a diferença entre eles?",
+    "esperado": [
+     "399"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Que porcentagem dos focos está no Cerrado?",
+    "esperado": [
+     "27,5"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual estado aparece em terceiro lugar?",
+    "esperado": [
+     "Mato Grosso"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos foram detectados em 20/09/2026?",
+    "esperado": [
+     "988"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Qual foi a maior FRP registrada no país?",
+    "esperado": [
+     "1\\.?355,8"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Quantos focos houve em Marcelândia?",
+    "esperado": [
+     "\\b82\\b"
+    ]
+   },
+   {
+    "tipo": "memoria",
+    "pergunta": "Que percentual do país isso representa?",
+    "esperado": [
+     "2,3"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Santa Catarina teve focos?",
+    "esperado": [
+     "nenhum|não|\\b0\\b|zero|sem foco"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "dados",
+    "pergunta": "Qual o risco de fogo médio no Maranhão?",
+    "esperado": [
+     "0,98"
+    ]
+   },
+   {
+    "tipo": "dados",
+    "pergunta": "Entre Acre e Bahia, quem teve mais focos?",
+    "esperado": [
+     "Acre"
+    ],
+    "proibido": [
+     "Bahia teve mais"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "Quantos parques estaduais São Paulo reabriu após os incêndios?",
+    "esperado": [
+     "69"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "Quantos hectares de desmatamento ou queda a Mata Atlântica teve no primeiro semestre, segundo as notícias?",
+    "esperado": [
+     "55%"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "O que as notícias de 2026 dizem sobre a fumaça em Manaus?",
+    "esperado": [
+     "fumaça|qualidade do ar|Amazonas"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "noticias",
+    "pergunta": "Quanto o Brasil reduziu de emissões de gases do efeito estufa em 2023?",
+    "esperado": [
+     "12%"
+    ]
+   },
+   {
+    "tipo": "noticias",
+    "pergunta": "Qual foi o aumento de crimes ambientais na Amazônia Legal, segundo a PRF?",
+    "esperado": [
+     "88%"
+    ]
+   }
+  ]
+ },
+ {
+  "parte": "teste",
+  "turnos": [
+   {
+    "tipo": "fora",
+    "pergunta": "Quantos focos houve em janeiro de 2020, segundo a base do INPE carregada?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Quem é o prefeito de Porto Velho?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Qual a cotação do dólar hoje?",
+    "recusa": true
+   },
+   {
+    "tipo": "fora",
+    "pergunta": "Escreva um poema sobre o mar.",
+    "recusa": true
+   }
+  ]
+ }
+]

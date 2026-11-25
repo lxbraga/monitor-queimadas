@@ -33,7 +33,8 @@ st.markdown(
     "entram nos filtros, gráficos e mapa do Painel junto com a base oficial. "
     "Na visão de referência ficam os do AQUA ou sem satélite informado; os de "
     "outros satélites aparecem em \"Todos\". Enviar de novo um arquivo com o "
-    "mesmo nome substitui a versão anterior."
+    "mesmo nome substitui a versão anterior. Insights e Assistente usam só a "
+    "base oficial."
 )
 CHAVE_UPLOAD = f"upload_csv_{st.session_state.upload_versao}"
 

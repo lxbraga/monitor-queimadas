@@ -1,0 +1,45 @@
+parte,variante,conversa,tipo,pergunta,resposta,acertou,numeros_sem_origem,tendencia_sem_base,segundos
+desenvolvimento,completo,0,dados,Quantos focos houve no Brasil no período?,"No período de 19/09/2026 a 21/09/2026, foram identificados 3.639 focos de calor pelo Instituto Nacional de Pesquisas Espaciais (INPE).",True,,,2.54
+desenvolvimento,completo,0,dados,Qual estado teve mais focos?,"O estado com mais focos foi o Pará, com 1.060 focos.",True,,,0.91
+desenvolvimento,completo,0,memoria,E o segundo?,"O estado seguinte ao Pará foi o Amazonas, com 696 focos.",True,,,1.12
+desenvolvimento,completo,0,memoria,Quantos focos de diferença entre os dois?,Houve um diferencial de 364 focos entre o estado do Pará e o estado do Amazonas.,True,,,1.15
+desenvolvimento,completo,1,dados,Como está a situação no Tocantins?,"No Tocantins, houve um aumento significativo nas queimas de vegetação, com 388 focos registrados, representando 10,7% do total nacional. O risco de incêndio foi classificado como crítico, com um índice médio de 1,00. Os focos foram principalmente concentrados no Cerrado (357 focos), seguido pelo Amazônia (31 focos). As áreas mais afetadas incluem Formoso do Araguaia (79 focos) e Pium (34 focos).",False,,aumento,2.85
+desenvolvimento,completo,1,memoria,Qual o município mais afetado lá?,"O município mais afetado no Tocantins foi Formoso do Araguaia, com 79 focos de queima de vegetação.",True,,,1.28
+desenvolvimento,completo,1,memoria,E no Acre?,"No Acre, o município com mais focos de queima de vegetação foi Brasiléia, com 20 focos.",True,,,1.29
+desenvolvimento,completo,2,noticias,O que o governo federal fez contra os incêndios no Amazonas?,"O governo federal e os estados da Amazônia Legal (Acre, Amapá, Amazonas, Maranhão, Pará, Rondônia, Roraima e Tocantins) e os estados que abrigam o bioma do Pantanal (Mato Grosso e Mato Grosso do Sul) foram orientados a apresentar planos emergenciais de ação educativa e de conscientização sobre o manejo integrado do fogo. Esses planos devem ser adequados à Política Nacional de Manejo Integrado do Fogo (Lei 14.944/2024) e devem abranger ações de publicidade e de mobilização social, objetivando a ampla participação dos empresários e da sociedade civil.",False,,,3.8
+desenvolvimento,completo,2,memoria,Há suspeita de crime?,"Sim, há suspeita de crime. O governo federal investiga uma ""ação criminosa deliberada"" por trás das incêndios no Amazonas.",True,,,1.59
+desenvolvimento,completo,3,fora,Quantos focos houve em 2019?,Não encontrei essa informação nos dados do projeto.,True,,,0.81
+desenvolvimento,completo,3,fora,Qual a previsão de focos para o mês que vem?,Não encontrei essa informação nos dados do projeto.,True,,,0.67
+desenvolvimento,completo,3,dados,Qual a FRP média do Cerrado?,"A FRP média do Cerrado é de 58,9 MW.",True,,,1.08
+desenvolvimento,completo,4,noticias,Quanto a AGU cobra de acusados de queimadas?,AGU cobra R$ 89 milhões de acusados de causar queimadas na Amazônia.,True,,,1.46
+desenvolvimento,completo,4,fora,Quem ganhou a Copa do Mundo de 2022?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0
+desenvolvimento,completo,5,dados,Resuma a situação do país em três pontos.,"O Brasil registrou 3.639 focos de queima durante o período de 19/09/2026 a 21/09/2026, com um FPR médio de 45,4 MW e um risco de fogo médio de 0,78. Houve focos predominantes nas regiões amazônica e cerrado, com 2.415 e 1.001 focos respectivamente. O estado do Pará liderou com 1.060 focos, seguido pelo Amazonas com 696.",True,,,2.79
+desenvolvimento,completo,5,dados,"Onde priorizar as brigadas, pelos dados?","Priorize as brigadas nos estados do Pará, Amazonas e Mato Grosso, onde houve mais focos de queima.",True,,,1.11
+desenvolvimento,completo,6,dados,Qual bioma concentra mais focos de calor?,"O bioma que concentra mais focos de calor é a Amazônia, com 2.415 focos.",True,,,1.59
+desenvolvimento,completo,6,memoria,E qual vem depois?,"O segundo bioma com focos de calor é o Cerrado, com 1.001 focos.",True,,,1.27
+desenvolvimento,completo,6,memoria,Que estado lidera nele?,"O estado que lidera nesse bioma é o Tocantins, com 357 focos.",True,,,1.26
+desenvolvimento,completo,7,dados,Em que dia houve mais focos?,"Houve mais focos no dia 21/09/2026, com 1.616 focos.",True,,,1.06
+desenvolvimento,completo,7,dados,Quantos focos teve o Maranhão?,O Maranhão teve 260 focos de calor no período mencionado.,True,,,1.47
+desenvolvimento,completo,7,memoria,E o Piauí?,O Piauí teve 138 focos de calor no período mencionado.,True,,,1.0
+desenvolvimento,completo,7,memoria,Qual dos dois teve mais?,"O Maranhão teve mais focos de calor do que o Piauí durante esse período. Havia 260 focos no Maranhão, enquanto o Piauí tinha apenas 138 focos.",True,,,1.44
+desenvolvimento,completo,8,dados,Qual município teve mais focos no país?,Altamira (Pará) teve mais focos do que qualquer outra cidade no país durante esse período.,False,,,1.29
+desenvolvimento,completo,8,memoria,Em que estado ele fica?,Altamira está localizado no Estado do Pará.,True,,,0.96
+desenvolvimento,completo,8,dados,Quantos focos em Porto Velho?,Porto Velho teve 61 focos de queimadas.,True,,,1.41
+desenvolvimento,completo,9,dados,Qual foi a FRP máxima na Bahia?,"A FRP máxima na Bahia foi de 1.114,5 MW.",True,,,1.44
+desenvolvimento,completo,9,dados,Quantos focos houve no Rio de Janeiro?,"No Rio de Janeiro, não foram registrados focos de calor durante esse período.",True,,,0.89
+desenvolvimento,completo,9,dados,Quais os três estados com mais focos?,"Os três estados com mais focos foram:
+
+1. Pará com 1.060 focos
+2. Amazonas com 696 focos
+3. Mato Grosso com 479 focos
+
+Esses estados representaram 50,4% dos focos totais no Brasil durante este período.",True,"50,4",,1.64
+desenvolvimento,completo,10,noticias,As notícias dizem qual a participação humana nos incêndios?,"No período mencionado, a participação humana nos incêndios foi significativa. Foram registrados 3.639 focos de queima, representando uma proporção significativa de toda a área monitorada pelo INPE. Além disso, houve um crescimento expressivo nas queimas no Pará, com 58 mil focos desde o início do ano até domingo (4), representando 20% mais do que no mesmo período do ano anterior. Este aumento foi especialmente notável no Pará, onde foram registrados 2.706 focos no período analisado, sendo 913 (34%) no Amazonas, 725 (27%) no Mato Grosso, 638 (24%) em Rondônia, 227 (8%) no Acre, 197 (7%) no Pará e 6 (0,2%) no Maranhão.",False,,,4.23
+desenvolvimento,completo,10,noticias,"Quantos hectares queimaram no país em 2024, segundo o MapBiomas?","Em 2024, o MapBiomas informou que 30 milhões de hectares foram queimados no Brasil.",True,,,1.46
+desenvolvimento,completo,10,memoria,"Qual bioma foi mais atingido, segundo essa notícia?","O bioma mais atingido em 2024 foi a Amazônia, com 15,6 milhões de hectares queimados.",True,,,1.63
+desenvolvimento,completo,11,noticias,Qual foi o aumento de focos no Amapá segundo as notícias de outubro de 2026?,"No Amapá, houve um aumento de 176,81% em focos de calor em 48 horas, passando de 149 em 2025 para 1.054 em 2026.",True,,,1.96
+desenvolvimento,completo,11,noticias,Por que São Paulo reabriu parques estaduais?,São Paulo reabriu parques estaduais porque as unidades estavam fechadas desde o início de setembro para priorizar a prevenção e combate a incêndios durante o período crítico de seca. A decisão foi tomada após uma reunião do gabinete de crise do governo estadual e foi baseada nas condições climáticas previstas para os próximos dias e no grau de risco de incêndios florestais.,True,,,2.92
+desenvolvimento,completo,12,fora,"Quantos focos de calor houve no Brasil em agosto de 2024, pelos dados do INPE carregados aqui?",Não encontrei essa informação nos dados do projeto.,True,,,0.73
+desenvolvimento,completo,12,fora,Qual é a população de Altamira?,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0
+desenvolvimento,completo,12,fora,Me recomende um restaurante em Manaus.,Não encontrei essa informação nos dados do projeto. Posso responder sobre os focos de calor do período carregado e sobre as notícias de queimadas coletadas.,True,,,0.0
+desenvolvimento,completo,12,fora,Quantos focos houve na Argentina?,Não encontrei essa informação nos dados do projeto.,True,,,0.79

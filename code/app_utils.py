@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 
 sys.path.insert(0, str(BASE_DIR / "code" / "data_acquisition"))
 
+import analise  # noqa: E402
 import base_dados  # noqa: E402
 from fetch_inpe import fetch_last_days  # noqa: E402
 
@@ -79,6 +80,11 @@ def load_noticias() -> pd.DataFrame:
 @st.cache_data(ttl=3600)
 def load_corpus() -> str:
     return base_dados.ler_corpus()
+
+
+@st.cache_resource(ttl=3600)
+def load_busca() -> analise.BuscaNoticias:
+    return analise.BuscaNoticias(base_dados.ler_artigos())
 
 
 @st.cache_data

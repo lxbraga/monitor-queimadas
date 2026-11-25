@@ -1,0 +1,3 @@
+[server]
+# O observador de arquivos varre o Transformers inteiro e enche o terminal de avisos.
+fileWatcherType = "none"
