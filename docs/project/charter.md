@@ -42,11 +42,18 @@ TP4 (concluído):
 - Tratamento robusto de erros, com mensagem explicativa em cada caso: 400 para texto vazio, 422 para entrada inválida, 500 para falha no processamento, 503 quando o modelo não pode ser carregado e 504 quando o processamento passa de 60 s.
 - A resposta avisa (campo `truncado`) quando o texto passa do limite de 512 tokens dos modelos.
 - Testes automatizados das rotas e dos códigos de erro em `tests/`.
-- Justificativa da escolha dos modelos documentada abaixo.
+- Justificativa da escolha dos modelos, hoje no [Model Report](model_report.md).
 - Seção "Processar texto" na página API do app, consumindo a nova rota.
 - Coletas passam a seguir o robots.txt de cada site, com endereços proibidos bloqueados e o intervalo pedido respeitado.
 
-Fica para a entrega final: ampliar os usos de LLM sobre o corpus (Q&A e geração de relatórios) e refinar a aplicação para apresentação.
+TP5 (entrega final, concluído):
+
+- Assistente conversacional com memória, sobre os focos e as notícias, com modelo local (página Assistente). Dos caminhos propostos (memória conversacional, sumarização ou agentes), a memória foi a escolhida porque quem analisa queimadas pergunta em sequência: um estado, depois o segundo, depois a comparação. Sumarização já tinha sido entregue no TP4, e agentes pedem modelos maiores do que um notebook roda bem.
+- Avaliação do assistente com perguntas de gabarito conhecido e versões sem cada parte do prompt.
+- Página Insights, que mostra o caminho da coleta ao resultado dos modelos.
+- Satélite de referência do INPE como padrão no Painel, com opção de ver todos.
+- Tratamento de valores ausentes e repetidos nos focos.
+- Artefatos TDSP completos: este documento, [Data Summary Report](data_summary.md), [Arquitetura](architecture.md), [Model Report](model_report.md) e [Relatório Final](final_report.md).
 
 ## Objetivos
 
@@ -66,7 +73,9 @@ Fica para a entrega final: ampliar os usos de LLM sobre o corpus (Q&A e geraçã
 | Contexto jornalístico | Notícias raspadas exibidas com nuvem de palavras e estatísticas | Entregue no TP2, ampliado no TP3 com o G1 |
 | Acesso programático | Rotas GET e POST servindo focos e notícias em JSON | Entregue no TP3 |
 | Análise de texto local | Sentimento e resumo de notícias sem serviços externos, com erros tratados | Entregue no TP4 |
-| Adoção (etapas futuras) | Feedback de usuários do público-alvo | Avaliação positiva na entrega final |
+| Comparação correta | Painel e assistente usam o satélite de referência do INPE | Entregue no TP5 |
+| Respostas confiáveis | Acerto do assistente em perguntas de teste | Pelo menos 80% (obtido: 85%, 22 de 26) |
+| Adoção | Feedback de usuários do público-alvo | Não medido: o projeto não foi testado com usuários externos |
 
 ## ODS atendidos
 
@@ -98,65 +107,38 @@ O projeto fica no pilar Ambiental do ESG e atende a dois ODS da Agenda 2030:
 |---------------|--------------|---------------|
 | Business Understanding | Business Understanding | Project Charter (este documento) |
 | Data Understanding | Data Acquisition & Understanding | Data Summary Report, `fetch_inpe.py`, `scrape_news.py`, `scrape_news_g1.py`, dados em `data/raw/` |
-| Data Preparation | Data Acquisition & Understanding | Corpus das notícias em `data/processed/`, agregações no app |
-| Modeling | Modeling | Modelos de linguagem locais para sentimento e resumo (`code/api/llm.py`), com a avaliação do sentimento em `code/modeling/avaliar_sentimento.py` |
-| Evaluation | Modeling / Acceptance | Testes automatizados em `tests/`; validação dos indicadores contra as metas na entrega final |
+| Data Preparation | Data Acquisition & Understanding | Limpeza e satélite de referência em `code/base_dados.py` e `code/app_utils.py`, corpus das notícias em `data/processed/` |
+| Modeling | Modeling | Sentimento e resumo (`code/api/llm.py`), assistente (`code/analise.py` e `code/assistente.py`), descritos no Model Report |
+| Evaluation | Modeling / Acceptance | Avaliações em `code/modeling/`, testes em `tests/` e resultado das metas no Relatório Final |
 | Deployment | Deployment | Dashboard em `app.py` e API em `code/api/main.py`, executados localmente |
 
-No diagrama TDSP do enunciado, o Project Charter é artefato do estágio de Business Understanding e o Data Summary Report do estágio de Data Ingest & Understanding. Por isso os dois ficam em `docs/project/`.
+No diagrama TDSP do enunciado, o Project Charter é artefato do estágio de Business Understanding e o Data Summary Report do estágio de Data Ingest & Understanding. Os demais artefatos do ciclo (arquitetura, Model Report e Relatório Final) ficam na mesma pasta, `docs/project/`.
 
 ## Arquitetura
 
-Coleta em scripts separados: `requests` para os CSVs do INPE, Beautiful Soup para as notícias da Agência Brasil e Selenium para as seções dinâmicas do G1, todos seguindo o robots.txt de cada site, gravando em `data/raw/` e `data/processed/`. Tratamento com `pandas`. Duas portas de acesso aos dados: a aplicação Streamlit multipágina (com cache e estado de sessão) e a API FastAPI com rotas GET e POST. A API também executa os modelos de linguagem locais (HuggingFace Transformers com PyTorch) para sentimento e resumo, carregados sob demanda em `code/api/llm.py`.
+Desenho dos componentes e fluxo dos dados em [architecture.md](architecture.md).
 
-## Escolha dos modelos LLM
+## Alinhamento: dados, IA e engenharia de prompts
 
-Critérios usados: desempenho na tarefa em português, custo computacional para rodar localmente (CPU de um notebook, sem GPU dedicada) e acessibilidade (download aberto pelo HuggingFace, carregável com a biblioteca Transformers). Dois modelos atendem às duas análises do projeto:
+O problema tem três partes, e cada uma pede uma peça diferente da solução.
 
-| Tarefa | Modelo | Por que ele |
-|--------|--------|-------------|
-| Sentimento | `MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`, em classificação zero-shot | Modelo de inferência textual treinado em mais de 100 idiomas, incluindo português. Em vez de um classificador de sentimento pronto, ele julga qual hipótese o texto confirma: "Esta notícia é positiva", "negativa" ou "neutra". Foi a abordagem que melhor entendeu notícias sobre queimadas na avaliação abaixo; ~530 MB, de 60 a 120 ms por texto em CPU |
-| Resumo | `recogna-nlp/ptt5-base-summ` | PTT5 (T5 pré-treinado em português pelo grupo Recogna/Unesp) ajustado para sumarização de notícias, exatamente o domínio do corpus; ~890 MB, resume em 1 a 5 s em CPU |
+| Parte do problema | Quem responde | Por que essa peça |
+|-------------------|---------------|-------------------|
+| Os dados existem, mas em arquivos técnicos | Coleta do INPE e das notícias, limpeza e satélite de referência | Sem limpeza a resposta sai errada: somando os 12 satélites, o Tocantins lidera com 19,4% das detecções; no satélite que o INPE usa para comparar, é o Pará, com 29,1% |
+| Quem decide não sabe programar nem filtrar planilha | Dashboard e assistente em linguagem natural | Um gestor pergunta "onde está pior?" e segue com "e o segundo?", sem montar filtro |
+| Número de foco não diz causa nem contexto | Notícias, com busca, sentimento e resumo | O foco diz onde; a notícia diz por quê e o que está sendo feito |
 
-### Avaliação do sentimento
+A engenharia de prompts entra para que o modelo não invente, o que seria grave em política pública. Um modelo pequeno sozinho acertou 3 das 26 perguntas de teste. Com os dados calculados pelo projeto dentro do prompt, regras e memória, acertou 22. As decisões de prompt e o efeito de cada uma estão no [Model Report](model_report.md).
 
-O primeiro modelo escolhido, um classificador de sentimento multilíngue (DistilBERT), errava notícias boas sobre queimadas: palavras como "incêndio", "fumaça" e "focos" puxavam o resultado para negativo, e quase todo texto do projeto tem essas palavras. Para escolher com dados, montamos um conjunto rotulado em `data/processed/avaliacao_sentimento.csv`, com 50 textos (20 negativos, 20 positivos e 10 neutros): 29 títulos reais das notícias raspadas e 21 frases escritas no mesmo estilo, positivas e neutras, com vocabulário de fogo. Os rótulos foram atribuídos manualmente com um critério fixo: positivo é notícia boa para o meio ambiente e a população (queda de focos, controle, recuperação), negativo é notícia ruim (aumento, recorde, dano) e neutro é informativa ou procedimental. Numa segunda revisão, saíram quatro títulos que misturavam um fato ruim com uma reação (como "Após avanço das queimadas, Ibama inicia fiscalização"), porque admitiam mais de um rótulo.
-
-| Abordagem | Acerto | F1 macro | Positivos | Neutros | Negativos | ms por texto |
-|-----------|--------|----------|-----------|---------|-----------|--------------|
-| **Zero-shot mDeBERTa, hipótese "Esta notícia é {}." (em uso)** | **76%** | **0,62** | **85%** | 10% | **100%** | 58 a 116 |
-| Classificador XLM-R (`cardiffnlp/twitter-xlm-roberta-base-sentiment`) | 52% | 0,48 | 15% | 100% | 65% | 58 |
-| Zero-shot mDeBERTa, hipótese "Esta é uma notícia {}." | 52% | 0,45 | 50% | 0% | 80% | 57 |
-| LLM Qwen2.5 0,5B com instrução | 56% | 0,41 | 100% | 0% | 40% | 182 |
-| LLM Qwen2.5 1,5B com instrução | 52% | 0,36 | 30% | 0% | 100% | 417 |
-| Classificador DistilBERT (`lxyuan/...-sentiments-student`, escolha anterior) | 40% | 0,29 | 30% | 0% | 70% | 36 |
-| Classificador BERTweet-pt (`pysentimiento/bertweet-pt-sentiment`) | 30% | 0,26 | 0% | 100% | 25% | 28 |
-| Classificador DistilBERT multilíngue (`tabularisai/multilingual-sentiment-analysis`) | 24% | 0,18 | 0% | 100% | 10% | 32 |
-
-Os tempos variam entre execuções conforme a carga da máquina. Os classificadores prontos foram treinados com tweets e avaliações de produtos, onde vocabulário de fogo quase sempre indica algo ruim; os LLMs pequenos não seguiram bem a instrução. As hipóteses e o prompt foram fixados antes de rodar a avaliação, e todas as variantes testadas estão na tabela, para não escolher a que por acaso se ajustou melhor a estes 54 textos. A comparação dos classificadores e da abordagem em uso pode ser refeita com `python -m code.modeling.avaliar_sentimento`.
-
-Alternativas consideradas também: modelos generativos maiores (família Llama, por exemplo) pedem vários GB de memória e latência alta sem GPU; ajuste fino próprio exigiria um conjunto rotulado muito maior que o disponível.
-
-Limitações conhecidas: a análise de sentimento quase nunca responde "neutro" (acertou 1 dos 10 neutros na avaliação), então textos informativos tendem a sair como positivos ou negativos; o conjunto de avaliação é pequeno e serve como indicação, não como medida definitiva; o resumidor funciona melhor com textos de notícia completos e pode gerar prefixos estranhos em textos muito curtos ou genéricos. Os dois leem no máximo 512 tokens (cerca de 2.000 caracteres); o excedente é descartado e a resposta da API avisa pelo campo `truncado`.
-
-## Como a integração local foi feita
-
-Os modelos são baixados do HuggingFace na primeira chamada de cada análise e ficam no cache local (`~/.cache/huggingface`, cerca de 1,4 GB no total); depois disso a API funciona sem rede. O carregamento é preguiçoso para a API subir rápido, e cada modelo fica em memória depois de carregado. O sentimento usa o `pipeline` do Transformers; o resumo usa o modelo seq2seq direto com `generate()`, porque o Transformers v5 removeu o pipeline de sumarização.
-
-A rota separa as falhas: se o modelo não carrega, a API responde 503; se carrega mas falha no texto, 500; se o processamento passa de 60 s, 504. O limite de tempo vale só para o processamento, contado a partir do momento em que ele começa; o primeiro download e a espera na fila ficam de fora. Se todos os processadores estiverem ocupados por mais de 30 s, o pedido desiste com 503 em vez de um 504 enganoso. Cada modelo tem sua própria trava de carregamento, então o download de um não atrasa o uso do outro.
+O uso de modelos é restrito ao que eles fazem bem. Contas, rankings e comparações são feitos com pandas; o modelo só redige. Tudo roda na máquina do usuário: sem custo por consulta e sem enviar perguntas para terceiros.
 
 ## Uso dos dados com LLMs
 
-Situação de cada caso de uso de LLM sobre os dados coletados:
-
 | Caso de uso | Dado de entrada | Situação |
 |-------------|-----------------|----------|
-| Resumo automático de notícias | Texto completo dos artigos em `data/processed/corpus_noticias.txt` e `corpus_g1.txt` | Entregue no TP4 via `POST /processar_texto` |
-| Classificação de sentimento | Títulos e textos das notícias das duas fontes | Entregue no TP4 via `POST /processar_texto` |
-| Perguntas e respostas (Q&A) | Corpus de notícias e estatísticas dos focos | Entrega final |
-| Geração de relatórios | Agregados de focos por estado, bioma e dia | Entrega final |
-
-Para os casos que faltam, a API já oferece o caminho: um serviço de LLM pode consultar focos e notícias pelas mesmas rotas usadas pela interface.
+| Conversa com memória | Fatos calculados sobre os focos e trechos das notícias | Entregue no TP5, página Assistente |
+| Classificação de sentimento | Títulos das notícias das duas fontes | Entregue no TP4 via `POST /processar_texto`; no TP5 aplicada a todo o corpus, página Insights |
+| Resumo automático de notícias | Texto completo dos artigos | Entregue no TP4 via `POST /processar_texto` |
 
 ## Riscos
 
@@ -164,6 +146,8 @@ Para os casos que faltam, a API já oferece o caminho: um serviço de LLM pode c
 |-------|---------|-----------|
 | Servidor do INPE fora do ar | App sem dados atualizados | Amostra local versionada em `data/raw/`; coleta recua até 5 dias |
 | Mudança no formato ou URL dos arquivos | Quebra da coleta | Coleta isolada em `fetch_inpe.py`; fontes alternativas mapeadas no Data Summary Report |
-| Sazonalidade (poucos focos na estação chuvosa) | Painel pouco expressivo em certos meses | Usar agregados mensais e históricos nas próximas etapas |
+| Sazonalidade (poucos focos na estação chuvosa) | Painel pouco expressivo em certos meses | Coleta de até 14 dias pelo app; agregados mensais mapeados no Data Summary Report |
+| Modelo de linguagem inventar ou distorcer | Decisão baseada em informação errada | Números calculados por código e conferidos depois, fontes visíveis em cada resposta, erros medidos no Model Report |
+| Satélite de referência sem passagem ou com falha | Lacuna em um dia ou região | Opção de ver todos os satélites no Painel |
 | Mudança no HTML da Agência Brasil ou do G1 | Quebra do scraping | Scrapers isolados em scripts próprios; dados raspados versionados como fallback |
 | Filtro por palavras nas seções do G1 aceita títulos fora do tema | Corpus com algumas notícias fora do tema | Filtro exige termos de queimada e descarta usos de fogo fora do tema (vulcões, Círculo de Fogo, garimpo) e notícias de fora do Brasil; limitação documentada no Data Summary Report |
