@@ -102,6 +102,12 @@ tabela.insert(
 )
 tabela.index = [analise.nome_proprio(e) for e in tabela.index]
 st.dataframe(tabela, width="stretch", height=320)
+com_risco = int(ref["risco_fogo"].notna().sum())
+if com_risco < len(ref):
+    st.caption(
+        f"O INPE ainda não preencheu o risco de {analise.numero(len(ref) - com_risco)} dos "
+        f"{analise.numero(len(ref))} focos; as médias usam os que têm valor."
+    )
 relevantes = tabela[tabela["Focos"] >= 30]
 if not relevantes.empty:
     intenso = relevantes["FRP médio (MW)"].idxmax()
@@ -128,7 +134,7 @@ else:
     st.caption(
         "Sentimento do título, por um modelo local (mDeBERTa, zero-shot). Na avaliação ele "
         "acertou 76% e quase nunca responde neutro. As positivas pedem leitura: na conferência à mão da "
-        "base entregue, só 8 das 18 eram boas notícias de fato."
+        "base entregue, só 7 das 18 eram boas notícias de fato."
     )
     boas = sent[sent["sentimento"] == "positivo"].sort_values("confianca", ascending=False)
     with st.expander(f"Notícias classificadas como positivas ({len(boas)})"):
