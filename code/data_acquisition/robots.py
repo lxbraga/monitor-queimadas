@@ -19,7 +19,7 @@ TIMEOUT_SECONDS = 30
 
 
 class ColetaNaoPermitida(Exception):
-    """O robots.txt do site proíbe o endereço pedido."""
+    """O robots.txt do site proíbe o endereço pedido, ou não pôde ser lido."""
 
 
 def _padrao(caminho: str) -> re.Pattern:
@@ -31,6 +31,8 @@ def _padrao(caminho: str) -> re.Pattern:
 
 class Regras:
     """Regras de um robots.txt para o nosso agente."""
+
+    lidas = True
 
     def __init__(self, texto: str, agente: str = AGENTE):
         grupos: list[tuple[list[str], list[str]]] = []
@@ -96,7 +98,11 @@ class Coletor:
         partes = urlparse(url)
         site = f"{partes.scheme}://{partes.netloc}"
         if site not in self._regras:
-            self._regras[site] = self._baixar_regras(site)
+            regras = self._baixar_regras(site)
+            if not regras.lidas:
+                # Não guarda: a falha pode ser passageira.
+                return regras
+            self._regras[site] = regras
         return self._regras[site]
 
     def _baixar_regras(self, site: str) -> Regras:
@@ -108,12 +114,18 @@ class Coletor:
             )
         except requests.RequestException:
             # Sem conseguir ler as regras, não coleta nada daquele site.
-            return Regras("User-agent: *\nDisallow: /")
+            return self._nao_lidas()
         if resposta.status_code == 200:
             return Regras(resposta.text, self.agente)
         if 400 <= resposta.status_code < 500:
             return Regras("")
-        return Regras("User-agent: *\nDisallow: /")
+        return self._nao_lidas()
+
+    @staticmethod
+    def _nao_lidas() -> Regras:
+        regras = Regras("User-agent: *\nDisallow: /")
+        regras.lidas = False
+        return regras
 
     def permite(self, url: str) -> bool:
         return self.regras(url).permite(url)
@@ -128,7 +140,12 @@ class Coletor:
         self._ultima[site] = time.monotonic()
 
     def get(self, url: str, pausa_minima: float = 0, **kwargs) -> requests.Response:
-        if not self.permite(url):
+        regras = self.regras(url)
+        if not regras.lidas:
+            raise ColetaNaoPermitida(
+                f"Não foi possível ler o robots.txt de {urlparse(url).netloc}; verifique a conexão"
+            )
+        if not regras.permite(url):
             raise ColetaNaoPermitida(f"O robots.txt de {urlparse(url).netloc} proíbe {url}")
         self.esperar(url, pausa_minima)
         kwargs.setdefault("timeout", TIMEOUT_SECONDS)

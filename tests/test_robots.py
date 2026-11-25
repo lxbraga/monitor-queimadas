@@ -88,3 +88,15 @@ def test_coletor_respeita_o_intervalo_do_site(monkeypatch):
     coletor.esperar("https://exemplo.com/a")
     coletor.esperar("https://exemplo.com/b")
     assert len(esperas) == 1 and 4.9 < esperas[0] <= 5
+
+
+def test_falha_ao_ler_as_regras_e_explicada_e_nao_fica_guardada(monkeypatch):
+    def sem_rede(*a, **k):
+        raise robots.requests.ConnectionError
+
+    monkeypatch.setattr(robots.requests, "get", sem_rede)
+    coletor = robots.Coletor()
+    with pytest.raises(robots.ColetaNaoPermitida, match="Não foi possível ler"):
+        coletor.get("https://exemplo.com/pagina")
+    monkeypatch.setattr(robots.requests, "get", lambda *a, **k: RespostaFalsa(200, ""))
+    assert coletor.permite("https://exemplo.com/pagina")
