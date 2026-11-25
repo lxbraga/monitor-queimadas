@@ -79,5 +79,5 @@ sequenceDiagram
 | Assistente dentro do Streamlit, e não na API | A conversa é da sessão do usuário, e basta um comando para usar. A API continua para acesso programático |
 | Modelos locais | Sem custo por uso e sem enviar dados a terceiros |
 | Contas fora do modelo | Modelo pequeno erra conta; pandas não |
-| Satélite de referência por padrão | É o critério do INPE para comparar lugares e datas |
+| Satélite de referência por padrão | É o critério do INPE para comparar lugares e datas; o Painel permite ver todos |
 | `GET /focos` devolve todos os satélites | Quem usa a API recebe a base completa, com a coluna `satelite` para filtrar |

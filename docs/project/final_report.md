@@ -8,7 +8,7 @@ O Brasil sabe onde o fogo está: satélites do INPE registraram 139.642 detecç�
 
 ## A solução
 
-Uma aplicação que reúne focos e notícias, corrige o que distorce a leitura e responde em linguagem simples.
+Uma aplicação que reúne focos e notícias, trata o que distorce a leitura e responde em linguagem simples.
 
 | Página | Para quem quer |
 |--------|----------------|
@@ -27,20 +27,20 @@ Uma aplicação que reúne focos e notícias, corrige o que distorce a leitura e
 | Aquisição | INPE por HTTP, Agência Brasil com Beautiful Soup, G1 com Selenium, sempre dentro do robots.txt | [Data Summary Report](data_summary.md) |
 | Preparação | Código de ausência vira vazio, repetidos saem, satélite de referência, texto das notícias ligado à notícia | `code/base_dados.py`, `code/app_utils.py` |
 | Modelagem | Sentimento, resumo e assistente com memória | [Model Report](model_report.md) |
-| Avaliação | 50 textos para sentimento, 26 perguntas para o assistente, comparação entre versões, testes automatizados | [Model Report](model_report.md), `tests/` |
+| Avaliação | 50 textos para sentimento, três testes para o assistente (95 perguntas), comparação entre versões, testes automatizados | [Model Report](model_report.md), `tests/` |
 | Entrega | Dashboard Streamlit e API FastAPI | [Arquitetura](architecture.md) |
 
 ## O que os dados mostraram
 
 Focos do satélite de referência, de 19 a 21/09/2026 (3.639 focos):
 
-- **O critério muda a prioridade.** Somando todos os satélites, o Tocantins teria 19,4% das detecções e seria o primeiro. Na referência, é o quarto (10,7%), e o primeiro é o Pará (29,1%).
+- **O recorte muda o retrato, e por isso fica à vista.** O Pará lidera na referência (29,1%) e também contando todos os satélites com cada local uma vez por dia (18,7%). Na soma simples, o Tocantins passa à frente por pouco (19,4% contra 18,4%). A liderança do Pará é o achado mais firme; o tamanho da vantagem depende do recorte.
 - **Volume e intensidade são problemas diferentes.** O Pará tem mais focos (1.060), com FRP médio de 38,1 MW. Entre os estados com pelo menos 30 focos, o fogo mais intenso está na Bahia (77,1 MW) e no Tocantins (76,2 MW).
 - **Onde pode piorar.** Tocantins, Piauí, Ceará, Maranhão, Bahia e Goiás estão com risco de fogo médio na classe crítica. São candidatos a prevenção, mesmo com menos focos que o Pará.
 - **Amazônia e Cerrado concentram 94% dos focos** (66,4% e 27,5%). O risco no Cerrado (0,99) é maior que na Amazônia (0,65).
 - **O noticiário é sobretudo ruim:** 49 dos 67 títulos foram classificados como negativos. Os positivos precisam de leitura, como explica o Model Report.
 
-São três dias da estação seca. Os números descrevem esse período, não uma tendência. O INPE não tinha preenchido o risco de fogo de todos os focos: as médias usam 2.017 dos 3.639, todos dos dois primeiros dias.
+São três dias da estação seca. Os números descrevem esse período, não uma tendência. O AQUA passa poucas vezes por dia e oscila: no Amazonas foram 363, 83 e 250 focos. Ele serve melhor para séries longas do que para três dias; foi mantido por ser o critério oficial. O INPE não tinha preenchido o risco de fogo de todos os focos: as médias usam 2.017 dos 3.639, todos dos dois primeiros dias.
 
 ## Resultado das metas
 
@@ -53,8 +53,8 @@ São três dias da estação seca. Os números descrevem esse período, não uma
 | Contexto jornalístico | Atingida: 67 notícias de duas fontes, de 2022 a 2026 |
 | Acesso programático | Atingida: rotas GET e POST documentadas |
 | Análise de texto local | Atingida: sentimento com 76% de acerto, fraco em textos neutros; resumo sem avaliação numérica |
-| Comparação correta | Atingida: satélite de referência por padrão |
-| Respostas confiáveis | Atingida: 22 de 26 (85%), amostra pequena |
+| Comparação correta | Atingida no critério do INPE, com o limite de três dias do satélite de referência explicado em Insights |
+| Respostas confiáveis | Medida: 25 de 30 (83%) no teste final, 69% num teste anterior com conversas longas; amostra pequena |
 | Adoção | Não medida: faltou teste com usuários do público-alvo |
 
 ## ODS e ESG
@@ -77,7 +77,7 @@ Um roteiro de uso, com os dados entregues:
 
 ## Limitações
 
-- O assistente erra cerca de uma em cada sete perguntas e pode distorcer relações ao contar notícias, mesmo com números certos. As fontes ficam à vista para conferência.
+- O assistente errou cerca de uma em cada seis perguntas no teste final e pode distorcer relações ao contar notícias, mesmo com números certos. As fontes ficam à vista para conferência.
 - Foco de calor não é incêndio confirmado, e o satélite de referência pode falhar em um dia ou passar antes ou depois do fogo.
 - As notícias dependem da estrutura dos sites, e a coleta cobre as publicações mais recentes.
 - Em computador sem GPU a resposta leva de 7 a 16 s num processador rápido, e o modelo ocupa cerca de 7 GB de memória.

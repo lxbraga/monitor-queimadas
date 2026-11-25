@@ -25,8 +25,8 @@ AJUDA_FRP = (
 OPCOES_SATELITE = ["Referência (AQUA)", "Todos"]
 AJUDA_SATELITE = (
     "O INPE recebe dados de vários satélites, e o mesmo incêndio pode aparecer em "
-    "mais de um. Para comparar lugares e datas, usa só o de referência (AQUA). "
-    "Todos mostra cada detecção, sem servir para comparação."
+    "mais de um. Para comparar lugares e datas, usa só o de referência (AQUA), que "
+    "passa poucas vezes por dia. Todos mostra cada detecção, com repetições."
 )
 
 STOPWORDS_PT = set(

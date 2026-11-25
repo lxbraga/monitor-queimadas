@@ -47,38 +47,47 @@ st.subheader("1. Coleta e limpeza")
 col1, col2, col3 = st.columns(3)
 col1.metric("Detecções coletadas", analise.numero(len(focos)), help="Todos os satélites do INPE.")
 col2.metric(
-    "Focos comparáveis",
+    "Focos na referência",
     analise.numero(len(ref)),
     help="Só o satélite de referência (AQUA), o que o INPE usa para comparar.",
 )
 col3.metric("Notícias", len(artigos), help="Com texto completo, da Agência Brasil e do G1.")
 
-parte = pd.DataFrame(
-    {
-        "todos os satélites": focos["estado"].value_counts(normalize=True) * 100,
-        "referência": ref["estado"].value_counts(normalize=True) * 100,
-    }
-).fillna(0)
-lider_todos, lider_ref = parte["todos os satélites"].idxmax(), parte["referência"].idxmax()
-texto = (
-    f"{focos['satelite'].nunique()} satélites enxergam o mesmo incêndio várias vezes. "
+# Locais de cerca de 1 km, contados uma vez por dia: aproxima quantos fogos diferentes há.
+locais = focos.assign(lat=focos["lat"].round(2), lon=focos["lon"].round(2)).drop_duplicates(
+    ["lat", "lon", "dia"]
 )
-if lider_todos != lider_ref:
-    texto += (
-        f"Somando todos, **{analise.nome_proprio(lider_todos)}** lideraria; com o satélite de "
-        f"referência, o primeiro é **{analise.nome_proprio(lider_ref)}**. Sem essa limpeza, a "
-        "prioridade apontada seria outra."
+recortes = {"Referência (AQUA)": ref, "Todos, cada local uma vez": locais, "Todos": focos}
+parte = pd.DataFrame(
+    {nome: df["estado"].value_counts(normalize=True) * 100 for nome, df in recortes.items()}
+).fillna(0)
+st.markdown(
+    f"{focos['satelite'].nunique()} satélites enxergam o mesmo fogo várias vezes: as "
+    f"{analise.numero(len(focos))} detecções caem para cerca de "
+    f"{analise.numero(len(locais))} contando cada local de 1 km uma vez por dia. Para comparar lugares e datas, o INPE usa um "
+    "só, o AQUA, por ser uma série estável ao longo dos anos. A escolha pesa no resultado:"
+)
+st.markdown(
+    "\n".join(
+        f"- **{nome}:** {analise.nome_proprio(parte[nome].idxmax())} em primeiro, com "
+        f"{analise.numero(parte[nome].max(), 1)}%."
+        for nome in recortes
     )
-st.markdown(texto)
-maiores = parte.sort_values("referência", ascending=False).head(8).round(1)
+)
+maiores = parte.sort_values("Referência (AQUA)", ascending=False).head(8).round(1)
 maiores.index = [analise.nome_proprio(e) for e in maiores.index]
 longo = maiores.rename_axis("Estado").reset_index().melt(
     "Estado", var_name="Base", value_name="% dos focos"
 )
 grafico_barras(
-    longo, alt.X("% dos focos:Q", title="% dos focos do país"), "Estado:N", 340,
-    cor="Base", cores={"referência": VERMELHO, "todos os satélites": CINZA},
+    longo, alt.X("% dos focos:Q", title="% do total de cada base"), "Estado:N", 400,
+    cor="Base", cores=dict(zip(recortes, (VERMELHO, AZUL, CINZA))),
     ordem=list(maiores.index),
+)
+st.caption(
+    "O AQUA passa poucas vezes por dia. Em poucos dias, parte das diferenças entre estados vem do "
+    "horário e do trajeto do satélite, não do fogo. Ele é o padrão do projeto por ser o critério "
+    "oficial; o Painel mostra também todos os satélites."
 )
 
 st.subheader("2. Onde olhar primeiro")
@@ -165,7 +174,7 @@ if base_dados.AVALIACAO_CSV.exists():
         "Versão:N", 180, ordem=list(nomes.values()),
     )
     st.caption(
-        f"{total} perguntas com resposta conhecida, escritas antes de rodar e corrigidas à mão. "
-        "A barra mostra quanto cada parte contribui. Amostra pequena: diferenças de poucas "
+        f"{total} perguntas com resposta conhecida, escritas antes das correções e conferidas à "
+        "mão. Os dados e a memória são o que mais pesa. Amostra pequena: diferenças de poucas "
         "perguntas não são conclusivas."
     )

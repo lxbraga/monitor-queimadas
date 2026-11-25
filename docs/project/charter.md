@@ -74,7 +74,7 @@ TP5 (entrega final, concluído):
 | Acesso programático | Rotas GET e POST servindo focos e notícias em JSON | Entregue no TP3 |
 | Análise de texto local | Sentimento e resumo de notícias sem serviços externos, com erros tratados | Entregue no TP4 |
 | Comparação correta | Painel e assistente usam o satélite de referência do INPE | Entregue no TP5 |
-| Respostas confiáveis | Acerto do assistente em perguntas de teste | Pelo menos 80% (obtido: 85%, 22 de 26) |
+| Respostas confiáveis | Acerto do assistente em perguntas de teste escritas antes das correções | Medir e informar: 25 de 30 (83%) na versão final |
 | Adoção | Feedback de usuários do público-alvo | Não medido: o projeto não foi testado com usuários externos |
 
 ## ODS atendidos
@@ -124,11 +124,11 @@ O problema tem três partes, e cada uma pede uma peça diferente da solução.
 
 | Parte do problema | Quem responde | Por que essa peça |
 |-------------------|---------------|-------------------|
-| Os dados existem, mas em arquivos técnicos | Coleta do INPE e das notícias, limpeza e satélite de referência | Sem limpeza a resposta sai errada: somando os 12 satélites, o Tocantins lidera com 19,4% das detecções; no satélite que o INPE usa para comparar, é o Pará, com 29,1% |
+| Os dados existem, mas em arquivos técnicos | Coleta do INPE e das notícias, limpeza e satélite de referência | São 12 satélites vendo o mesmo fogo: 139.642 detecções, que caem para cerca de 35 mil contando cada local de 1 km uma vez por dia. Sem um critério, a conta mede satélites, não fogo. O projeto segue o do INPE e mostra os outros recortes |
 | Quem decide não sabe programar nem filtrar planilha | Dashboard e assistente em linguagem natural | Um gestor pergunta "onde está pior?" e segue com "e o segundo?", sem montar filtro |
 | Número de foco não diz causa nem contexto | Notícias, com busca, sentimento e resumo | O foco diz onde; a notícia diz por quê e o que está sendo feito |
 
-A engenharia de prompts entra para que o modelo não invente, o que seria grave em política pública. Um modelo pequeno sozinho acertou 3 das 26 perguntas de teste. Com os dados calculados pelo projeto dentro do prompt, regras e memória, acertou 22. As decisões de prompt e o efeito de cada uma estão no [Model Report](model_report.md).
+A engenharia de prompts entra para que o modelo não invente, o que seria grave em política pública. Um modelo pequeno sozinho acertou 4 das 30 perguntas do teste final. Com os dados calculados pelo projeto dentro do prompt, regras e memória, acertou 25. As decisões de prompt e o efeito de cada uma estão no [Model Report](model_report.md).
 
 O uso de modelos é restrito ao que eles fazem bem. Contas, rankings e comparações são feitos com pandas; o modelo só redige. Tudo roda na máquina do usuário: sem custo por consulta e sem enviar perguntas para terceiros.
 
