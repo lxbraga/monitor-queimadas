@@ -12,7 +12,7 @@ import assistente as a  # noqa: E402
 SUGESTOES = [
     "Qual estado teve mais focos?",
     "Qual bioma tem mais focos?",
-    "O que as notícias dizem sobre a fumaça em Manaus?",
+    "Qual o risco de fogo no Tocantins?",
 ]
 
 

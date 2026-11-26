@@ -181,7 +181,7 @@ def multiselect_persistente(container, rotulo: str, opcoes: list, chave: str):
     """
     salvos = st.session_state.get(chave, [])
     st.session_state[chave] = [v for v in salvos if v in opcoes]
-    return container.multiselect(rotulo, opcoes, key=chave)
+    return container.multiselect(rotulo, opcoes, key=chave, placeholder="Todos")
 
 
 def filtros_sidebar(focos: pd.DataFrame) -> pd.DataFrame:

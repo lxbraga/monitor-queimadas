@@ -117,7 +117,8 @@ if com_risco < len(ref):
         f"O INPE ainda não preencheu o risco de {analise.numero(len(ref) - com_risco)} dos "
         f"{analise.numero(len(ref))} focos; as médias usam os que têm valor."
     )
-relevantes = tabela[tabela["Focos"] >= 30]
+MINIMO = 30
+relevantes = tabela[tabela["Focos"] >= MINIMO]
 if not relevantes.empty:
     intenso = relevantes["FRP médio (MW)"].idxmax()
     st.markdown(
@@ -178,3 +179,32 @@ if base_dados.AVALIACAO_CSV.exists():
         "mão. Os dados e a memória são o que mais pesa. Amostra pequena: diferenças de poucas "
         "perguntas não são conclusivas."
     )
+
+st.subheader("5. O que isso significa para os ODS")
+biomas = ref.groupby("bioma").agg(focos=("bioma", "size"), risco=("risco_fogo", "mean"))
+biomas = biomas[biomas["focos"] >= MINIMO]
+criticos = [e for e in tabela.index if tabela.loc[e, "Classe de risco"] == "crítico"]
+linhas = [
+    f"- **ODS 15, metas 15.1 e 15.2 (vegetação nativa):** "
+    + "; ".join(
+        f"{b} tem {analise.numero(n / len(ref) * 100, 1)}% dos focos, com risco "
+        f"{analise.classe_de_risco(r) if pd.notna(r) else 's/d'}"
+        for b, n, r in biomas.sort_values("focos", ascending=False).head(3).itertuples()
+    )
+    + ". É onde conservar e prevenir pesa mais.",
+]
+if criticos:
+    linhas.append(
+        f"- **ODS 13, meta 13.1 (resiliência a riscos do clima):** {len(criticos)} estados "
+        f"estão com risco de fogo crítico ({', '.join(criticos)}), alguns ainda com poucos "
+        "focos: são candidatos a prevenção antes que o fogo cresça."
+    )
+linhas.append(
+    "- **ODS 13, meta 13.3 (conscientização):** o dado técnico do INPE vira resposta em "
+    "português no Assistente, com a fonte de cada número à vista."
+)
+st.markdown("\n".join(linhas))
+st.caption(
+    "O painel não mede impacto: ele organiza a informação para quem decide. São três dias de "
+    "dados, sem medir tendência."
+)

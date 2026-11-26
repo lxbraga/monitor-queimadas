@@ -6,6 +6,7 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "code"))
 
+import analise  # noqa: E402
 import app_utils as u  # noqa: E402
 
 st.title("🔥 Painel de focos de calor")
@@ -22,13 +23,13 @@ else:
     )
 
 col1, col2, col3, col4 = st.columns(4)
-col1.metric("Focos de calor", f"{len(filtrado):,}".replace(",", "."))
-col2.metric("Municípios", filtrado["municipio"].nunique())
+col1.metric("Focos de calor", analise.numero(len(filtrado)))
+col2.metric("Municípios", analise.numero(filtrado["municipio"].nunique()))
 col3.metric("Estados", filtrado["estado"].nunique())
 frp_medio = filtrado["frp"].mean()
 col4.metric(
     "FRP médio (MW)",
-    f"{frp_medio:.1f}" if pd.notna(frp_medio) else "s/d",
+    analise.numero(frp_medio, 1) if pd.notna(frp_medio) else "s/d",
     help=u.AJUDA_FRP + " Aqui, a média dos focos filtrados.",
 )
 
@@ -38,10 +39,17 @@ else:
     col_esq, col_dir = st.columns(2)
     with col_esq:
         st.subheader("Focos por estado")
-        st.bar_chart(filtrado["estado"].value_counts().head(15), color="#d62728")
+        estados = filtrado["estado"].value_counts().head(15)
+        estados.index = [analise.nome_proprio(e) for e in estados.index]
+        st.bar_chart(
+            estados, horizontal=True, sort=False, color="#d62728", x_label="", y_label="focos"
+        )
     with col_dir:
         st.subheader("Focos por bioma")
-        st.bar_chart(filtrado["bioma"].value_counts(), color="#ff7f0e")
+        st.bar_chart(
+            filtrado["bioma"].value_counts(), horizontal=True, sort=False, color="#ff7f0e",
+            x_label="", y_label="focos",
+        )
 
     st.subheader("Mapa dos focos")
     pontos = filtrado[["lat", "lon"]].dropna()

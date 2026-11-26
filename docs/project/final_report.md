@@ -61,7 +61,7 @@ São três dias da estação seca. Os números descrevem esse período, não uma
 
 O projeto fica no pilar Ambiental do ESG.
 
-- **ODS 13, metas 13.1 e 13.3:** dá resposta mais rápida a quem age contra o fogo e torna o dado oficial compreensível para quem não é técnico.
+- **ODS 13, metas 13.1 e 13.3:** pode apoiar a prevenção onde o risco é crítico e torna o dado oficial compreensível para quem não é técnico. O impacto não foi medido.
 - **ODS 15, metas 15.1 e 15.2:** mostra quais biomas estão sob pressão e com risco alto, o que orienta prevenção em vegetação nativa.
 
 Também há escolhas responsáveis no próprio projeto: modelos pequenos e locais, coleta que respeita o robots.txt, dados públicos e fontes visíveis em cada resposta.
@@ -72,7 +72,7 @@ Um roteiro de uso, com os dados entregues:
 
 1. Um gestor abre Insights e vê que o Pará lidera e que o Tocantins está com risco crítico e fogo intenso.
 2. No Assistente, pergunta "Qual estado teve mais focos?", depois "E o segundo?" e "Somando os dois, quantos focos?". A resposta foi 1.756, com o aviso de que a conta é do modelo e os valores de origem abertos em "De onde veio".
-3. Pergunta sobre a fumaça em Manaus e recebe a explicação com a notícia de origem, para ler por inteiro.
+3. Pergunta o risco de fogo no Tocantins e recebe a classe calculada, CRÍTICO; numa pergunta sobre notícias, recebe também o link de origem para ler por inteiro.
 4. No Painel, filtra o estado e baixa os focos para planejar a operação.
 
 ## Limitações
